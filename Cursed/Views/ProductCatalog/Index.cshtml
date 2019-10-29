@@ -1,0 +1,12 @@
+﻿@using Cursed.Models.Data
+@model IEnumerable<ProductCatalogDataModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@foreach (var item in Model)
+{
+    <h2>@item.Name</h2>
+}
