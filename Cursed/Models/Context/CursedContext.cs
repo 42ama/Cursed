@@ -5,13 +5,13 @@ using Cursed.Models.Entities;
 
 namespace Cursed.Models.Context
 {
-    public partial class pharmaceuticsContext : DbContext
+    public partial class CursedContext : DbContext
     {
-        public pharmaceuticsContext()
+        public CursedContext()
         {
         }
 
-        public pharmaceuticsContext(DbContextOptions<pharmaceuticsContext> options)
+        public CursedContext(DbContextOptions<CursedContext> options)
             : base(options)
         {
         }
@@ -149,7 +149,9 @@ namespace Cursed.Models.Context
 
             modelBuilder.Entity<RecipeInheritance>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
+                entity.HasKey(e => new { e.ChildId, e.ParentId })
+                    .HasName("CK_RecipeInheritance_ChildId_ParentId");
 
                 entity.HasOne(d => d.Child)
                     .WithMany(p => p.RecipeInheritanceChild)
@@ -197,7 +199,9 @@ namespace Cursed.Models.Context
 
             modelBuilder.Entity<RoleHavePolicy>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
+                entity.HasKey(e => new { e.RoleId, e.PolicyId })
+                    .HasName("CK_RoleHavePolicy_RoleId_PolicyId");
 
                 entity.HasOne(d => d.Policy)
                     .WithMany(p => p.RoleHavePolicy)
@@ -230,7 +234,9 @@ namespace Cursed.Models.Context
 
             modelBuilder.Entity<TechProcess>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
+                entity.HasKey(e => new { e.FacilityId, e.RecipeId })
+                     .HasName("CK_TechProcess_FacilityId_RecipeId");
 
                 entity.Property(e => e.DayEffiency).HasColumnType("decimal(9, 2)");
 
