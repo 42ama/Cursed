@@ -15,7 +15,7 @@ namespace Cursed.Models.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
-        public bool? Cas { get; set; }
+        public int? Cas { get; set; }
         public bool? LicenseRequired { get; set; }
 
         public virtual ICollection<License> License { get; set; }
