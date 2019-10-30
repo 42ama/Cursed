@@ -14,7 +14,7 @@ namespace Cursed.Models.Data
         public bool? LicenseRequired { get; set; }
         public int? GovermentNum { get; set; }
         public DateTime? LicensedUntil { get; set; }
-        public int RecipeCount { get; set; }
-        public int StorageCount { get; set; }
+        public List<int> Recipes { get; set; }
+        public List<int> Storages { get; set; }
     }
 }
