@@ -1,77 +1,65 @@
 ﻿@using Cursed.Models.Data
-@model IEnumerable<ProductCatalogDataModel>
+@model IEnumerable<ProductCatalogViewModel>
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Product Catalog Index</h1>
 
 <table>
     <thead>
         <tr>
-            <td>Name</td>
-            <td>CAS</td>
-            <td>Type</td>
-            <td>Licensed</td>
-            <td>License Summary</td>
-            <td>Used in</td>
-            <td>Contained in</td>
-            <td><!--for edit/delete button--></td>
+            <td style="text-align:center">Name</td>
+            <td style="text-align:center">CAS</td>
+            <td style="text-align:center">Type</td>
+            <td style="text-align:center"><p>Licensed</p><p>until</p></td>
+            <td style="text-align:center"><p>License</p><p>number</p></td>
+            <td style="text-align:center"><p>License</p><p>summary</p></td>
+            <td style="text-align:center">Used in</td>
+            <td style="text-align:center">Contained in</td>
+            <td style="text-align:center"><!--for edit/delete button--></td>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.CAS</td>
-                <td>@item.Type</td>
-                @if(item.LicenseRequired==null)
+            item.AttentionColor ??= "#EAEAEA";
+        <tr>
+            <td style="text-align:center">@item.Name</td>
+            <td style="text-align:center">@item.CAS</td>
+            <td style="text-align:center">@item.Type</td>
+            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicensedUntil</td>
+            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.GovermentNum</td>
+            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicenseSummary</td>
+            <td style="text-align:center">
+                <p>@item.RecipesCount Recipes</p>
+                @if (item.RecipesCount != 0)
                 {
-                    <td>---</td>
-                    <td>Not required</td>
+                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
                 }
-                else
+            </td>
+            <td style="text-align:center">
+                <p>@item.StoragesCount Storages</p>
+                @if (item.RecipesCount != 0)
                 {
-                    <td>
-                        <p>@item.LicensedUntil.ToString()</p>
-                        <p>@item.GovermentNum</p>
-                    </td>
-                    @if(item.LicenseRequired == true)
-                    {
-                        if(item.LicensedUntil<DateTime.UtcNow)
-                        {
-                            <td bgcolor="green">Valid</td>
-                        }
-                        else
-                        {
-                            <td bgcolor="red">Not Valid</td>
-                        }
-                    }
-                    else
-                    {
-                        <td>Not required</td>
-                    }
+                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
                 }
-                <td>
-                    <p>@item.RecipeCount Recipes</p>
-                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
-                </td>
-                <td>
-                    <p>@item.StorageCount Storages</p>
-                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
-                </td>
-                <td>
-                    <form asp-antiforgery="true" method="get" asp-route="changeProductCatalog">
-                        <input hidden type="number" name="Id" value="@item.ProductId" />
-                        <input type="submit" class="btn btn-default" value="Edit" />
-                    </form>
-                    <form asp-antiforgery="true" method="delete" asp-route="itemProductCatalog">
-                        <input hidden type="number" name="Id" value="@item.ProductId" />
-                        <input type="submit" class="btn btn-default" value="Edit" />
-                    </form>
-                </td>
-            </tr>
+            </td>
+            <td style="text-align:center">
+                <form asp-antiforgery="true" method="get" asp-route="ProductCatalogSingle">
+                    <input hidden type="number" name="Id" value="@item.ProductId" />
+                    <input type="submit" class="btn btn-default" value="Show Single" />
+                </form>
+                <form asp-antiforgery="true" method="get" asp-route="EditProductCatalogSingle">
+                    <input hidden type="number" name="Id" value="@item.ProductId" />
+                    <input type="submit" class="btn btn-default" value="Edit" />
+                </form>
+                <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
+                    <input hidden type="number" name="Id" value="@item.ProductId" />
+                    <input type="submit" class="btn btn-default" value="Delete" />
+                </form>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

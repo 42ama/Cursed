@@ -27,8 +27,44 @@ namespace Cursed.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var model = await logic.GetDataModelsAsync();
-            return View(model);
+            var dataModel = await logic.GetDataModelsAsync();
+            List<ProductCatalogViewModel> viewModel = new List<ProductCatalogViewModel>();
+            foreach (var item in dataModel)
+            {
+                var viewItem = new ProductCatalogViewModel
+                {
+                    ProductId = item.ProductId,
+                    Name = item.Name,
+                    CAS = (item.CAS ?? 0).ToString(),
+                    Type = item.Type,
+                    RecipesCount = item.Recipes?.Count ?? 0,
+                    StoragesCount = item.Storages?.Count ?? 0
+                };
+                viewItem.LicensedUntil = item.LicensedUntil != null ? item.LicensedUntil.Value.ToShortDateString() : "---";
+                viewItem.GovermentNum = item.GovermentNum != null ? item.GovermentNum.ToString() : "---";
+                if (item.LicenseRequired == true)
+                {
+                    if(item.LicensedUntil != null && item.GovermentNum != null && item.LicensedUntil>DateTime.UtcNow)
+                    {
+                        viewItem.LicenseSummary = "Valid";
+                        viewItem.AttentionColor = "green";
+                    }
+                    else
+                    {
+                        viewItem.LicenseSummary = "Not valid";
+                        viewItem.AttentionColor = "red";
+                    }
+                }
+                else
+                {
+                    viewItem.LicenseSummary = "Not required";
+                    viewItem.AttentionColor = null;
+                }
+
+                viewModel.Add(viewItem);
+            }
+            
+            return View(viewModel);
         }
     }
 }
