@@ -24,7 +24,7 @@ namespace Cursed.Controllers
             _logger = logger;
         }
 
-        [HttpGet("index")]
+        [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             var model = await logic.GetDataModelsAsync();
