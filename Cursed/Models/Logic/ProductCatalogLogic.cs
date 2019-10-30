@@ -23,28 +23,107 @@ namespace Cursed.Models.Logic
 
         public async Task<IEnumerable<ProductCatalogDataModel>> GetDataModelsAsync()
         {
+            // probably need testing with different db connection combination
             var productCatalogs = await db.ProductCatalog.ToListAsync();
             var licenses = await db.License.ToListAsync();
-            var dataModels =
-                from p in productCatalogs
-                join l in licenses on p.Id equals l.ProductId into pl
-                from _l in pl.DefaultIfEmpty()
-                select new ProductCatalogDataModel { ProductId = p.Id, CAS = p.Cas, Name = p.Name, Type = p.Type, LicenseRequired = p.LicenseRequired, GovermentNum = _l?.GovermentNum, LicensedUntil = _l?.Date };
+
+
+
+            // Count version does not work due EF implementation of Group
+            /*var recipeCountCollection = db.ProductCatalog
+                .GroupJoin(
+                db.RecipeProductChanges,
+                lt => lt.Id,
+                rt => rt.ProductId,
+                (lt, os) => new
+                {
+                    Id = lt.Id,
+                    RecipeCount = os.Select(i => i.RecipeId).Distinct().Count()
+                });
+
+            var recipeCountCollection = (from pc in productCatalogs
+                                         join rpc in db.RecipeProductChanges on pc.Id equals rpc.ProductId into t
+                                         group t by pc.Id).Select(i => new
+                                         {
+                                             Id = i.Key,
+                                             RecipeCount = i.Select(x => x.Select(y => y.RecipeId).Distinct()).Count()
+                                         });
+
+            var storageCountCollection = db.Product
+                .GroupBy(x => x.Uid)
+                .Select(g => new
+                {
+                    Id = g.Key,
+                    StorageCount = 1//g.Select(x => x.StorageId).Distinct().Count()
+                });
+
+            var dataModels = from pc in productCatalogs
+                             join l in licenses on pc.Id equals l.ProductId into aGroup
+                             from a in aGroup.DefaultIfEmpty()
+                             join rcc in recipeCountCollection on pc.Id equals rcc.Id into bGroup
+                             from b in bGroup.DefaultIfEmpty()
+                             join scc in storageCountCollection on pc.Id equals scc.Id into cGroup
+                             from c in cGroup.DefaultIfEmpty()
+                             select new ProductCatalogDataModel
+                             {
+                                 ProductId = pc.Id,
+                                 Name = pc.Name,
+                                 CAS = pc.Cas,
+                                 Type = pc.Type,
+                                 LicenseRequired = pc?.LicenseRequired,
+                                 GovermentNum = a?.GovermentNum,
+                                 LicensedUntil = a?.Date
+                             };*/
+            var dataModels = from pc in productCatalogs
+                             join l in licenses on pc.Id equals l.ProductId into aGroup
+                             from a in aGroup.DefaultIfEmpty()
+                             select new ProductCatalogDataModel
+                             {
+                                 ProductId = pc.Id,
+                                 Name = pc.Name,
+                                 CAS = pc.Cas,
+                                 Type = pc.Type,
+                                 LicenseRequired = pc?.LicenseRequired,
+                                 GovermentNum = a?.GovermentNum,
+                                 LicensedUntil = a?.Date
+                             }; 
+            // listed version does not work for unknown reason
+            foreach (var item in dataModels)
+            {
+                item.Recipes = (from rpc in db.RecipeProductChanges
+                                where rpc.ProductId == item.ProductId
+                                select rpc.RecipeId).ToList();
+                item.Storages = (from p in db.Product
+                                 where p.Uid == item.ProductId
+                                select p.StorageId).ToList();
+            }
+
             return dataModels;
         }
 
         public async Task<ProductCatalogDataModel> GetDataModelAsync(object UId)
         {
-            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)UId);
-            var license = await db.License.Where(i => i.ProductId == (int)UId).OrderByDescending(i => i.Date).FirstOrDefaultAsync();
-            var dataModel = new ProductCatalogDataModel { ProductId = productCatalog.Id, CAS = productCatalog.Cas, Name = productCatalog.Name, Type = productCatalog.Type, LicenseRequired = productCatalog.LicenseRequired };
+            int Uid = (int)UId;
+            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == Uid);
+            var license = await db.License.Where(i => i.ProductId == Uid).OrderByDescending(i => i.Date).FirstOrDefaultAsync();
+            var recipes = await db.RecipeProductChanges.Where(i => i.ProductId == Uid).Select(x => x.RecipeId).ToListAsync();
+            var storages = await db.Product.Where(i => i.Uid == Uid).Select(x => x.StorageId).ToListAsync();
+            var dataModel = new ProductCatalogDataModel
+            {
+                ProductId = Uid,
+                CAS = productCatalog.Cas,
+                Name = productCatalog.Name,
+                Type = productCatalog.Type,
+                LicenseRequired = productCatalog.LicenseRequired,
+                Recipes = recipes,
+                Storages = storages
+            };
             if(license != null)
             {
                 dataModel.GovermentNum = license.GovermentNum;
                 dataModel.LicensedUntil = license.Date;
             }
             return dataModel;
-
         }
 
         public async Task AddDataModelAsync(ProductCatalog dataModel)
