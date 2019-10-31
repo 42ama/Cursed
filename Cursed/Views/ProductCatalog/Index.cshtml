@@ -1,5 +1,5 @@
-﻿@using Cursed.Models.Data
-@model IEnumerable<ProductCatalogViewModel>
+﻿@using Cursed.Models.Data.ProductCatalog
+@model IEnumerable<ProductCatalogAllVM>
 @{
     ViewData["Title"] = "Index";
 }
@@ -24,42 +24,36 @@
         @foreach (var item in Model)
         {
             item.AttentionColor ??= "#EAEAEA";
-        <tr>
-            <td style="text-align:center">@item.Name</td>
-            <td style="text-align:center">@item.CAS</td>
-            <td style="text-align:center">@item.Type</td>
-            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicensedUntil</td>
-            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.GovermentNum</td>
-            <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicenseSummary</td>
-            <td style="text-align:center">
-                <p>@item.RecipesCount Recipes</p>
-                @if (item.RecipesCount != 0)
-                {
-                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
-                }
-            </td>
-            <td style="text-align:center">
-                <p>@item.StoragesCount Storages</p>
-                @if (item.RecipesCount != 0)
-                {
-                    <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { Id = item.ProductId })</p>
-                }
-            </td>
-            <td style="text-align:center">
-                <form asp-antiforgery="true" method="get" asp-route="ProductCatalogSingle">
-                    <input hidden type="number" name="Id" value="@item.ProductId" />
-                    <input type="submit" class="btn btn-default" value="Show Single" />
-                </form>
-                <form asp-antiforgery="true" method="get" asp-route="EditProductCatalogSingle">
-                    <input hidden type="number" name="Id" value="@item.ProductId" />
-                    <input type="submit" class="btn btn-default" value="Edit" />
-                </form>
-                <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
-                    <input hidden type="number" name="Id" value="@item.ProductId" />
-                    <input type="submit" class="btn btn-default" value="Delete" />
-                </form>
-            </td>
-        </tr>
+            <tr>
+                <td style="text-align:center">@item.Name</td>
+                <td style="text-align:center">@item.CAS</td>
+                <td style="text-align:center">@item.Type</td>
+                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicensedUntil</td>
+                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.GovermentNum</td>
+                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicenseSummary</td>
+                <td style="text-align:center">
+                    <p>@item.RecipesCount Recipes</p>
+                    @if (item.RecipesCount != 0)
+                    {
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { productId = item.ProductId })</p>
+                    }
+                </td>
+                <td style="text-align:center">
+                    <p>@item.StoragesCount Storages</p>
+                    @if (item.RecipesCount != 0)
+                    {
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { productId = item.ProductId })</p>
+                    }
+                </td>
+                <td style="text-align:center">
+                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { productId = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", "NewProductCatalogSingle", new { productId = item.ProductId })</p>
+                    <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
+                        <input hidden type="number" name="productId" value="@item.ProductId" />
+                        <input type="submit" class="btn btn-default" value="Delete" />
+                    </form>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

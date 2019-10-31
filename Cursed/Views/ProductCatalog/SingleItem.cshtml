@@ -1,0 +1,70 @@
+﻿@using Cursed.Models.Data.ProductCatalog
+@model ProductCatalogSingleDM
+@{
+    ViewData["Title"] = "SingleItem";
+}
+
+<h1>@Model.Name</h1>
+<table>
+    <tr>
+        <td><b>Name</b></td>
+        <td><b>@Model.Name</b></td>
+    </tr>
+    <tr>
+        <td><b>CAS</b></td>
+        <td><b>@Model.CAS</b></td>
+    </tr>
+    <tr>
+        <td><b>Type</b></td>
+        <td><b>@Model.Type</b></td>
+    </tr>
+    <tr>
+        <td valign="top"><b>Recipes</b></td>
+        <td>
+            @if (Model.Recipes.Count > 0)
+            {
+                foreach (var item in Model.Recipes)
+                {
+                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { Id = item.Id })</p>
+                }
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td valign="top"><b>Storages</b></td>
+        <td>
+            @if (Model.Storages.Count > 0)
+            {
+                foreach (var item in Model.Storages)
+                {
+                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { Id = item.Id })</p>
+                }
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td valign="top"><b>Licenses</b></td>
+        <td>
+            @if (Model.Licenses.Count > 0)
+            {
+                foreach (var item in Model.Licenses)
+                {
+                    <p>@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicenseSingle", new { Id = item.Id })</p>
+                }
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+</table>
+
