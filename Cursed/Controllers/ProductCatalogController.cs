@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Cursed.Models.Data;
+using Cursed.Models.Data.ProductCatalog;
 using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
@@ -27,24 +27,32 @@ namespace Cursed.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var dataModel = await logic.GetDataModelsAsync();
-            List<ProductCatalogViewModel> viewModel = new List<ProductCatalogViewModel>();
+            var dataModel = await logic.GetAllDataModelAsync();
+            List<ProductCatalogAllVM> viewModel = new List<ProductCatalogAllVM>();
             foreach (var item in dataModel)
             {
-                var viewItem = new ProductCatalogViewModel
+                var viewItem = new ProductCatalogAllVM
                 {
                     ProductId = item.ProductId,
                     Name = item.Name,
                     CAS = (item.CAS ?? 0).ToString(),
                     Type = item.Type,
-                    RecipesCount = item.Recipes?.Count ?? 0,
-                    StoragesCount = item.Storages?.Count ?? 0
+                    RecipesCount = item.RecipesCount,
+                    StoragesCount = item.StoragesCount
                 };
-                viewItem.LicensedUntil = item.LicensedUntil != null ? item.LicensedUntil.Value.ToShortDateString() : "---";
-                viewItem.GovermentNum = item.GovermentNum != null ? item.GovermentNum.ToString() : "---";
+                if(item.License != null)
+                {
+                    viewItem.LicensedUntil = item.License.Date.ToShortDateString();
+                    viewItem.GovermentNum = item.License.GovermentNum.ToString();
+                }
+                else
+                {
+                    viewItem.LicensedUntil = "---";
+                    viewItem.GovermentNum = "---";
+                }
                 if (item.LicenseRequired == true)
                 {
-                    if(item.LicensedUntil != null && item.GovermentNum != null && item.LicensedUntil>DateTime.UtcNow)
+                    if(item.License?.IsValid == true)
                     {
                         viewItem.LicenseSummary = "Valid";
                         viewItem.AttentionColor = "green";
@@ -65,6 +73,13 @@ namespace Cursed.Controllers
             }
             
             return View(viewModel);
+        }
+
+        [HttpGet("product", Name = "ProductCatalogSingle")]
+        public async Task<IActionResult> SingleItem(int productId)
+        {
+            var dataModel = await logic.GetSingleDataModelAsync(productId);
+            return View(dataModel);
         }
     }
 }
