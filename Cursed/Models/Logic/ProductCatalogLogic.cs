@@ -71,18 +71,21 @@ namespace Cursed.Models.Logic
             var licenses = await db.License.Where(i => i.ProductId == Uid).ToListAsync();
             var recipes = await db.RecipeProductChanges
                 .Where(i => i.ProductId == Uid)
-                .Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content.Substring(0,45) }).ToListAsync();
+                .Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content.Substring(0,45) + "..." }).ToListAsync();
             var storages = await db.Product
                 .Where(i => i.Uid == Uid)
                 .Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToListAsync();
             bool licenseRequired = productCatalog.LicenseRequired ?? false;
-            List<LicenseValid> validLicenses = null;
-            if (licenseRequired)
+            List<LicenseValid> validLicenses = new List<LicenseValid>();
+            foreach (var license in licenses)
             {
-                validLicenses = new List<LicenseValid>();
-                foreach (var license in licenses)
+                if (licenseRequired)
                 {
                     validLicenses.Add(new LicenseValid(license));
+                }
+                else
+                {
+                    validLicenses.Add(new LicenseValid(license, true));
                 }
             }
 

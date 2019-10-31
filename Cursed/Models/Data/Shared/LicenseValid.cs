@@ -17,6 +17,10 @@ namespace Cursed.Models.Data.Shared
 
             Validate();
         }
+        public LicenseValid(License license, bool isValid) : this(license)
+        {
+            IsValid = isValid;
+        }
 
         private void Validate()
         {
