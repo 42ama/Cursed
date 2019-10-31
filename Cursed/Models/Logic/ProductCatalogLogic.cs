@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data;
+using Cursed.Models.Data.ProductCatalog;
 using Cursed.Models.Entities;
+using Cursed.Models.Data.Shared;
+using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductCatalogLogic : IRESTAsync<ProductCatalogDataModel, ProductCatalog>
+    public class ProductCatalogLogic : IRESTAsync<ProductCatalogAllDM, ProductCatalogSingleDM, ProductCatalog>
     {
         private readonly CursedContext db;
         public ProductCatalogLogic(CursedContext db)
@@ -21,108 +23,80 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<ProductCatalogDataModel>> GetDataModelsAsync()
+        public async Task<IEnumerable<ProductCatalogAllDM>> GetAllDataModelAsync()
         {
             // probably need testing with different db connection combination
             var productCatalogs = await db.ProductCatalog.ToListAsync();
-            var licenses = await db.License.ToListAsync();
-
-
-
-            // Count version does not work due EF implementation of Group
-            /*var recipeCountCollection = db.ProductCatalog
-                .GroupJoin(
-                db.RecipeProductChanges,
-                lt => lt.Id,
-                rt => rt.ProductId,
-                (lt, os) => new
-                {
-                    Id = lt.Id,
-                    RecipeCount = os.Select(i => i.RecipeId).Distinct().Count()
-                });
-
-            var recipeCountCollection = (from pc in productCatalogs
-                                         join rpc in db.RecipeProductChanges on pc.Id equals rpc.ProductId into t
-                                         group t by pc.Id).Select(i => new
-                                         {
-                                             Id = i.Key,
-                                             RecipeCount = i.Select(x => x.Select(y => y.RecipeId).Distinct()).Count()
-                                         });
-
-            var storageCountCollection = db.Product
-                .GroupBy(x => x.Uid)
-                .Select(g => new
-                {
-                    Id = g.Key,
-                    StorageCount = 1//g.Select(x => x.StorageId).Distinct().Count()
-                });
 
             var dataModels = from pc in productCatalogs
-                             join l in licenses on pc.Id equals l.ProductId into aGroup
-                             from a in aGroup.DefaultIfEmpty()
-                             join rcc in recipeCountCollection on pc.Id equals rcc.Id into bGroup
-                             from b in bGroup.DefaultIfEmpty()
-                             join scc in storageCountCollection on pc.Id equals scc.Id into cGroup
-                             from c in cGroup.DefaultIfEmpty()
-                             select new ProductCatalogDataModel
+                             join l in db.License on pc.Id equals l.ProductId into groupC
+                             from c in groupC.DefaultIfEmpty()
+                             join gA in (from pc in productCatalogs
+                                         join p in db.Product on pc.Id equals p.Uid into t
+                                         group t by pc.Id).Select(x => new { Id = x.Key, Count = x.Single().Count() })
+                                         on pc.Id equals gA.Id into groupD
+                             from d in groupD.DefaultIfEmpty()
+                             join gB in (from pc in productCatalogs
+                                         join r in db.RecipeProductChanges on pc.Id equals r.ProductId into t
+                                         group t by pc.Id).Select(x => new { Id = x.Key, Count = x.Single().Count() })
+                                         on pc.Id equals gB.Id into groupE
+                             from e in groupE.DefaultIfEmpty()
+                             select new ProductCatalogAllDM
                              {
                                  ProductId = pc.Id,
                                  Name = pc.Name,
                                  CAS = pc.Cas,
                                  Type = pc.Type,
-                                 LicenseRequired = pc?.LicenseRequired,
-                                 GovermentNum = a?.GovermentNum,
-                                 LicensedUntil = a?.Date
-                             };*/
-            var dataModels = from pc in productCatalogs
-                             join l in licenses on pc.Id equals l.ProductId into aGroup
-                             from a in aGroup.DefaultIfEmpty()
-                             select new ProductCatalogDataModel
-                             {
-                                 ProductId = pc.Id,
-                                 Name = pc.Name,
-                                 CAS = pc.Cas,
-                                 Type = pc.Type,
-                                 LicenseRequired = pc?.LicenseRequired,
-                                 GovermentNum = a?.GovermentNum,
-                                 LicensedUntil = a?.Date
-                             }; 
-            // listed version does not work for unknown reason
-            foreach (var item in dataModels)
-            {
-                item.Recipes = (from rpc in db.RecipeProductChanges
-                                where rpc.ProductId == item.ProductId
-                                select rpc.RecipeId).ToList();
-                item.Storages = (from p in db.Product
-                                 where p.Uid == item.ProductId
-                                select p.StorageId).ToList();
-            }
+                                 LicenseRequired = pc.LicenseRequired ?? false,
+                                 License = c?.Id != null
+                                 ? new LicenseValid( new License
+                                 {
+                                     Id = c.Id,
+                                     GovermentNum = c.GovermentNum,
+                                     Date = c.Date
+                                 })
+                                 : null,
+                                 StoragesCount = d.Count,
+                                 RecipesCount = e.Count
+                             };
 
             return dataModels;
         }
 
-        public async Task<ProductCatalogDataModel> GetDataModelAsync(object UId)
+        public async Task<ProductCatalogSingleDM> GetSingleDataModelAsync(object UId)
         {
             int Uid = (int)UId;
+
             var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == Uid);
-            var license = await db.License.Where(i => i.ProductId == Uid).OrderByDescending(i => i.Date).FirstOrDefaultAsync();
-            var recipes = await db.RecipeProductChanges.Where(i => i.ProductId == Uid).Select(x => x.RecipeId).ToListAsync();
-            var storages = await db.Product.Where(i => i.Uid == Uid).Select(x => x.StorageId).ToListAsync();
-            var dataModel = new ProductCatalogDataModel
+            var licenses = await db.License.Where(i => i.ProductId == Uid).ToListAsync();
+            var recipes = await db.RecipeProductChanges
+                .Where(i => i.ProductId == Uid)
+                .Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content.Substring(0,45) }).ToListAsync();
+            var storages = await db.Product
+                .Where(i => i.Uid == Uid)
+                .Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToListAsync();
+            bool licenseRequired = productCatalog.LicenseRequired ?? false;
+            List<LicenseValid> validLicenses = null;
+            if (licenseRequired)
+            {
+                validLicenses = new List<LicenseValid>();
+                foreach (var license in licenses)
+                {
+                    validLicenses.Add(new LicenseValid(license));
+                }
+            }
+
+            var dataModel = new ProductCatalogSingleDM
             {
                 ProductId = Uid,
                 CAS = productCatalog.Cas,
                 Name = productCatalog.Name,
                 Type = productCatalog.Type,
-                LicenseRequired = productCatalog.LicenseRequired,
+                LicenseRequired = licenseRequired,
+                Licenses = validLicenses,
                 Recipes = recipes,
                 Storages = storages
             };
-            if(license != null)
-            {
-                dataModel.GovermentNum = license.GovermentNum;
-                dataModel.LicensedUntil = license.Date;
-            }
             return dataModel;
         }
 
