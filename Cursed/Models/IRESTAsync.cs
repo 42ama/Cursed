@@ -6,35 +6,36 @@ namespace Cursed.Models
     /// <summary>
     /// Implements async RESTfull service.
     /// </summary>
-    /// <typeparam name="T">Display model, used in get</typeparam>
-    /// <typeparam name="K">Update model, used in post, put, delete</typeparam>
-    public interface IRESTAsync<T, K>
+    /// <typeparam name="A">All data model, used in get all</typeparam>
+    /// <typeparam name="B">Data model, used in get</typeparam>
+    /// <typeparam name="C">Update model, used in post, put, delete</typeparam>
+    public interface IRESTAsync<A, B, C>
     {
         /// <summary>
         /// Returns collection of all models from service
         /// </summary>
         /// <returns>Collection of all models from service</returns>
-        Task<IEnumerable<T>> GetDataModelsAsync();
+        Task<IEnumerable<A>> GetAllDataModelAsync();
         /// <summary>
         /// Return specified model from service
         /// </summary>
         /// <param name="UId">Unique parameter</param>
         /// <returns>Specified model from service</returns>
-        Task<T> GetDataModelAsync(object UId);
+        Task<B> GetSingleDataModelAsync(object UId);
         /// <summary>
         /// Add new model to service
         /// </summary>
         /// <param name="dataModel">New model</param>
-        Task AddDataModelAsync(K dataModel);
+        Task AddDataModelAsync(C dataModel);
         /// <summary>
         /// Update existing model in service
         /// </summary>
         /// <param name="updatedDataModel">Updated version of model</param>
-        Task UpdateDataModelAsync(K updatedDataModel);
+        Task UpdateDataModelAsync(C updatedDataModel);
         /// <summary>
         /// Remove existing model from service
         /// </summary>
         /// <param name="dataModel">Model to be removed</param>
-        Task RemoveDataModelAsync(K dataModel);
+        Task RemoveDataModelAsync(C dataModel);
     }
 }
