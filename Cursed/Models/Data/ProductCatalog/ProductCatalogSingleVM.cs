@@ -8,7 +8,7 @@ namespace Cursed.Models.Data.ProductCatalog
     {
         public bool LicenseRequired { get; set; }
         public List<LicenseValid> Licenses { get; set; }
-        public List<NameIdContainer> Recipes { get; set; }
-        public List<NameIdContainer> Storages { get; set; }
+        public List<TitleIdContainer> Recipes { get; set; }
+        public List<TitleIdContainer> Storages { get; set; }
     }
 }
