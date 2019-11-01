@@ -24,7 +24,7 @@ namespace Cursed.Controllers
             _logger = logger;
         }
 
-        [HttpGet("")]
+        [HttpGet("", Name = "ProductCatalogAll")]
         public async Task<IActionResult> Index()
         {
             var dataModel = await logic.GetAllDataModelAsync();
@@ -76,10 +76,50 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("product", Name = "ProductCatalogSingle")]
-        public async Task<IActionResult> SingleItem(int productId)
+        public async Task<IActionResult> SingleItem(int id)
         {
-            var dataModel = await logic.GetSingleDataModelAsync(productId);
+            var dataModel = await logic.GetSingleDataModelAsync(id);
             return View(dataModel);
+        }
+
+        // get for add/edit form
+        [HttpGet("product/edit", Name = "GetForEditProductCatalogSingle")]
+        public async Task<IActionResult> GetEditSingleItem(int? id)
+        {
+            if(id.HasValue)
+            {
+                var model = await logic.GetSingleUpdateModelAsync(id);
+                return View("EditSingleItem", model);
+            }
+            else
+            {
+                return View("EditSingleItem");
+            }
+            
+        }
+
+        //post item
+        [HttpPost("product", Name = "ProductCatalogSingle")]
+        public async Task<IActionResult> AddSingleItem(ProductCatalog model)
+        {
+            await logic.AddDataModelAsync(model);
+            return RedirectToRoute("ProductCatalogAll");
+        }
+
+        //put item
+        [HttpPut("product", Name = "ProductCatalogSingle")]
+        public async Task<IActionResult> EditSingleItem(ProductCatalog model)
+        {
+            await logic.UpdateDataModelAsync(model);
+            return RedirectToRoute("ProductCatalogAll");
+        }
+
+        //delete item
+        [HttpDelete("product", Name = "ProductCatalogSingle")]
+        public async Task<IActionResult> DeleteSingleItem(int id)
+        {
+            await logic.RemoveDataModelAsync(new ProductCatalog { Id = id });
+            return RedirectToRoute("ProductCatalogAll");
         }
     }
 }
