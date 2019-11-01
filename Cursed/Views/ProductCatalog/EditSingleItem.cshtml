@@ -1,0 +1,44 @@
+﻿@using Cursed.Models.Entities
+@using Cursed.Models.Data.Shared
+@model ProductCatalog
+@{
+    ViewData["Title"] = "EditSingleItem";
+    SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material}, Model?.Type);
+    string method = Model == null ? "post" : "put";
+}
+
+<h1>EditSingleItem</h1>
+
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
+    </div>
+    <div class="form-group">
+        <label for="Name">Name:*</label>
+        <div>
+            <input required asp-for="Name" type="text" name="Name" value="@Model?.Name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Type">Type:*</label>
+        <div>
+            <select required asp-for="Type" name="Type" asp-items="selectType"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Cas">CAS:</label>
+        <div>
+            <input asp-for="Cas" type="number" name="Cas" value="@Model?.Cas">
+        </div>
+    </div>
+    <p>License required:</p> @Html.EditorFor(model => model.LicenseRequired)
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route="ProductCatalogSingle" formmethod="@method" type="submit" class="btn btn-default" value="Create" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>
+<!--Add license managment(create new in ajax)-->
+<!--Fix ajax method posting-->

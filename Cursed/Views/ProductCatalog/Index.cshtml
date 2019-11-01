@@ -5,7 +5,7 @@
 }
 
 <h1>Product Catalog Index</h1>
-
+<p>@Html.RouteLink("Add", "GetForEditProductCatalogSingle")</p>
 <table>
     <thead>
         <tr>
@@ -47,10 +47,10 @@
                 </td>
                 <td style="text-align:center">
                     <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { productId = item.ProductId })</p>
-                    <p>@Html.RouteLink("Edit", "NewProductCatalogSingle", new { productId = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { productId = item.ProductId })</p>
                     <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
                         <input hidden type="number" name="productId" value="@item.ProductId" />
-                        <input type="submit" class="btn btn-default" value="Delete" />
+                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>
             </tr>
