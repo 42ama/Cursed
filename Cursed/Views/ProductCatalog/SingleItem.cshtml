@@ -5,7 +5,7 @@
 }
 
 <h1>@Model.Name</h1>
-<p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { Id = Model.ProductId })</p>
+<p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = Model.ProductId })</p>
 <p>
     <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
         <input hidden type="number" name="productId" value="@Model.ProductId" />
@@ -32,7 +32,7 @@
             {
                 foreach (var item in Model.Recipes)
                 {
-                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { Id = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { id = item.Id })</p>
                 }
             }
             else
@@ -48,7 +48,7 @@
             {
                 foreach (var item in Model.Storages)
                 {
-                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { Id = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { id = item.Id })</p>
                 }
             }
             else
@@ -64,7 +64,7 @@
             {
                 foreach (var item in Model.Licenses)
                 {
-                    <p>@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicenseSingle", new { Id = item.Id })</p>
+                    <p>@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { id = item.Id })</p>
                 }
             }
             else

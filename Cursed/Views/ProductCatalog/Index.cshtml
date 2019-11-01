@@ -35,19 +35,19 @@
                     <p>@item.RecipesCount Recipes</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { productId = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { id = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
                     <p>@item.StoragesCount Storages</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { productId = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { id = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
-                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { productId = item.ProductId })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { productId = item.ProductId })</p>
+                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { id = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = item.ProductId })</p>
                     <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
                         <input hidden type="number" name="productId" value="@item.ProductId" />
                         <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
