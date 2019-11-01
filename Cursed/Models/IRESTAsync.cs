@@ -23,6 +23,12 @@ namespace Cursed.Models
         /// <returns>Specified model from service</returns>
         Task<B> GetSingleDataModelAsync(object UId);
         /// <summary>
+        /// Return specified update model from service
+        /// </summary>
+        /// <param name="UId">Unique parameter</param>
+        /// <returns>Specified update model from service</returns>
+        Task<C> GetSingleUpdateModelAsync(object UId);
+        /// <summary>
         /// Add new model to service
         /// </summary>
         /// <param name="dataModel">New model</param>

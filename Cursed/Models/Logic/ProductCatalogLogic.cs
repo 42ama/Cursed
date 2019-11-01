@@ -103,6 +103,13 @@ namespace Cursed.Models.Logic
             return dataModel;
         }
 
+        //Add to interface
+        public async Task<ProductCatalog> GetSingleUpdateModelAsync(object UId)
+        {
+            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)UId);
+            return productCatalog;
+        }
+
         public async Task AddDataModelAsync(ProductCatalog dataModel)
         {
             dataModel.Id = default;
