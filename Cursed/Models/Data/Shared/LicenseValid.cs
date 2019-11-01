@@ -15,22 +15,22 @@ namespace Cursed.Models.Data.Shared
             GovermentNum = license.GovermentNum;
             Product = license.Product;
 
-            Validate();
+            IsValid = Validate(Date);
         }
         public LicenseValid(License license, bool isValid) : this(license)
         {
             IsValid = isValid;
         }
 
-        private void Validate()
+        public static bool Validate(DateTime date)
         {
-            if (Date > DateTime.UtcNow)
+            if (date > DateTime.UtcNow)
             {
-                IsValid = true;
+                return true;
             }
             else
             {
-                IsValid = false;
+                return false;
             }
         }
     }
