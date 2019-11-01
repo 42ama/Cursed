@@ -1,0 +1,52 @@
+﻿@using Cursed.Models.Data.Licenses
+@model IEnumerable<LicensesVM>
+@{
+    ViewData["Title"] = "Index";
+    string attentionColor;
+    string licenseSummary;
+}
+
+<h1>Licenses Index</h1>
+<p>@Html.RouteLink("Add", "GetForEditLicensesSingle")</p>
+<table>
+    <thead>
+        <tr>
+            <td style="text-align:center"><p>License</p><p>number</p></td>
+            <td style="text-align:center">Product name</td>
+            <td style="text-align:center">Product CAS</td>
+            <td style="text-align:center"><p>Licensed</p><p>until</p></td>
+            <td style="text-align:center"><p>License</p><p>summary</p></td>
+            <td style="text-align:center"><!--for edit/delete button--></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if(item.IsValid)
+            {
+                attentionColor = "green";
+                licenseSummary = "Valid";
+            }
+            else
+            {
+                attentionColor = "red";
+                licenseSummary = "Not valid";
+            }
+            <tr>
+                <td style="text-align:center">@item.GovermentNum</td>
+                <td style="text-align:center">@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
+                <td style="text-align:center">@Html.RouteLink(item.ProductCAS, "ProductCatalogSingle", new { id = item.ProductId })</td>
+                <td style="text-align:center">@item.Date</td>
+                <td style="text-align:center" bgcolor="@attentionColor">@licenseSummary</td>
+                <td style="text-align:center">
+                    <p>@Html.RouteLink("Show", "LicensesSingle", new { id = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { id = item.Id })</p>
+                    <form asp-antiforgery="true" method="delete" asp-route="LicensesSingle">
+                        <input hidden type="number" name="id" value="@item.Id" />
+                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
