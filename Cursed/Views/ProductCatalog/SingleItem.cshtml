@@ -2,25 +2,8 @@
 @model ProductCatalogSingleVM
 @{
     ViewData["Title"] = "SingleItem";
-    string bgColor;
-    if(Model.LicenseRequired)
-    {
-        bgColor = "green";
-        foreach (var item in Model.Licenses)
-        {
-            if(!item.IsValid)
-            {
-                bgColor = "red";
-                break;
-            }
-        }
-    }
-    else
-    {
-        bgColor = "grey";
-    }
-}
 
+}
 <h1>@Model.Name</h1>
 <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = Model.ProductId })</p>
 <p>
@@ -76,13 +59,16 @@
     </tr>
     <tr>
         <td valign="top"><b>Licenses</b></td>
-        <td bgcolor="@bgColor">
+        <td>
             @if (Model.Licenses.Count > 0)
             {
-                foreach (var item in Model.Licenses)
-                {
-                    <p>@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { id = item.Id })</p>
-                }
+                <table>
+                        @foreach (var item in Model.Licenses)
+                        {
+                            string bgColor = item.IsValid ? "green" : "red";
+                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { id = item.Id })</td></tr>
+                        }
+                </table>
             }
             else
             {
