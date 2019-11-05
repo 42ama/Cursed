@@ -9,6 +9,7 @@ using Cursed.Models.Data.ProductCatalog;
 using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
+using Cursed.Models.Data.Utility;
 using Cursed.Models;
 
 namespace Cursed.Controllers
@@ -26,7 +27,7 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("", Name = "ProductCatalogAll")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var dataModel = await logic.GetAllDataModelAsync();
             List<ProductCatalogAllVM> viewModel = new List<ProductCatalogAllVM>();
@@ -60,8 +61,9 @@ namespace Cursed.Controllers
 
                 viewModel.Add(viewItem);
             }
-            
-            return View(viewModel);
+            var pagenationModel = new Pagenation<ProductCatalogAllVM>(viewModel, itemsOnPage,currentPage);
+
+            return View(pagenationModel);
         }
 
         [HttpGet("product", Name = "ProductCatalogSingle")]

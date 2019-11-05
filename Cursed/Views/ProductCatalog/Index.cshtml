@@ -1,11 +1,15 @@
 ﻿@using Cursed.Models.Data.ProductCatalog
-@model IEnumerable<ProductCatalogAllVM>
+@using Cursed.Models.Data.Utility
+@model Pagenation<ProductCatalogAllVM>
 @{
     ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = "ProductCatalogAll";
 }
 
 <h1>Product Catalog Index</h1>
 <p>@Html.RouteLink("Add", "GetForEditProductCatalogSingle")</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
     <thead>
         <tr>
@@ -21,13 +25,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.PagenatedCollection)
         {
             string licenseSummary;
             string bgColor;
-            if(item.LicenseRequired)
+            if (item.LicenseRequired)
             {
-                if(item.IsValid)
+                if (item.IsValid)
                 {
                     licenseSummary = "Valid";
                     bgColor = "green";
@@ -87,3 +91,4 @@
         }
     </tbody>
 </table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)
