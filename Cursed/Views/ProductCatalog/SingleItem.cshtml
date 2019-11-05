@@ -1,7 +1,24 @@
 ﻿@using Cursed.Models.Data.ProductCatalog
-@model ProductCatalogSingleDM
+@model ProductCatalogSingleVM
 @{
     ViewData["Title"] = "SingleItem";
+    string bgColor;
+    if(Model.LicenseRequired)
+    {
+        bgColor = "green";
+        foreach (var item in Model.Licenses)
+        {
+            if(!item.IsValid)
+            {
+                bgColor = "red";
+                break;
+            }
+        }
+    }
+    else
+    {
+        bgColor = "grey";
+    }
 }
 
 <h1>@Model.Name</h1>
@@ -43,7 +60,7 @@
     </tr>
     <tr>
         <td valign="top"><b>Storages</b></td>
-        <td>
+        <td bgcolor="@bgColor">
             @if (Model.Storages.Count > 0)
             {
                 foreach (var item in Model.Storages)

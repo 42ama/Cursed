@@ -80,7 +80,18 @@ namespace Cursed.Controllers
         public async Task<IActionResult> SingleItem(int id)
         {
             var dataModel = await logic.GetSingleDataModelAsync(id);
-            return View(dataModel);
+            var viewModel = new ProductCatalogSingleVM
+            {
+                ProductId = dataModel.ProductId,
+                Name = dataModel.Name,
+                CAS = (dataModel.CAS ?? 0).ToString(),
+                Type = dataModel.Type,
+                LicenseRequired = dataModel.LicenseRequired,
+                Licenses = dataModel.Licenses,
+                Recipes = dataModel.Recipes,
+                Storages = dataModel.Storages
+            };
+            return View(viewModel);
         }
 
         // get for add/edit form
