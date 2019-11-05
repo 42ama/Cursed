@@ -1,0 +1,22 @@
+﻿@using Cursed.Models.Data.Utility
+@model PagenationAbstract
+
+<table align="right">
+    <tr>
+        <td>Page:</td>
+    </tr>
+    <tr>
+        <td></td>
+        @for (int i = 1; i <= Model.Total; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <td>@i</td>
+            }
+            else
+            {
+                <td>@Html.RouteLink($"{i}", ViewData["PagenationRouteLink"] as string, new { currentPage = i, itemsOnPage = Model.ItemsOnPage })</td>
+            }
+        }
+    </tr>
+</table>
