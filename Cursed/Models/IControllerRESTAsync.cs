@@ -7,7 +7,7 @@ namespace Cursed.Models
     public interface IControllerRESTAsync<T>
     {
         // get all
-        Task<IActionResult> Index();
+        Task<IActionResult> Index(int currentPage, int itemsOnPage);
         // get single
         Task<IActionResult> SingleItem(int id);
         // get for add/edit
