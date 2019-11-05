@@ -60,7 +60,7 @@
     </tr>
     <tr>
         <td valign="top"><b>Storages</b></td>
-        <td bgcolor="@bgColor">
+        <td>
             @if (Model.Storages.Count > 0)
             {
                 foreach (var item in Model.Storages)
@@ -76,7 +76,7 @@
     </tr>
     <tr>
         <td valign="top"><b>Licenses</b></td>
-        <td>
+        <td bgcolor="@bgColor">
             @if (Model.Licenses.Count > 0)
             {
                 foreach (var item in Model.Licenses)
