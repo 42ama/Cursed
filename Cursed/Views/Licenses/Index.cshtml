@@ -1,13 +1,17 @@
 ﻿@using Cursed.Models.Data.Licenses
-@model IEnumerable<LicensesVM>
+@using Cursed.Models.Data.Utility
+@model Pagenation<LicensesVM>
 @{
     ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = "LicensesAll";
     string attentionColor;
     string licenseSummary;
 }
 
 <h1>Licenses Index</h1>
 <p>@Html.RouteLink("Add", "GetForEditLicensesSingle")</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
     <thead>
         <tr>
@@ -20,9 +24,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.PagenatedCollection)
         {
-            if(item.IsValid)
+            if (item.IsValid)
             {
                 attentionColor = "green";
                 licenseSummary = "Valid";
@@ -50,3 +54,4 @@
         }
     </tbody>
 </table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

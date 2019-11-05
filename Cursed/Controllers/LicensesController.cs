@@ -11,6 +11,7 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models;
+using Cursed.Models.Data.Utility;
 
 
 namespace Cursed.Controllers
@@ -25,7 +26,7 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("", Name = "LicensesAll")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var dataModel = await logic.GetAllDataModelAsync();
             var viewModel = new List<LicensesVM>();
@@ -42,7 +43,9 @@ namespace Cursed.Controllers
                     IsValid = LicenseValid.Validate(item.Date)
                 });
             }
-            return View(viewModel);
+            var pagenationModel = new Pagenation<LicensesVM>(viewModel, itemsOnPage, currentPage);
+
+            return View(pagenationModel);
         }
 
         [HttpGet("license", Name = "LicensesSingle")]
