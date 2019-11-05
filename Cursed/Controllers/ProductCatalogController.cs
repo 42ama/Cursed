@@ -39,35 +39,23 @@ namespace Cursed.Controllers
                     CAS = (item.CAS ?? 0).ToString(),
                     Type = item.Type,
                     RecipesCount = item.RecipesCount,
-                    StoragesCount = item.StoragesCount
+                    StoragesCount = item.StoragesCount,
+                    LicenseRequired = item.LicenseRequired,
+                    LicenseId = item.License?.Id ?? -1,
+                    Date = item.License?.Date.ToShortDateString() ?? "---",
+                    GovermentNum = item.License?.GovermentNum ?? -1
                 };
-                if(item.License != null)
-                {
-                    viewItem.LicensedUntil = item.License.Date.ToShortDateString();
-                    viewItem.GovermentNum = item.License.GovermentNum.ToString();
-                }
-                else
-                {
-                    viewItem.LicensedUntil = "---";
-                    viewItem.GovermentNum = "---";
-                }
-                if (item.LicenseRequired == true)
+                
+                if(item.LicenseRequired)
                 {
                     if(item.License?.IsValid == true)
                     {
-                        viewItem.LicenseSummary = "Valid";
-                        viewItem.AttentionColor = "green";
+                        viewItem.IsValid = true;
                     }
                     else
                     {
-                        viewItem.LicenseSummary = "Not valid";
-                        viewItem.AttentionColor = "red";
+                        viewItem.IsValid = false;
                     }
-                }
-                else
-                {
-                    viewItem.LicenseSummary = "Not required";
-                    viewItem.AttentionColor = null;
                 }
 
                 viewModel.Add(viewItem);

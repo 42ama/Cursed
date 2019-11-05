@@ -23,14 +23,44 @@
     <tbody>
         @foreach (var item in Model)
         {
-            item.AttentionColor ??= "#EAEAEA";
+            string licenseSummary;
+            string bgColor;
+            if(item.LicenseRequired)
+            {
+                if(item.IsValid)
+                {
+                    licenseSummary = "Valid";
+                    bgColor = "green";
+                }
+                else
+                {
+                    licenseSummary = "Not valud";
+                    bgColor = "red";
+                }
+            }
+            else
+            {
+                licenseSummary = "Not required";
+                bgColor = "grey";
+            }
+            string govNum = item.GovermentNum != -1 ? item.GovermentNum.ToString() : "---";
             <tr>
                 <td style="text-align:center">@item.Name</td>
                 <td style="text-align:center">@item.CAS</td>
                 <td style="text-align:center">@item.Type</td>
-                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicensedUntil</td>
-                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.GovermentNum</td>
-                <td style="text-align:center" bgcolor="@item.AttentionColor">@item.LicenseSummary</td>
+                <td style="text-align:center" bgcolor="@bgColor">@item.Date</td>
+                <td style="text-align:center" bgcolor="@bgColor">
+                    @if (item.LicenseId != -1)
+                    {
+                        <p>@govNum</p>
+                        <p>@Html.RouteLink("License", "LicensesSingle", new { id = item.LicenseId })</p>
+                    }
+                    else
+                    {
+                        @govNum
+                    }
+                </td>
+                <td style="text-align:center" bgcolor="@bgColor">@licenseSummary</td>
                 <td style="text-align:center">
                     <p>@item.RecipesCount Recipes</p>
                     @if (item.RecipesCount != 0)
