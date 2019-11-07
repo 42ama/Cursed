@@ -1,0 +1,117 @@
+﻿@using Cursed.Models.Data.Recipe
+@using Cursed.Models.Data.Utility
+@using Cursed.Models.Data.Shared
+@model Pagenation<RecipeDM>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = "RecipeAll";
+}
+
+<h1>Recipe Index</h1>
+<p>@Html.RouteLink("Add", "GetForEditRecipeSingle")</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Recipe Id</td>
+            <td>Content</td>
+            <td>Technical Approval</td>
+            <td>Goverment Approval</td>
+            <td>Materials</td>
+            <td>Products</td>
+            <td>Parent</td>
+            <td>Childs</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            string content = item.Content;
+            string techApprov = item.TechApproved == true ? "Approved" : "Not approved" ;
+            string govApprov = item.GovApproved == true ? "Approved" : "Not approved";
+            string parentRecipe = item.ParentRecipe != null ? "ParentId: " + item.ParentRecipe.Value.ToString() : "None"; 
+            var materials = item.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Material);
+            var products = item.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Product);
+            <tr>
+                <td>@item.Id</td>
+                <td>@content</td>
+                @if(item.TechApproved == true)
+                {
+                    <td bgcolor="green">@techApprov</td>
+                }
+                else
+                {
+                    <td bgcolor="red">@techApprov</td>
+                }
+                @if(item.GovApproved == true)
+                {
+                    <td bgcolor="green">@govApprov</td>
+                }
+                else
+                {
+                    <td bgcolor="red">@govApprov</td>
+                }
+                @if(materials !=null)
+                {
+                    if(materials.Count() > 1)
+                    {
+                        <td>
+                            <p>@materials.Count() materials</p>
+                            <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@materials.FirstOrDefault()?.ProductName: @materials.FirstOrDefault()?.Quantity mg</td>
+                    }
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                @if(products !=null)
+                {
+                    if(products.Count() > 1)
+                    {
+                        <td>
+                            <p>@products.Count() products</p>
+                            <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@products.FirstOrDefault()?.ProductName: @products.FirstOrDefault()?.Quantity mg</td>
+                    }
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>@parentRecipe</td>
+                @if(item.ChildRecipes.Count > 0)
+                {
+                    <td>
+                        <p>@item.ChildRecipes.Count childs</p>
+                        <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                    </td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>
+                    <p>@Html.RouteLink("Show", "RecipeSingle", new { id = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = item.Id })</p>
+                    <form asp-antiforgery="true" method="delete" asp-route="RecipeSingle">
+                        <input hidden type="number" name="Id" value="@item.Id" />
+                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

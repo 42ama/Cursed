@@ -1,0 +1,95 @@
+﻿@using Cursed.Models.Data.Recipe
+@using Cursed.Models.Data.Utility
+@using Cursed.Models.Data.Shared
+@model RecipeDM
+@{
+    ViewData["Title"] = "SingleItem";
+}
+<h1>RecipieId: @Model.Id</h1>
+<p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = Model.Id })</p>
+<form asp-antiforgery="true" method="delete" asp-route="RecipeSingle">
+    <input hidden type="number" name="Id" value="@Model.Id" />
+    <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Id:</td>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <td>Content:</td>
+        <td>@Model.Content</td>
+    </tr>
+    <tr>
+        <td>Technical Approval:</td>
+        <td>@Model.TechApproved</td>
+    </tr>
+    <tr>
+        <td>Goverment Approval:</td>
+        <td>@Model.GovApproved</td>
+    </tr>
+    <tr>
+        <td>Materials:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Material</td>
+                        <td>CAS</td>
+                        <td>Consumed</td>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Material))
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@item.Quantity mg</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Products:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Product</td>
+                        <td>CAS</td>
+                        <td>Produced</td>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Product))
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@item.Quantity mg</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Parent:</td>
+            @if(Model.ParentRecipe != null)
+            {
+                <td>@Html.RouteLink(Model.ParentRecipe.ToString(), "RecipeSingle", new { id = Model.ParentRecipe })</td>
+            }
+            else
+            {
+                <td>None</td>
+            }
+    </tr>
+    <tr>
+        <td>Childs:</td>
+        <td>
+            @foreach (var item in Model.ChildRecipes)
+            {
+                <p>@Html.RouteLink(item.ToString(), "RecipeSingle", new { id = item })</p>
+            }
+        </td>
+    </tr>
+</table>
