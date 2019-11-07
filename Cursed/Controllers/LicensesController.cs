@@ -68,8 +68,15 @@ namespace Cursed.Controllers
         [HttpGet("license/edit", Name = "GetForEditLicensesSingle")]
         public async Task<IActionResult> GetEditSingleItem(int? id)
         {
-            var dataModel = await logic.GetSingleUpdateModelAsync(id);
-            return View(dataModel);
+            if (id.HasValue)
+            {
+                var model = await logic.GetSingleUpdateModelAsync(id);
+                return View("EditSingleItem", model);
+            }
+            else
+            {
+                return View("EditSingleItem");
+            }
         }
 
         [HttpPost("license", Name = "LicensesSingle")]

@@ -73,9 +73,9 @@ namespace Cursed.Models.Logic
 
         public async Task RemoveDataModelAsync(License dataModel)
         {
-            var entity = await db.ProductCatalog.FindAsync(dataModel);
+            var entity = await db.License.FindAsync(dataModel);
 
-            db.ProductCatalog.Remove(entity);
+            db.License.Remove(entity);
 
             await db.SaveChangesAsync();
         }
