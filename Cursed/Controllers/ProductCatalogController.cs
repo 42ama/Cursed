@@ -90,18 +90,20 @@ namespace Cursed.Controllers
         {
             if(id.HasValue)
             {
+                ViewData["SaveRoute"] = "EditProductCatalogSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
             }
             else
             {
+                ViewData["SaveRoute"] = "AddProductCatalogSingle";
                 return View("EditSingleItem");
             }
             
         }
 
         //post item
-        [HttpPost("product", Name = "ProductCatalogSingle")]
+        [HttpPost("product/add", Name = "AddProductCatalogSingle")]
         public async Task<IActionResult> AddSingleItem(ProductCatalog model)
         {
             await logic.AddDataModelAsync(model);
@@ -109,7 +111,7 @@ namespace Cursed.Controllers
         }
 
         //put item
-        [HttpPut("product", Name = "ProductCatalogSingle")]
+        [HttpPost("product/edit", Name = "EditProductCatalogSingle")]
         public async Task<IActionResult> EditSingleItem(ProductCatalog model)
         {
             await logic.UpdateDataModelAsync(model);
@@ -117,7 +119,7 @@ namespace Cursed.Controllers
         }
 
         //delete item
-        [HttpDelete("product", Name = "ProductCatalogSingle")]
+        [HttpPost("product/delete", Name = "DeleteProductCatalogSingle")]
         public async Task<IActionResult> DeleteSingleItem(int id)
         {
             await logic.RemoveDataModelAsync(new ProductCatalog { Id = id });

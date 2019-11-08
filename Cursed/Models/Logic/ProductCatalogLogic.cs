@@ -120,13 +120,13 @@ namespace Cursed.Models.Logic
         public async Task UpdateDataModelAsync(ProductCatalog updatedDataModel)
         {
             var currentModel = await db.ProductCatalog.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            currentModel = updatedDataModel;
+            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
             await db.SaveChangesAsync();
         }
 
         public async Task RemoveDataModelAsync(ProductCatalog dataModel)
         {
-            var entity = await db.ProductCatalog.FindAsync(dataModel);
+            var entity = db.ProductCatalog.Find(dataModel.Id);
 
             //catch execption if related entites are exist and display error message
             db.ProductCatalog.Remove(entity);

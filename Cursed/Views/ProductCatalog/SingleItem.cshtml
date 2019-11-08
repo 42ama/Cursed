@@ -6,12 +6,10 @@
 }
 <h1>@Model.Name</h1>
 <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = Model.ProductId })</p>
-<p>
-    <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
-        <input hidden type="number" name="productId" value="@Model.ProductId" />
-        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
-    </form>
-</p>
+<form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
+    <input hidden type="number" name="productId" value="@Model.ProductId" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
 <table>
     <tr>
         <td><b>Name</b></td>

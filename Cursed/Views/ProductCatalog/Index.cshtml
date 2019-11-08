@@ -82,9 +82,9 @@
                 <td style="text-align:center">
                     <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { id = item.ProductId })</p>
                     <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = item.ProductId })</p>
-                    <form asp-antiforgery="true" method="delete" asp-route="ProductCatalogSingle">
-                        <input hidden type="number" name="productId" value="@item.ProductId" />
-                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+                    <form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
+                        <input hidden type="number" name="id" value="@item.ProductId" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>
             </tr>

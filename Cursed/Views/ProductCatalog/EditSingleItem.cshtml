@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "EditSingleItem";
     SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material}, Model?.Type);
-    string method = Model == null ? "post" : "put";
+    string saveRoute = (string)ViewData["SaveRoute"];
 }
 
 <h1>EditSingleItem</h1>
@@ -35,7 +35,7 @@
     <p>License required:</p> @Html.EditorFor(model => model.LicenseRequired)
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input asp-route="ProductCatalogSingle" formmethod="@method" type="submit" class="btn btn-default" value="Create" />
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
         </div>
     </div>
 </form>
