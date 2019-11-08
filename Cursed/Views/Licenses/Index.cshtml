@@ -45,9 +45,9 @@
                 <td style="text-align:center">
                     <p>@Html.RouteLink("Show", "LicensesSingle", new { id = item.Id })</p>
                     <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { id = item.Id })</p>
-                    <form asp-antiforgery="true" method="delete" asp-route="LicensesSingle">
+                    <form asp-antiforgery="true" method="post" asp-route="DeleteLicensesSingle">
                         <input hidden type="number" name="id" value="@item.Id" />
-                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>
             </tr>

@@ -70,30 +70,35 @@ namespace Cursed.Controllers
         {
             if (id.HasValue)
             {
+                ViewData["SaveRoute"] = "EditLicensesSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
             }
             else
             {
+                ViewData["SaveRoute"] = "AddLicensesSingle";
                 return View("EditSingleItem");
             }
         }
 
-        [HttpPost("license", Name = "LicensesSingle")]
+        [HttpPost("license/add", Name = "AddLicensesSingle")]
         public async Task<IActionResult> AddSingleItem(License model)
         {
+            await logic.AddDataModelAsync(model);
             return RedirectToRoute("LicensesAll");
         }
 
-        [HttpPut("license", Name = "LicensesSingle")]
+        [HttpPost("license/edit", Name = "EditLicensesSingle")]
         public async Task<IActionResult> EditSingleItem(License model)
         {
+            await logic.UpdateDataModelAsync(model);
             return RedirectToRoute("LicensesAll");
         }
 
-        [HttpDelete("license", Name = "LicensesSingle")]
+        [HttpPost("license/delete", Name = "DeleteLicensesSingle")]
         public async Task<IActionResult> DeleteSingleItem(int id)
         {
+            await logic.RemoveDataModelAsync(new License { Id = id });
             return RedirectToRoute("LicensesAll");
         }
     }

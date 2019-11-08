@@ -67,13 +67,13 @@ namespace Cursed.Models.Logic
         public async Task UpdateDataModelAsync(License updatedDataModel)
         {
             var currentModel = await db.License.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            currentModel = updatedDataModel;
+            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
             await db.SaveChangesAsync();
         }
 
         public async Task RemoveDataModelAsync(License dataModel)
         {
-            var entity = await db.License.FindAsync(dataModel);
+            var entity = await db.License.FindAsync(dataModel.Id);
 
             db.License.Remove(entity);
 

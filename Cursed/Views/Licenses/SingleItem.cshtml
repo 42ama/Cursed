@@ -18,12 +18,10 @@
 
 <h1>License №@Model.GovermentNum</h1>
 <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { id = Model.Id })</p>
-<p>
-    <form asp-antiforgery="true" method="delete" asp-route="LicensesSingle">
-        <input hidden type="number" name="id" value="@Model.Id" />
-        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
-    </form>
-</p>
+<form asp-antiforgery="true" method="post" asp-route="DeleteLicensesSingle">
+    <input hidden type="number" name="id" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
 <table>
     <tr>
         <td>Licensed until:</td>
