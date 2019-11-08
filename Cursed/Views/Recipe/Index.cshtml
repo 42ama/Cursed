@@ -104,9 +104,9 @@
                 <td>
                     <p>@Html.RouteLink("Show", "RecipeSingle", new { id = item.Id })</p>
                     <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = item.Id })</p>
-                    <form asp-antiforgery="true" method="delete" asp-route="RecipeSingle">
-                        <input hidden type="number" name="Id" value="@item.Id" />
-                        <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+                    <form asp-antiforgery="true" method="post" asp-route="DeleteRecipeSingle">
+                        <input hidden type="number" name="id" value="@item.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>
             </tr>

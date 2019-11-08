@@ -7,9 +7,9 @@
 }
 <h1>RecipieId: @Model.Id</h1>
 <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = Model.Id })</p>
-<form asp-antiforgery="true" method="delete" asp-route="RecipeSingle">
-    <input hidden type="number" name="Id" value="@Model.Id" />
-    <input formmethod="delete" type="submit" class="btn btn-dark" value="Delete" />
+<form asp-antiforgery="true" method="post" asp-route="DeleteRecipeSingle">
+    <input hidden type="number" name="id" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
 <table>
     <tr>

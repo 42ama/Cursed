@@ -81,8 +81,7 @@ namespace Cursed.Models.Logic
         }
         public async Task<Recipe> GetSingleUpdateModelAsync(object UId)
         {
-            throw new Exception("WorkInProgress");
-            return await db.Recipe.SingleOrDefaultAsync(i => i.Id == (int)UId);
+            return await db.Recipe.SingleAsync(i => i.Id == (int)UId);
         }
         public async Task AddDataModelAsync(Recipe dataModel)
         {
@@ -93,12 +92,12 @@ namespace Cursed.Models.Logic
         public async Task UpdateDataModelAsync(Recipe updatedDataModel)
         {
             var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            currentModel = updatedDataModel;
+            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
             await db.SaveChangesAsync();
         }
         public async Task RemoveDataModelAsync(Recipe dataModel)
         {
-            var entity = await db.Recipe.FindAsync(dataModel);
+            var entity = await db.Recipe.FindAsync(dataModel.Id);
 
             db.Recipe.Remove(entity);
 

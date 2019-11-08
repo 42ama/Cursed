@@ -43,30 +43,35 @@ namespace Cursed.Controllers
         {
             if (id.HasValue)
             {
+                ViewData["SaveRoute"] = "EditRecipeSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
             }
             else
             {
+                ViewData["SaveRoute"] = "AddRecipeSingle";
                 return View("EditSingleItem");
             }
         }
 
-        [HttpPost("recipe", Name = "RecipeSingle")]
+        [HttpPost("recipe/add", Name = "AddRecipeSingle")]
         public async Task<IActionResult> AddSingleItem(Recipe model)
         {
+            await logic.AddDataModelAsync(model);
             return RedirectToRoute("LicensesAll");
         }
 
-        [HttpPut("recipe", Name = "RecipeSingle")]
+        [HttpPost("recipe/edit", Name = "EditRecipeSingle")]
         public async Task<IActionResult> EditSingleItem(Recipe model)
         {
+            await logic.UpdateDataModelAsync(model);
             return RedirectToRoute("LicensesAll");
         }
 
-        [HttpDelete("recipe", Name = "RecipeSingle")]
+        [HttpPost("recipe/delete", Name = "DeleteRecipeSingle")]
         public async Task<IActionResult> DeleteSingleItem(int id)
         {
+            await logic.RemoveDataModelAsync(new Recipe { Id = id });
             return RedirectToRoute("LicensesAll");
         }
     }

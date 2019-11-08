@@ -1,0 +1,31 @@
+﻿@using Cursed.Models.Entities
+@using Cursed.Models.Data.Utility
+@using Cursed.Models.Data.Shared
+@model Recipe
+@{
+    ViewData["Title"] = "EditSingleItem";
+    string saveRoute = (string)ViewData["SaveRoute"];
+}
+
+<h1>EditSingleItem</h1>
+@*Lacks second step/smth with product consumption and production*@
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
+    </div>
+    <div class="form-group">
+        <label for="Content">Content:*</label>
+        <div>
+            <textarea required asp-for="Content" name="Content" value="@Model?.Content"></textarea>
+        </div>
+    </div>
+    <p>Technologic approval:</p>@Html.EditorFor(model => model.TechApproval)
+    <p>Goverment approval:</p>@Html.EditorFor(model => model.GovermentApproval)
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>
