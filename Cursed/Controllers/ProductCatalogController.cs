@@ -29,39 +29,8 @@ namespace Cursed.Controllers
         [HttpGet("", Name = "ProductCatalogAll")]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
-            var dataModel = await logic.GetAllDataModelAsync();
-            List<ProductCatalogAllVM> viewModel = new List<ProductCatalogAllVM>();
-            foreach (var item in dataModel)
-            {
-                var viewItem = new ProductCatalogAllVM
-                {
-                    ProductId = item.ProductId,
-                    Name = item.Name,
-                    CAS = (item.CAS ?? 0).ToString(),
-                    Type = item.Type,
-                    RecipesCount = item.RecipesCount,
-                    StoragesCount = item.StoragesCount,
-                    LicenseRequired = item.LicenseRequired,
-                    LicenseId = item.License?.Id ?? -1,
-                    Date = item.License?.Date.ToShortDateString() ?? "---",
-                    GovermentNum = item.License?.GovermentNum ?? -1
-                };
-                
-                if(item.LicenseRequired)
-                {
-                    if(item.License?.IsValid == true)
-                    {
-                        viewItem.IsValid = true;
-                    }
-                    else
-                    {
-                        viewItem.IsValid = false;
-                    }
-                }
-
-                viewModel.Add(viewItem);
-            }
-            var pagenationModel = new Pagenation<ProductCatalogAllVM>(viewModel, itemsOnPage,currentPage);
+            var model = await logic.GetAllDataModelAsync();
+            var pagenationModel = new Pagenation<ProductCatalogAllModel>(model, itemsOnPage,currentPage);
 
             return View(pagenationModel);
         }
@@ -69,19 +38,8 @@ namespace Cursed.Controllers
         [HttpGet("product", Name = "ProductCatalogSingle")]
         public async Task<IActionResult> SingleItem(int id)
         {
-            var dataModel = await logic.GetSingleDataModelAsync(id);
-            var viewModel = new ProductCatalogSingleVM
-            {
-                ProductId = dataModel.ProductId,
-                Name = dataModel.Name,
-                CAS = (dataModel.CAS ?? 0).ToString(),
-                Type = dataModel.Type,
-                LicenseRequired = dataModel.LicenseRequired,
-                Licenses = dataModel.Licenses,
-                Recipes = dataModel.Recipes,
-                Storages = dataModel.Storages
-            };
-            return View(viewModel);
+            var model = await logic.GetSingleDataModelAsync(id);
+            return View(model);
         }
 
         // get for add/edit form
