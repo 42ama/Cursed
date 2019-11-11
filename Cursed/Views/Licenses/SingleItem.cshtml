@@ -37,7 +37,14 @@
     </tr>
     <tr>
         <td>Product CAS:</td>
-        <td>@Html.RouteLink(Model.ProductCAS, "ProductCatalogSingle", new { id = Model.ProductId })</td>
+        @if (Model.ProductCAS.HasValue)
+        {
+            <td>@Html.RouteLink(Model.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { id = Model.ProductId })</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
     </tr>
     <tr>
         <td>License summary:</td>

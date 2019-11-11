@@ -39,7 +39,7 @@ namespace Cursed.Controllers
                     Date = item.Date.ToShortDateString(),
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
-                    ProductCAS = item.ProductCAS != null ? item.ProductCAS.Value.ToString() : "None",
+                    ProductCAS = item.ProductCAS,
                     IsValid = LicenseValid.Validate(item.Date)
                 });
             }
@@ -59,7 +59,7 @@ namespace Cursed.Controllers
                 Date = dataModel.Date.ToShortDateString(),
                 ProductId = dataModel.ProductId,
                 ProductName = dataModel.ProductName,
-                ProductCAS = dataModel.ProductCAS != null ? dataModel.ProductCAS.Value.ToString() : "None",
+                ProductCAS = dataModel.ProductCAS,
                 IsValid = LicenseValid.Validate(dataModel.Date)
             };
             return View(viewModel);
