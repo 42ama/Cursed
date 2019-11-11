@@ -19,15 +19,15 @@ namespace Cursed.Models
         /// <summary>
         /// Return specified model from service
         /// </summary>
-        /// <param name="UId">Unique parameter</param>
+        /// <param name="key">Unique parameter</param>
         /// <returns>Specified model from service</returns>
-        Task<B> GetSingleDataModelAsync(object UId);
+        Task<B> GetSingleDataModelAsync(object key);
         /// <summary>
         /// Return specified update model from service
         /// </summary>
-        /// <param name="UId">Unique parameter</param>
+        /// <param name="key">Unique parameter</param>
         /// <returns>Specified update model from service</returns>
-        Task<C> GetSingleUpdateModelAsync(object UId);
+        Task<C> GetSingleUpdateModelAsync(object key);
         /// <summary>
         /// Add new model to service
         /// </summary>
@@ -41,7 +41,7 @@ namespace Cursed.Models
         /// <summary>
         /// Remove existing model from service
         /// </summary>
-        /// <param name="dataModel">Model to be removed</param>
-        Task RemoveDataModelAsync(C dataModel);
+        /// <param name="key">Unique parameter</param>
+        Task RemoveDataModelAsync(object key);
     }
 }
