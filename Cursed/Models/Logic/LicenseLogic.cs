@@ -47,14 +47,14 @@ namespace Cursed.Models.Logic
             return basicDataModelQuery;
         }
 
-        public async Task<LicensesDataModel> GetSingleDataModelAsync(object UId)
+        public async Task<LicensesDataModel> GetSingleDataModelAsync(object key)
         {
-            return basicDataModelQuery.Single(i => i.Id == (int)UId);
+            return basicDataModelQuery.Single(i => i.Id == (int)key);
         }
 
-        public async Task<License> GetSingleUpdateModelAsync(object UId)
+        public async Task<License> GetSingleUpdateModelAsync(object key)
         {
-            return await db.License.SingleAsync(i => i.Id == (int)UId);
+            return await db.License.SingleAsync(i => i.Id == (int)key);
         }
 
         public async Task AddDataModelAsync(License dataModel)
@@ -71,9 +71,9 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
         }
 
-        public async Task RemoveDataModelAsync(License dataModel)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var entity = await db.License.FindAsync(dataModel.Id);
+            var entity = await db.License.FindAsync((int)key);
 
             db.License.Remove(entity);
 

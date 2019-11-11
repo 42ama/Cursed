@@ -74,13 +74,13 @@ namespace Cursed.Models.Logic
             return dd.ToList();
             //Products = p.Select(i => i.RecipeProductContainer).ToList(),
         }
-        public async Task<RecipeSingleModel> GetSingleDataModelAsync(object UId)
+        public async Task<RecipeSingleModel> GetSingleDataModelAsync(object key)
         {
             throw new Exception("WorkInProgress");
         }
-        public async Task<Recipe> GetSingleUpdateModelAsync(object UId)
+        public async Task<Recipe> GetSingleUpdateModelAsync(object key)
         {
-            return await db.Recipe.SingleAsync(i => i.Id == (int)UId);
+            return await db.Recipe.SingleAsync(i => i.Id == (int)key);
         }
         public async Task AddDataModelAsync(Recipe dataModel)
         {
@@ -94,9 +94,9 @@ namespace Cursed.Models.Logic
             db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
             await db.SaveChangesAsync();
         }
-        public async Task RemoveDataModelAsync(Recipe dataModel)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var entity = await db.Recipe.FindAsync(dataModel.Id);
+            var entity = await db.Recipe.FindAsync((int)key);
 
             db.Recipe.Remove(entity);
 

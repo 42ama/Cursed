@@ -74,7 +74,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            await logic.RemoveDataModelAsync(new Recipe { Id = id });
+            await logic.RemoveDataModelAsync(id);
             return RedirectToRoute("LicensesAll");
         }
     }

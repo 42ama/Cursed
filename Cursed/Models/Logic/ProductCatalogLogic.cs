@@ -63,9 +63,9 @@ namespace Cursed.Models.Logic
             return dataModels;
         }
 
-        public async Task<ProductCatalogSingleModel> GetSingleDataModelAsync(object UId)
+        public async Task<ProductCatalogSingleModel> GetSingleDataModelAsync(object key)
         {
-            int Uid = (int)UId;
+            int Uid = (int)key;
 
             var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == Uid);
             var licenses = await db.License.Where(i => i.ProductId == Uid).ToListAsync();
@@ -104,9 +104,9 @@ namespace Cursed.Models.Logic
         }
 
         //Add to interface
-        public async Task<ProductCatalog> GetSingleUpdateModelAsync(object UId)
+        public async Task<ProductCatalog> GetSingleUpdateModelAsync(object key)
         {
-            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)UId);
+            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)key);
             return productCatalog;
         }
 
@@ -124,9 +124,9 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
         }
 
-        public async Task RemoveDataModelAsync(ProductCatalog dataModel)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var entity = db.ProductCatalog.Find(dataModel.Id);
+            var entity = await db.ProductCatalog.FindAsync((int)key);
 
             //catch execption if related entites are exist and display error message
             db.ProductCatalog.Remove(entity);
