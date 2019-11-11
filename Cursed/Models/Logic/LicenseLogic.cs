@@ -15,10 +15,10 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class LicenseLogic : IRESTAsync<LicensesDM, LicensesDM, License>
+    public class LicenseLogic : IRESTAsync<LicensesDataModel, LicensesDataModel, License>
     {
         private readonly CursedContext db;
-        private readonly IQueryable<LicensesDM> basicDataModelQuery;
+        private readonly IQueryable<LicensesDataModel> basicDataModelQuery;
         public LicenseLogic(CursedContext db)
         {
             this.db = db;
@@ -30,7 +30,7 @@ namespace Cursed.Models.Logic
                     db.ProductCatalog,
                     lt => lt.ProductId,
                     rt => rt.Id,
-                    (x, y) => new LicensesDM
+                    (x, y) => new LicensesDataModel
                     {
                         Id = x.Id,
                         GovermentNum = x.GovermentNum,
@@ -42,12 +42,12 @@ namespace Cursed.Models.Logic
                 );
         }
 
-        public async Task<IEnumerable<LicensesDM>> GetAllDataModelAsync()
+        public async Task<IEnumerable<LicensesDataModel>> GetAllDataModelAsync()
         {
             return basicDataModelQuery;
         }
 
-        public async Task<LicensesDM> GetSingleDataModelAsync(object UId)
+        public async Task<LicensesDataModel> GetSingleDataModelAsync(object UId)
         {
             return basicDataModelQuery.Single(i => i.Id == (int)UId);
         }

@@ -2,7 +2,7 @@
 
 namespace Cursed.Models.Data.Licenses
 {
-    public class LicensesDM : LicensesAbstractModel
+    public class LicensesDataModel : LicensesAbstractModel
     {
         public DateTime Date { get; set; }
     }

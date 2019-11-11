@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cursed.Models.Data.Licenses
 {
-    public class LicensesVM : LicensesAbstractModel
+    public class LicensesViewModel : LicensesAbstractModel
     {
         public string Date { get; set; }
         public bool IsValid { get; set; }

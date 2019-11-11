@@ -29,10 +29,10 @@ namespace Cursed.Controllers
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var dataModel = await logic.GetAllDataModelAsync();
-            var viewModel = new List<LicensesVM>();
+            var viewModel = new List<LicensesViewModel>();
             foreach (var item in dataModel)
             {
-                viewModel.Add(new LicensesVM
+                viewModel.Add(new LicensesViewModel
                 {
                     Id = item.Id,
                     GovermentNum = item.GovermentNum,
@@ -43,7 +43,7 @@ namespace Cursed.Controllers
                     IsValid = LicenseValid.Validate(item.Date)
                 });
             }
-            var pagenationModel = new Pagenation<LicensesVM>(viewModel, itemsOnPage, currentPage);
+            var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
 
             return View(pagenationModel);
         }
@@ -52,7 +52,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> SingleItem(int id)
         {
             var dataModel = await logic.GetSingleDataModelAsync(id);
-            var viewModel = new LicensesVM
+            var viewModel = new LicensesViewModel
             {
                 Id = dataModel.Id,
                 GovermentNum = dataModel.GovermentNum,
