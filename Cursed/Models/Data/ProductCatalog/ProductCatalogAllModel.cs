@@ -2,7 +2,7 @@
 
 namespace Cursed.Models.Data.ProductCatalog
 {
-    public class ProductCatalogAllDM : ProductCatalogAbstractDM
+    public class ProductCatalogAllModel : ProductCatalogAbstractModel
     {
         public LicenseValid License { get; set; }
         public int RecipesCount { get; set; }

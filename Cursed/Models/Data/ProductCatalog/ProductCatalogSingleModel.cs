@@ -4,7 +4,7 @@ using Cursed.Models.Data.Shared;
 
 namespace Cursed.Models.Data.ProductCatalog
 {
-    public class ProductCatalogSingleDM : ProductCatalogAbstractDM
+    public class ProductCatalogSingleModel : ProductCatalogAbstractModel
     {
         public List<LicenseValid> Licenses { get; set; }
         public List<TitleIdContainer> Recipes { get; set; }
