@@ -68,7 +68,7 @@
                     @if (item.License != null)
                     {
                         <p>@govNum</p>
-                        <p>@Html.RouteLink("License", "LicensesSingle", new { id = item.License.Id })</p>
+                        <p>@Html.RouteLink("License", "LicensesSingle", new { key = item.License.Id })</p>
                     }
                     else
                     {
@@ -80,21 +80,21 @@
                     <p>@item.RecipesCount Recipes</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { id = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { key = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
                     <p>@item.StoragesCount Storages</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { id = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { key = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
-                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { id = item.ProductId })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = item.ProductId })</p>
+                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { key = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { key = item.ProductId })</p>
                     <form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
-                        <input hidden type="number" name="id" value="@item.ProductId" />
+                        <input hidden type="number" name="key" value="@item.ProductId" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>

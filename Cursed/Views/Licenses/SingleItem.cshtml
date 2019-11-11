@@ -17,9 +17,9 @@
 }
 
 <h1>License №@Model.GovermentNum</h1>
-<p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { id = Model.Id })</p>
+<p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="DeleteLicensesSingle">
-    <input hidden type="number" name="id" value="@Model.Id" />
+    <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
 <table>
@@ -33,13 +33,13 @@
     </tr>
     <tr>
         <td>Product name:</td>
-        <td>@Html.RouteLink(Model.ProductName, "ProductCatalogSingle", new { id = Model.ProductId })</td>
+        <td>@Html.RouteLink(Model.ProductName, "ProductCatalogSingle", new { key = Model.ProductId })</td>
     </tr>
     <tr>
         <td>Product CAS:</td>
         @if (Model.ProductCAS.HasValue)
         {
-            <td>@Html.RouteLink(Model.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { id = Model.ProductId })</td>
+            <td>@Html.RouteLink(Model.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { key = Model.ProductId })</td>
         }
         else
         {

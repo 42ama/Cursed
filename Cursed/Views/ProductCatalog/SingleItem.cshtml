@@ -5,9 +5,9 @@
 
 }
 <h1>@Model.Name</h1>
-<p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { id = Model.ProductId })</p>
+<p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { key = Model.ProductId })</p>
 <form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
-    <input hidden type="number" name="productId" value="@Model.ProductId" />
+    <input hidden type="number" name="key" value="@Model.ProductId" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
 <table>
@@ -30,7 +30,7 @@
             {
                 foreach (var item in Model.Recipes)
                 {
-                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { id = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { key = item.Id })</p>
                 }
             }
             else
@@ -46,7 +46,7 @@
             {
                 foreach (var item in Model.Storages)
                 {
-                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { id = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { key = item.Id })</p>
                 }
             }
             else
@@ -64,7 +64,7 @@
                         @foreach (var item in Model.Licenses)
                         {
                             string bgColor = item.IsValid ? "green" : "red";
-                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { id = item.Id })</td></tr>
+                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { key = item.Id })</td></tr>
                         }
                 </table>
             }

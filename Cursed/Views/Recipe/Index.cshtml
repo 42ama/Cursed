@@ -55,7 +55,7 @@
                 {
                     <td>
                         <p>@item.MaterialCount materials</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -66,7 +66,7 @@
                 {
                     <td>
                         <p>@item.ProductCount products</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -78,7 +78,7 @@
                 {
                     <td>
                         <p>@item.ChildRecipesCount childs</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { id = item.Id })</p>
+                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -86,10 +86,10 @@
                     <td>None</td>
                 }
                 <td>
-                    <p>@Html.RouteLink("Show", "RecipeSingle", new { id = item.Id })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = item.Id })</p>
+                    <p>@Html.RouteLink("Show", "RecipeSingle", new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { key = item.Id })</p>
                     <form asp-antiforgery="true" method="post" asp-route="DeleteRecipeSingle">
-                        <input hidden type="number" name="id" value="@item.Id" />
+                        <input hidden type="number" name="key" value="@item.Id" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
                 </td>

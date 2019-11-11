@@ -38,10 +38,10 @@
             }
         <tr>
             <td style="text-align:center">@item.GovermentNum</td>
-            <td style="text-align:center">@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
+            <td style="text-align:center">@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { key = item.ProductId })</td>
             @if (item.ProductCAS.HasValue)
             {
-                <td style="text-align:center">@Html.RouteLink(item.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { id = item.ProductId })</td>
+                <td style="text-align:center">@Html.RouteLink(item.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { key = item.ProductId })</td>
             }
             else
             {
@@ -50,10 +50,10 @@
             <td style="text-align:center">@item.Date</td>
             <td style="text-align:center" bgcolor="@attentionColor">@licenseSummary</td>
             <td style="text-align:center">
-                <p>@Html.RouteLink("Show", "LicensesSingle", new { id = item.Id })</p>
-                <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { id = item.Id })</p>
+                <p>@Html.RouteLink("Show", "LicensesSingle", new { key = item.Id })</p>
+                <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { key = item.Id })</p>
                 <form asp-antiforgery="true" method="post" asp-route="DeleteLicensesSingle">
-                    <input hidden type="number" name="id" value="@item.Id" />
+                    <input hidden type="number" name="key" value="@item.Id" />
                     <input type="submit" class="btn btn-dark" value="Delete" />
                 </form>
             </td>

@@ -6,9 +6,9 @@
     ViewData["Title"] = "SingleItem";
 }
 <h1>RecipieId: @Model.Id</h1>
-<p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { id = Model.Id })</p>
+<p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="DeleteRecipeSingle">
-    <input hidden type="number" name="id" value="@Model.Id" />
+    <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
 <table>
@@ -42,8 +42,8 @@
                 @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Material))
                 {
                     <tr>
-                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
-                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { key = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { key = item.ProductId })</td>
                         <td>@item.Quantity mg</td>
                     </tr>
                 }
@@ -64,8 +64,8 @@
                 @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Product))
                 {
                     <tr>
-                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { id = item.ProductId })</td>
-                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { id = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { key = item.ProductId })</td>
+                        <td>@Html.RouteLink(item.CAS?.ToString(), "ProductCatalogSingle", new { key = item.ProductId })</td>
                         <td>@item.Quantity mg</td>
                     </tr>
                 }
@@ -76,7 +76,7 @@
         <td>Parent:</td>
             @if(Model.ParentRecipe != null)
             {
-                <td>@Html.RouteLink(Model.ParentRecipe.ToString(), "RecipeSingle", new { id = Model.ParentRecipe })</td>
+                <td>@Html.RouteLink(Model.ParentRecipe.ToString(), "RecipeSingle", new { key = Model.ParentRecipe })</td>
             }
             else
             {
@@ -88,7 +88,7 @@
         <td>
             @foreach (var item in Model.ChildRecipes)
             {
-                <p>@Html.RouteLink(item.ToString(), "RecipeSingle", new { id = item })</p>
+                <p>@Html.RouteLink(item.ToString(), "RecipeSingle", new { key = item })</p>
             }
         </td>
     </tr>
