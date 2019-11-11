@@ -15,17 +15,16 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipeLogic : IRESTAsync<RecipeDM, RecipeDM, Recipe>
+    public class RecipeLogic : IRESTAsync<RecipeAllModel, RecipeSingleModel, Recipe>
     {
         private readonly CursedContext db;
-        private readonly IQueryable<RecipeDM> query;
         public RecipeLogic(CursedContext db)
         {
             this.db = db;
             
         }
 
-        public async Task<IEnumerable<RecipeDM>> GetAllDataModelAsync()
+        public async Task<IEnumerable<RecipeAllModel>> GetAllDataModelAsync()
         {
             // merge into single query
             var recipes = await db.Recipe.ToListAsync();
@@ -61,23 +60,23 @@ namespace Cursed.Models.Logic
                      from ci in childIds.DefaultIfEmpty()
                      join ck in c on r.Id equals ck.Key into products
                      from p in products
-                     select new RecipeDM
+                     select new RecipeAllModel
                      {
                          Id = r.Id,
                          Content = r.Content,
                          TechApproved = r.TechApproval,
                          GovApproved = r.GovermentApproval,
                          ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
-                         ChildRecipes = ci.Single().Select(i => i.ChildId).ToList(),
-                         RecipeProducts = p.Select(i => i.RecipeProductContainer).ToList()
+                         ChildRecipesCount = ci.Single().Select(i => i.ChildId).Count(),
+                         ProductCount = p.Select(i => i.RecipeProductContainer).Where(i=>i.Type==ProductCatalogTypes.Product).Count(),
+                         MaterialCount = p.Select(i => i.RecipeProductContainer).Where(i => i.Type == ProductCatalogTypes.Material).Count()
                      };
             return dd.ToList();
-
+            //Products = p.Select(i => i.RecipeProductContainer).ToList(),
         }
-        public async Task<RecipeDM> GetSingleDataModelAsync(object UId)
+        public async Task<RecipeSingleModel> GetSingleDataModelAsync(object UId)
         {
             throw new Exception("WorkInProgress");
-            return await query.SingleOrDefaultAsync(i => i.Id == (int)UId);
         }
         public async Task<Recipe> GetSingleUpdateModelAsync(object UId)
         {

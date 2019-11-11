@@ -28,7 +28,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
-            var pagenationModel = new Pagenation<RecipeDM>(model, itemsOnPage, currentPage);
+            var pagenationModel = new Pagenation<RecipeAllModel>(model, itemsOnPage, currentPage);
             return View(pagenationModel);
         }
 
