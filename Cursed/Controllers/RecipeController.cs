@@ -33,16 +33,18 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("recipe", Name = "RecipeSingle")]
-        public async Task<IActionResult> SingleItem(int id)
+        public async Task<IActionResult> SingleItem(string key)
         {
+            int id = Int32.Parse(key);
             return View(await logic.GetSingleDataModelAsync(id));
         }
 
         [HttpGet("recipe/edit", Name = "GetForEditRecipeSingle")]
-        public async Task<IActionResult> GetEditSingleItem(int? id)
+        public async Task<IActionResult> GetEditSingleItem(string key)
         {
-            if (id.HasValue)
+            if (key != null)
             {
+                int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = "EditRecipeSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
@@ -69,8 +71,9 @@ namespace Cursed.Controllers
         }
 
         [HttpPost("recipe/delete", Name = "DeleteRecipeSingle")]
-        public async Task<IActionResult> DeleteSingleItem(int id)
+        public async Task<IActionResult> DeleteSingleItem(string key)
         {
+            int id = Int32.Parse(key);
             await logic.RemoveDataModelAsync(new Recipe { Id = id });
             return RedirectToRoute("LicensesAll");
         }

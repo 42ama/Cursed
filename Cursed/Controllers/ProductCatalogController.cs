@@ -36,18 +36,20 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("product", Name = "ProductCatalogSingle")]
-        public async Task<IActionResult> SingleItem(int id)
+        public async Task<IActionResult> SingleItem(string key)
         {
+            int id = Int32.Parse(key);
             var model = await logic.GetSingleDataModelAsync(id);
             return View(model);
         }
 
         // get for add/edit form
         [HttpGet("product/edit", Name = "GetForEditProductCatalogSingle")]
-        public async Task<IActionResult> GetEditSingleItem(int? id)
+        public async Task<IActionResult> GetEditSingleItem(string key)
         {
-            if(id.HasValue)
+            if(key != null)
             {
+                int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = "EditProductCatalogSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
@@ -78,8 +80,9 @@ namespace Cursed.Controllers
 
         //delete item
         [HttpPost("product/delete", Name = "DeleteProductCatalogSingle")]
-        public async Task<IActionResult> DeleteSingleItem(int id)
+        public async Task<IActionResult> DeleteSingleItem(string key)
         {
+            int id = Int32.Parse(key);
             await logic.RemoveDataModelAsync(new ProductCatalog { Id = id });
             return RedirectToRoute("ProductCatalogAll");
         }

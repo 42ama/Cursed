@@ -49,8 +49,9 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("license", Name = "LicensesSingle")]
-        public async Task<IActionResult> SingleItem(int id)
+        public async Task<IActionResult> SingleItem(string key)
         {
+            int id = Int32.Parse(key);
             var dataModel = await logic.GetSingleDataModelAsync(id);
             var viewModel = new LicensesViewModel
             {
@@ -66,10 +67,11 @@ namespace Cursed.Controllers
         }
 
         [HttpGet("license/edit", Name = "GetForEditLicensesSingle")]
-        public async Task<IActionResult> GetEditSingleItem(int? id)
+        public async Task<IActionResult> GetEditSingleItem(string key)
         {
-            if (id.HasValue)
+            if (key != null)
             {
+                int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = "EditLicensesSingle";
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
@@ -96,8 +98,9 @@ namespace Cursed.Controllers
         }
 
         [HttpPost("license/delete", Name = "DeleteLicensesSingle")]
-        public async Task<IActionResult> DeleteSingleItem(int id)
+        public async Task<IActionResult> DeleteSingleItem(string key)
         {
+            int id = Int32.Parse(key);
             await logic.RemoveDataModelAsync(new License { Id = id });
             return RedirectToRoute("LicensesAll");
         }
