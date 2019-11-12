@@ -26,39 +26,34 @@ namespace Cursed.Models.Logic
 
         public async Task<IEnumerable<RecipeAllModel>> GetAllDataModelAsync()
         {
-            // merge into single query
             var recipes = await db.Recipe.ToListAsync();
-            var a = from r in recipes
-                    join ri in db.RecipeInheritance on r.Id equals ri.ChildId into t
-                    group t by r.Id;
-            var b = from r in recipes
-                    join ri in db.RecipeInheritance on r.Id equals ri.ParentId into t
-                    group t by r.Id;
-            var c = from rr in (from r in recipes
-                        join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
-                        from t2 in t
-                        join pc in db.ProductCatalog on t2.ProductId equals pc.Id into t3
-                        from t4 in t3
-                        select new
-                        {
-                            RecipeId = r.Id,
-                            RecipeProductContainer = new RecipeProductContainer
-                            {
-                                ProductId = t2.ProductId,
-                                CAS = t4.Cas,
-                                ProductName = t4.Name,
-                                Quantity = t2.Quantity,
-                                Type = t2.Type
-                            }
-                        })
-                    group rr by rr.RecipeId;
-
             var dd = from r in recipes
-                     join ak in a on r.Id equals ak.Key into parentIdSingle
+                     join ak in (from r in recipes
+                                 join ri in db.RecipeInheritance on r.Id equals ri.ChildId into t
+                                 group t by r.Id) on r.Id equals ak.Key into parentIdSingle
                      from pis in parentIdSingle.DefaultIfEmpty()
-                     join bk in b on r.Id equals bk.Key into childIds
+                     join bk in (from r in recipes
+                                 join ri in db.RecipeInheritance on r.Id equals ri.ParentId into t
+                                 group t by r.Id) on r.Id equals bk.Key into childIds
                      from ci in childIds.DefaultIfEmpty()
-                     join ck in c on r.Id equals ck.Key into products
+                     join ck in (from rr in (from r in recipes
+                                             join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
+                                             from t2 in t
+                                             join pc in db.ProductCatalog on t2.ProductId equals pc.Id into t3
+                                             from t4 in t3
+                                             select new
+                                             {
+                                                 RecipeId = r.Id,
+                                                 RecipeProductContainer = new RecipeProductContainer
+                                                 {
+                                                     ProductId = t2.ProductId,
+                                                     CAS = t4.Cas,
+                                                     ProductName = t4.Name,
+                                                     Quantity = t2.Quantity,
+                                                     Type = t2.Type
+                                                 }
+                                             })
+                                 group rr by rr.RecipeId) on r.Id equals ck.Key into products
                      from p in products
                      select new RecipeAllModel
                      {
@@ -72,7 +67,6 @@ namespace Cursed.Models.Logic
                          MaterialCount = p.Select(i => i.RecipeProductContainer).Where(i => i.Type == ProductCatalogTypes.Material).Count()
                      };
             return dd.ToList();
-            //Products = p.Select(i => i.RecipeProductContainer).ToList(),
         }
         public async Task<RecipeSingleModel> GetSingleDataModelAsync(object key)
         {
