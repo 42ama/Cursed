@@ -21,13 +21,12 @@ namespace Cursed.Models.Logic
         public RecipeLogic(CursedContext db)
         {
             this.db = db;
-            
         }
 
         public async Task<IEnumerable<RecipeAllModel>> GetAllDataModelAsync()
         {
             var recipes = await db.Recipe.ToListAsync();
-            var dd = from r in recipes
+            var query = from r in recipes
                      join ak in (from r in recipes
                                  join ri in db.RecipeInheritance on r.Id equals ri.ChildId into t
                                  group t by r.Id) on r.Id equals ak.Key into parentIdSingle
@@ -44,14 +43,7 @@ namespace Cursed.Models.Logic
                                              select new
                                              {
                                                  RecipeId = r.Id,
-                                                 RecipeProductContainer = new RecipeProductContainer
-                                                 {
-                                                     ProductId = t2.ProductId,
-                                                     CAS = t4.Cas,
-                                                     ProductName = t4.Name,
-                                                     Quantity = t2.Quantity,
-                                                     Type = t2.Type
-                                                 }
+                                                 Type = t2.Type
                                              })
                                  group rr by rr.RecipeId) on r.Id equals ck.Key into products
                      from p in products
@@ -63,14 +55,54 @@ namespace Cursed.Models.Logic
                          GovApproved = r.GovermentApproval,
                          ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
                          ChildRecipesCount = ci.Single().Select(i => i.ChildId).Count(),
-                         ProductCount = p.Select(i => i.RecipeProductContainer).Where(i=>i.Type==ProductCatalogTypes.Product).Count(),
-                         MaterialCount = p.Select(i => i.RecipeProductContainer).Where(i => i.Type == ProductCatalogTypes.Material).Count()
+                         ProductCount = p.Select(i => i.Type).Where(i=>i==ProductCatalogTypes.Product).Count(),
+                         MaterialCount = p.Select(i => i.Type).Where(i=> i == ProductCatalogTypes.Material).Count()
                      };
-            return dd.ToList();
+            return query.ToList();
         }
         public async Task<RecipeSingleModel> GetSingleDataModelAsync(object key)
         {
-            throw new Exception("WorkInProgress");
+            var recipes = await db.Recipe.ToListAsync();
+            var query = from r in recipes
+                        where r.Id == (int)key
+                        join ak in (from r in recipes
+                                    join ri in db.RecipeInheritance on r.Id equals ri.ChildId into t
+                                    group t by r.Id) on r.Id equals ak.Key into parentIdSingle
+                        from pis in parentIdSingle.DefaultIfEmpty()
+                        join bk in (from r in recipes
+                                    join ri in db.RecipeInheritance on r.Id equals ri.ParentId into t
+                                    group t by r.Id) on r.Id equals bk.Key into childIds
+                        from ci in childIds.DefaultIfEmpty()
+                        join ck in (from rr in (from r in recipes
+                                                join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
+                                                from t2 in t
+                                                join pc in db.ProductCatalog on t2.ProductId equals pc.Id into t3
+                                                from t4 in t3
+                                                select new
+                                                {
+                                                    RecipeId = r.Id,
+                                                    RecipeProductContainer = new RecipeProductContainer
+                                                    { 
+                                                        CAS = t4.Cas,
+                                                        ProductId = t4.Id,
+                                                        ProductName = t4.Name,
+                                                        Quantity = t2.Quantity,
+                                                        Type = t2.Type
+                                                    }
+                                                })
+                                    group rr by rr.RecipeId) on r.Id equals ck.Key into products
+                        from p in products
+                        select new RecipeSingleModel
+                        {
+                            Id = r.Id,
+                            Content = r.Content,
+                            TechApproved = r.TechApproval,
+                            GovApproved = r.GovermentApproval,
+                            ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
+                            ChildRecipes = ci.Single().Select(i => i.ChildId).ToList(),
+                            RecipeProducts = p.Select(i => i.RecipeProductContainer).ToList()
+                        };
+            return query.Single();
         }
         public async Task<Recipe> GetSingleUpdateModelAsync(object key)
         {
