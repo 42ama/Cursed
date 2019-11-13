@@ -1,0 +1,91 @@
+﻿@using Cursed.Models.Entities
+@using Cursed.Models.Data.RecipeProducts
+@using Cursed.Models.Data.Utility
+@using Cursed.Models.Data.Shared
+@model CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
+@{
+    int recipeId = (int)ViewData["RecipeId"];
+    SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material});
+    Dictionary<string, int> lol = new Dictionary<string, int> { { "currentPage", 1 }, { "itemsOnPage", 10 }, { "recipeId", recipeId } };
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = "RecipeProducts";
+    ViewData["Lol"] = lol;
+}
+
+<h1>Add products to recipe: @recipeId</h1>
+<p>@Html.RouteLink("Back to recipe", "RecipeSingle", new { key = recipeId.ToString() })</p>
+<h2>Products in recipe:</h2>
+<table>
+    <thead>
+        <tr>
+            <td>Product Name</td>
+            <td>CAS</td>
+            <td>Type</td>
+            <td>Quantity</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Collection)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                @if(item.Cas.HasValue)
+                {
+                    <td>@item.Cas</td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>@item.Type</td>
+                <td>@item.Quantity mg</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model.Pagenation, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model.Pagenation, ViewData)
+<h2>All products:</h2>
+<table>
+    <thead>
+        <tr>
+            <td>Product Name</td>
+            <td>CAS</td>
+            <td>Type</td>
+            <td>Quantity</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Pagenation.PagenatedCollection)
+        {
+            
+                <tr>
+                    <form asp-antiforgery="true" method="post" asp-route="AddRecipeProduct">
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.Id" />
+                        <td>@item.Name</td>
+                        @if (item.Cas.HasValue)
+                        {
+                            <td>@item.Cas</td>
+                        }
+                        else
+                        {
+                            <td>None</td>
+                        }
+                        <td>
+                            <select required name="type" asp-items="selectType"></select>
+                        </td>
+                        <td>
+                            <input required name="quantity" type="number">
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-default" value="Add" />
+                        </td>
+                    </form>
+                </tr>
+           
+        }
+        </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model.Pagenation, ViewData)
