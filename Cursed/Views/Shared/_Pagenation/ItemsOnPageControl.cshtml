@@ -15,7 +15,7 @@
             }
             else
             {
-                <td>@Html.RouteLink($"{item}", TempData["PagenationRouteLink"] as string, new { currentPage = 1, itemsOnPage = item })</td>
+                <td>@Html.RouteLink($"{item}", ViewData["PagenationRouteLink"] as string, new { currentPage = 1, itemsOnPage = item })</td>
             }
         }
     </tr>

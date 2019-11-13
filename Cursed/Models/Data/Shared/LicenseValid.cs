@@ -33,5 +33,10 @@ namespace Cursed.Models.Data.Shared
                 return false;
             }
         }
+
+        public static bool Validate(License license)
+        {
+            return Validate(license.Date);
+        }
     }
 }
