@@ -1,0 +1,40 @@
+﻿@using Cursed.Models.Data.Company
+@using Cursed.Models.Data.Utility
+@model Pagenation<CompanyAllModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = "CompaniesAll";
+}
+<h1>Companies</h1>
+<p>@Html.RouteLink("Add", "GetForEditCompaniesSingle")</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Storages</td>
+            <td>Transactions</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.StoragesCount</td>
+                <td>@item.TransactionsCount</td>
+                <td>
+                    <p>@Html.RouteLink("Show", "CompaniesSingle", new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", "GetForEditCompaniesSingle", new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="DeleteCompaniesSingle">
+                        <input hidden type="number" name="key" value="@item.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

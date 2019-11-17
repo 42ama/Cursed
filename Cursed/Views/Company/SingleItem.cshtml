@@ -1,0 +1,45 @@
+﻿@using Cursed.Models.Data.Company
+@model CompanySingleModel
+@{
+    ViewData["Title"] = "SingleItem";
+}
+<h1>SingleItem</h1>
+
+<h1>@Model.Name</h1>
+<p>@Html.RouteLink("Edit", "GetForEditCompaniesSingle", new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="DeleteCompaniesSingle">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Name:</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>Storages:</td>
+        <td>
+            <table>
+                @foreach (var item in Model.Storages)
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.Title, "StorageSingle", new { key = item.Id })</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Transactions:</td>
+        <td>
+            <table>
+                @foreach (var item in Model.Transactions)
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.Title, "TransactionSingle", new { key = item.Id })</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+</table>
