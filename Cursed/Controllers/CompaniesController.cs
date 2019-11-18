@@ -25,7 +25,7 @@ namespace Cursed.Controllers
         {
             logic = new CompaniesLogic(db);
         }
-        [HttpGet("", Name = CompanyRouting.Index)]
+        [HttpGet("", Name = CompaniesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
@@ -34,7 +34,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
-        [HttpGet("company", Name = CompanyRouting.SingleItem)]
+        [HttpGet("company", Name = CompaniesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
@@ -42,43 +42,43 @@ namespace Cursed.Controllers
             return View(model);
         }
 
-        [HttpGet("company/edit", Name = CompanyRouting.GetEditSingleItem)]
+        [HttpGet("company/edit", Name = CompaniesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
             if (key != null)
             {
                 int id = Int32.Parse(key);
-                ViewData["SaveRoute"] = CompanyRouting.EditSingleItem;
+                ViewData["SaveRoute"] = CompaniesRouting.EditSingleItem;
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
             }
             else
             {
-                ViewData["SaveRoute"] = CompanyRouting.AddSingleItem;
+                ViewData["SaveRoute"] = CompaniesRouting.AddSingleItem;
                 return View("EditSingleItem");
             }
         }
 
-        [HttpPost("company/add", Name = CompanyRouting.AddSingleItem)]
+        [HttpPost("company/add", Name = CompaniesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Company model)
         {
             await logic.AddDataModelAsync(model);
-            return RedirectToRoute(CompanyRouting.Index);
+            return RedirectToRoute(CompaniesRouting.Index);
         }
 
-        [HttpPost("company/edit", Name = CompanyRouting.EditSingleItem)]
+        [HttpPost("company/edit", Name = CompaniesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Company model)
         {
             await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(CompanyRouting.Index);
+            return RedirectToRoute(CompaniesRouting.Index);
         }
 
-        [HttpPost("company/delete", Name = CompanyRouting.DeleteSingleItem)]
+        [HttpPost("company/delete", Name = CompaniesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
             await logic.RemoveDataModelAsync(id);
-            return RedirectToRoute(CompanyRouting.Index);
+            return RedirectToRoute(CompaniesRouting.Index);
         }
     }
 }

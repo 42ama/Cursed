@@ -2,7 +2,7 @@
 
 namespace Cursed.Models.Routing
 {
-    public class CompanyRouting
+    public class CompaniesRouting
     {
         public const string Index = "GetCompanies";
         public const string SingleItem = "GetCompany";

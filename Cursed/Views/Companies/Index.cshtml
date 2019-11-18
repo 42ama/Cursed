@@ -3,10 +3,10 @@
 @model Pagenation<CompaniesModel>
 @{
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = CompanyRouting.Index;
+    ViewData["PagenationRouteLink"] = CompaniesRouting.Index;
 }
 <h1>Companies</h1>
-<p>@Html.RouteLink("Add", CompanyRouting.GetEditSingleItem)</p>
+<p>@Html.RouteLink("Add", CompaniesRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
@@ -26,9 +26,9 @@
                 <td>@item.StoragesCount</td>
                 <td>@item.TransactionsCount</td>
                 <td>
-                    <p>@Html.RouteLink("Show", CompanyRouting.SingleItem, new { key = item.Id })</p>
-                    <p>@Html.RouteLink("Edit", CompanyRouting.GetEditSingleItem, new { key = item.Id })</p>
-                    <form asp-antiforgery="true" method="post" asp-route="@CompanyRouting.DeleteSingleItem">
+                    <p>@Html.RouteLink("Show", CompaniesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", CompaniesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@CompaniesRouting.DeleteSingleItem">
                         <input hidden type="number" name="key" value="@item.Id" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>
