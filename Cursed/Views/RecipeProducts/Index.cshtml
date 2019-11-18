@@ -6,14 +6,14 @@
 @{
     int recipeId = (int)ViewData["RecipeId"];
     SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material});
-    Dictionary<string, int> lol = new Dictionary<string, int> { { "currentPage", 1 }, { "itemsOnPage", 10 }, { "recipeId", recipeId } };
+    Dictionary<string, int> cheatingWithRouting = new Dictionary<string, int> { { "currentPage", 1 }, { "itemsOnPage", 10 }, { "recipeId", recipeId } };
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = "RecipeProducts";
-    ViewData["Lol"] = lol;
+    ViewData["PagenationRouteLink"] = RecipeProductsRouting.Index;
+    ViewData["Lol"] = cheatingWithRouting;
 }
 
 <h1>Add products to recipe: @recipeId</h1>
-<p>@Html.RouteLink("Back to recipe", "RecipeSingle", new { key = recipeId.ToString() })</p>
+<p>@Html.RouteLink("Back to recipe", RecipesRouting.SingleItem, new { key = recipeId.ToString() })</p>
 <h2>Products in recipe:</h2>
 <table>
     <thead>
@@ -28,10 +28,10 @@
         @foreach (var item in Model.Collection)
         {
             <tr>
-                <td>@item.ProductName</td>
+                <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
                 @if(item.Cas.HasValue)
                 {
-                    <td>@item.Cas</td>
+                    <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
                 }
                 else
                 {
@@ -61,13 +61,13 @@
         {
             
                 <tr>
-                    <form asp-antiforgery="true" method="post" asp-route="AddRecipeProduct">
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.AddSingleItem">
                         <input hidden name="recipeId" type="number" value="@recipeId" />
                         <input hidden name="productId" type="number" value="@item.Id" />
-                        <td>@item.Name</td>
+                        <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
                         @if (item.Cas.HasValue)
                         {
-                            <td>@item.Cas</td>
+                            <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
                         }
                         else
                         {

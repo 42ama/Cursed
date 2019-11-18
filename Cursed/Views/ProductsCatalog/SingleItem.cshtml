@@ -1,12 +1,12 @@
-﻿@using Cursed.Models.Data.ProductCatalog
-@model ProductCatalogSingleModel
+﻿@using Cursed.Models.Data.ProductsCatalog
+@model ProductCatalogModel
 @{
     ViewData["Title"] = "SingleItem";
 
 }
 <h1>@Model.Name</h1>
-<p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { key = Model.ProductId })</p>
-<form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
+<p>@Html.RouteLink("Edit", ProductsCatalogRouting.GetEditSingleItem, new { key = Model.ProductId })</p>
+<form asp-antiforgery="true" method="post" asp-route="@ProductsCatalogRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.ProductId" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
@@ -30,7 +30,7 @@
             {
                 foreach (var item in Model.Recipes)
                 {
-                    <p>@Html.RouteLink(item.Title, "RecipeSingle", new { key = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, RecipesRouting.SingleItem, new { key = item.Id })</p>
                 }
             }
             else
@@ -46,7 +46,7 @@
             {
                 foreach (var item in Model.Storages)
                 {
-                    <p>@Html.RouteLink(item.Title, "StorageSingle", new { key = item.Id })</p>
+                    <p>@Html.RouteLink(item.Title, StoragesRouting.SingleItem, new { key = item.Id })</p>
                 }
             }
             else
@@ -64,7 +64,7 @@
                         @foreach (var item in Model.Licenses)
                         {
                             string bgColor = item.IsValid ? "green" : "red";
-                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", "LicensesSingle", new { key = item.Id })</td></tr>
+                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", LicensesRouting.SingleItem, new { key = item.Id })</td></tr>
                         }
                 </table>
             }

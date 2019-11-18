@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cursed.Models.Data.Shared;
 
-namespace Cursed.Models.Data.Recipe
+namespace Cursed.Models.Data.Recipes
 {
-    public class RecipeSingleModel : RecipeAbstractModel
+    public class RecipeModel : RecipesAbstractModel
     {
         public List<RecipeProductContainer> RecipeProducts { get; set; }
         public List<int> ChildRecipes { get; set; }

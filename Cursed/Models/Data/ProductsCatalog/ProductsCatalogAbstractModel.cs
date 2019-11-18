@@ -1,8 +1,8 @@
 ﻿
 
-namespace Cursed.Models.Data.ProductCatalog
+namespace Cursed.Models.Data.ProductsCatalog
 {
-    public abstract class ProductCatalogAbstractModel
+    public abstract class ProductsCatalogAbstractModel
     {
         public int ProductId { get; set; }
         public string Name { get; set; }

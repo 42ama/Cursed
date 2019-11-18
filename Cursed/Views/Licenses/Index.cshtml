@@ -3,13 +3,13 @@
 @model Pagenation<LicensesViewModel>
 @{
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = "LicensesAll";
+    ViewData["PagenationRouteLink"] = LicensesRouting.Index;
     string attentionColor;
     string licenseSummary;
 }
 
 <h1>Licenses Index</h1>
-<p>@Html.RouteLink("Add", "GetForEditLicensesSingle")</p>
+<p>@Html.RouteLink("Add", LicensesRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
@@ -38,10 +38,10 @@
             }
         <tr>
             <td style="text-align:center">@item.GovermentNum</td>
-            <td style="text-align:center">@Html.RouteLink(item.ProductName, "ProductCatalogSingle", new { key = item.ProductId })</td>
+            <td style="text-align:center">@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
             @if (item.ProductCAS.HasValue)
             {
-                <td style="text-align:center">@Html.RouteLink(item.ProductCAS.Value.ToString(), "ProductCatalogSingle", new { key = item.ProductId })</td>
+                <td style="text-align:center">@Html.RouteLink(item.ProductCAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
             }
             else
             {
@@ -50,9 +50,9 @@
             <td style="text-align:center">@item.Date</td>
             <td style="text-align:center" bgcolor="@attentionColor">@licenseSummary</td>
             <td style="text-align:center">
-                <p>@Html.RouteLink("Show", "LicensesSingle", new { key = item.Id })</p>
-                <p>@Html.RouteLink("Edit", "GetForEditLicensesSingle", new { key = item.Id })</p>
-                <form asp-antiforgery="true" method="post" asp-route="DeleteLicensesSingle">
+                <p>@Html.RouteLink("Show", LicensesRouting.SingleItem, new { key = item.Id })</p>
+                <p>@Html.RouteLink("Edit", LicensesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                <form asp-antiforgery="true" method="post" asp-route="@LicensesRouting.DeleteSingleItem">
                     <input hidden type="number" name="key" value="@item.Id" />
                     <input type="submit" class="btn btn-dark" value="Delete" />
                 </form>

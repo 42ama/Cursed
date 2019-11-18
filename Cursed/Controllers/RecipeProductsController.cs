@@ -11,19 +11,20 @@ using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Data.Utility;
 using Cursed.Models;
+using Cursed.Models.Routing;
 
 namespace Cursed.Controllers
 {
     [Route("recipes/products")]
-    public class RecipeProductController : Controller
+    public class RecipeProductsController : Controller
     {
         private readonly RecipeProductsLogic logic;
-        public RecipeProductController(CursedContext db)
+        public RecipeProductsController(CursedContext db)
         {
             logic = new RecipeProductsLogic(db);
         }
 
-        [HttpGet("", Name = "RecipeProducts")]
+        [HttpGet("", Name = RecipeProductsRouting.Index)]
         public async Task<IActionResult> Index(int recipeId, int currentPage = 1, int itemsOnPage = 20)
         {
             var addedProducts = await logic.GetAllDataModelAsync(recipeId);
@@ -38,7 +39,7 @@ namespace Cursed.Controllers
             return View(model);
         }
 
-        [HttpPost("add", Name = "AddRecipeProduct")]
+        [HttpPost("add", Name = RecipeProductsRouting.AddSingleItem)]
         public async Task<IActionResult> Add(int recipeId, int productId, string type, decimal quantity)
         {
             await logic.AddToRecipeProduct(new RecipeProductChanges
@@ -48,7 +49,7 @@ namespace Cursed.Controllers
                 Type = type,
                 Quantity = quantity
             });
-            return RedirectToRoute("RecipeProducts", new { recipeId = recipeId });
+            return RedirectToRoute(RecipeProductsRouting.Index, new { recipeId = recipeId });
         }
     }
 }

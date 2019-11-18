@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
-namespace Cursed.Models.Data.Recipe
+namespace Cursed.Models.Data.Recipes
 {
-    public abstract class RecipeAbstractModel
+    public abstract class RecipesAbstractModel
     {
         public int Id { get; set; }
         public string Content { get; set; }

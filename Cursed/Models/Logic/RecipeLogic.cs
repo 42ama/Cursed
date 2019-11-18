@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Recipe;
+using Cursed.Models.Data.Recipes;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipeLogic : IRESTAsync<RecipeAllModel, RecipeSingleModel, Recipe>
+    public class RecipeLogic : IRESTAsync<RecipesModel, RecipeModel, Recipe>
     {
         private readonly CursedContext db;
         public RecipeLogic(CursedContext db)
@@ -23,7 +23,7 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<RecipeAllModel>> GetAllDataModelAsync()
+        public async Task<IEnumerable<RecipesModel>> GetAllDataModelAsync()
         {
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
@@ -47,7 +47,7 @@ namespace Cursed.Models.Logic
                                              })
                                  group rr by rr.RecipeId) on r.Id equals ck.Key into products
                      from p in products
-                     select new RecipeAllModel
+                     select new RecipesModel
                      {
                          Id = r.Id,
                          Content = r.Content,
@@ -60,7 +60,7 @@ namespace Cursed.Models.Logic
                      };
             return query.ToList();
         }
-        public async Task<RecipeSingleModel> GetSingleDataModelAsync(object key)
+        public async Task<RecipeModel> GetSingleDataModelAsync(object key)
         {
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
@@ -92,7 +92,7 @@ namespace Cursed.Models.Logic
                                                 })
                                     group rr by rr.RecipeId) on r.Id equals ck.Key into products
                         from p in products
-                        select new RecipeSingleModel
+                        select new RecipeModel
                         {
                             Id = r.Id,
                             Content = r.Content,

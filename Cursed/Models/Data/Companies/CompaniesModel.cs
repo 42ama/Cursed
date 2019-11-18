@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cursed.Models.Data.Company
+namespace Cursed.Models.Data.Companies
 {
-    public class CompanyAllModel
+    public class CompaniesModel : CompaniesAbstractModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
         public int StoragesCount { get; set; }
         public int TransactionsCount { get; set; }
     }

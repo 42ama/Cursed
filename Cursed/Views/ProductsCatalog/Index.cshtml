@@ -1,13 +1,13 @@
-﻿@using Cursed.Models.Data.ProductCatalog
+﻿@using Cursed.Models.Data.ProductsCatalog
 @using Cursed.Models.Data.Utility
-@model Pagenation<ProductCatalogAllModel>
+@model Pagenation<ProductsCatalogModel>
 @{
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = "ProductCatalogAll";
+    ViewData["PagenationRouteLink"] = ProductsCatalogRouting.Index;
 }
 
 <h1>Product Catalog Index</h1>
-<p>@Html.RouteLink("Add", "GetForEditProductCatalogSingle")</p>
+<p>@Html.RouteLink("Add", ProductsCatalogRouting.AddSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
@@ -68,7 +68,7 @@
                     @if (item.License != null)
                     {
                         <p>@govNum</p>
-                        <p>@Html.RouteLink("License", "LicensesSingle", new { key = item.License.Id })</p>
+                        <p>@Html.RouteLink("License", LicensesRouting.SingleItem, new { key = item.License.Id })</p>
                     }
                     else
                     {
@@ -80,20 +80,20 @@
                     <p>@item.RecipesCount Recipes</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { key = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
                     <p>@item.StoragesCount Storages</p>
                     @if (item.RecipesCount != 0)
                     {
-                        <p>@Html.RouteLink("See All", "ProductCatalogSingle", new { key = item.ProductId })</p>
+                        <p>@Html.RouteLink("See All", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
                     }
                 </td>
                 <td style="text-align:center">
-                    <p>@Html.RouteLink("Show", "ProductCatalogSingle", new { key = item.ProductId })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditProductCatalogSingle", new { key = item.ProductId })</p>
-                    <form asp-antiforgery="true" method="post" asp-route="DeleteProductCatalogSingle">
+                    <p>@Html.RouteLink("Show", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", ProductsCatalogRouting.GetEditSingleItem, new { key = item.ProductId })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@ProductsCatalogRouting.DeleteSingleItem">
                         <input hidden type="number" name="key" value="@item.ProductId" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>

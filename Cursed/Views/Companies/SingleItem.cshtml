@@ -1,13 +1,13 @@
-﻿@using Cursed.Models.Data.Company
-@model CompanySingleModel
+﻿@using Cursed.Models.Data.Companies
+@model CompanyModel
 @{
     ViewData["Title"] = "SingleItem";
 }
 <h1>SingleItem</h1>
 
 <h1>@Model.Name</h1>
-<p>@Html.RouteLink("Edit", "GetForEditCompaniesSingle", new { key = Model.Id })</p>
-<form asp-antiforgery="true" method="post" asp-route="DeleteCompaniesSingle">
+<p>@Html.RouteLink("Edit", CompanyRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@CompanyRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
@@ -23,7 +23,7 @@
                 @foreach (var item in Model.Storages)
                 {
                     <tr>
-                        <td>@Html.RouteLink(item.Title, "StorageSingle", new { key = item.Id })</td>
+                        <td>@Html.RouteLink(item.Title, StoragesRouting.SingleItem, new { key = item.Id })</td>
                     </tr>
                 }
             </table>
@@ -36,7 +36,7 @@
                 @foreach (var item in Model.Transactions)
                 {
                     <tr>
-                        <td>@Html.RouteLink(item.Title, "TransactionSingle", new { key = item.Id })</td>
+                        <td>@Html.RouteLink(item.Title, TransactionsRouting.SingleItem, new { key = item.Id })</td>
                     </tr>
                 }
             </table>

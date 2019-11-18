@@ -1,12 +1,12 @@
-﻿@using Cursed.Models.Data.Company
-@using Cursed.Models.Data.Utility
-@model Pagenation<CompanyAllModel>
+﻿@using Cursed.Models.Data.Companies
+
+@model Pagenation<CompaniesModel>
 @{
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = "CompaniesAll";
+    ViewData["PagenationRouteLink"] = CompanyRouting.Index;
 }
 <h1>Companies</h1>
-<p>@Html.RouteLink("Add", "GetForEditCompaniesSingle")</p>
+<p>@Html.RouteLink("Add", CompanyRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
@@ -26,9 +26,9 @@
                 <td>@item.StoragesCount</td>
                 <td>@item.TransactionsCount</td>
                 <td>
-                    <p>@Html.RouteLink("Show", "CompaniesSingle", new { key = item.Id })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditCompaniesSingle", new { key = item.Id })</p>
-                    <form asp-antiforgery="true" method="post" asp-route="DeleteCompaniesSingle">
+                    <p>@Html.RouteLink("Show", CompanyRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", CompanyRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@CompanyRouting.DeleteSingleItem">
                         <input hidden type="number" name="key" value="@item.Id" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>

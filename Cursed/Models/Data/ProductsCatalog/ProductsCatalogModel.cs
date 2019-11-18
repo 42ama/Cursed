@@ -1,8 +1,8 @@
 ﻿using Cursed.Models.Data.Shared;
 
-namespace Cursed.Models.Data.ProductCatalog
+namespace Cursed.Models.Data.ProductsCatalog
 {
-    public class ProductCatalogAllModel : ProductCatalogAbstractModel
+    public class ProductsCatalogModel : ProductsCatalogAbstractModel
     {
         public LicenseValid License { get; set; }
         public int RecipesCount { get; set; }

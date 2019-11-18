@@ -12,7 +12,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models;
 using Cursed.Models.Data.Utility;
-
+using Cursed.Models.Routing;
 
 namespace Cursed.Controllers
 {
@@ -25,7 +25,7 @@ namespace Cursed.Controllers
             logic = new LicenseLogic(db);
         }
 
-        [HttpGet("", Name = "LicensesAll")]
+        [HttpGet("", Name = LicensesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var dataModel = await logic.GetAllDataModelAsync();
@@ -48,7 +48,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
-        [HttpGet("license", Name = "LicensesSingle")]
+        [HttpGet("license", Name = LicensesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
@@ -66,43 +66,43 @@ namespace Cursed.Controllers
             return View(viewModel);
         }
 
-        [HttpGet("license/edit", Name = "GetForEditLicensesSingle")]
+        [HttpGet("license/edit", Name = LicensesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
             if (key != null)
             {
                 int id = Int32.Parse(key);
-                ViewData["SaveRoute"] = "EditLicensesSingle";
+                ViewData["SaveRoute"] = LicensesRouting.EditSingleItem;
                 var model = await logic.GetSingleUpdateModelAsync(id);
                 return View("EditSingleItem", model);
             }
             else
             {
-                ViewData["SaveRoute"] = "AddLicensesSingle";
+                ViewData["SaveRoute"] = LicensesRouting.AddSingleItem;
                 return View("EditSingleItem");
             }
         }
 
-        [HttpPost("license/add", Name = "AddLicensesSingle")]
+        [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
         {
             await logic.AddDataModelAsync(model);
-            return RedirectToRoute("LicensesAll");
+            return RedirectToRoute(LicensesRouting.Index);
         }
 
-        [HttpPost("license/edit", Name = "EditLicensesSingle")]
+        [HttpPost("license/edit", Name = LicensesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(License model)
         {
             await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute("LicensesAll");
+            return RedirectToRoute(LicensesRouting.Index);
         }
 
-        [HttpPost("license/delete", Name = "DeleteLicensesSingle")]
+        [HttpPost("license/delete", Name = LicensesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
             await logic.RemoveDataModelAsync(id);
-            return RedirectToRoute("LicensesAll");
+            return RedirectToRoute(LicensesRouting.Index);
         }
     }
 }

@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Company;
+using Cursed.Models.Data.Companies;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class CompanyLogic : IRESTAsync<CompanyAllModel, CompanySingleModel, Company>
+    public class CompanyLogic : IRESTAsync<CompaniesModel, CompanyModel, Company>
     {
         private readonly CursedContext db;
         public CompanyLogic(CursedContext db)
@@ -23,7 +23,7 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<CompanyAllModel>> GetAllDataModelAsync()
+        public async Task<IEnumerable<CompaniesModel>> GetAllDataModelAsync()
         {
             var companies = await db.Company.ToListAsync();
             var query = from c in companies
@@ -35,7 +35,7 @@ namespace Cursed.Models.Logic
                                    join t in db.TransactionBatch on c.Id equals t.CompanyId into tab
                                    group tab by c.Id) on c.Id equals t.Key into transcts
                         from cst in transcts.DefaultIfEmpty()
-                        select new CompanyAllModel
+                        select new CompaniesModel
                         {
                             Id = c.Id,
                             Name = c.Name,
@@ -45,7 +45,7 @@ namespace Cursed.Models.Logic
             return query;
         }
 
-        public async Task<CompanySingleModel> GetSingleDataModelAsync(object key)
+        public async Task<CompanyModel> GetSingleDataModelAsync(object key)
         {
             var companies = await db.Company.ToListAsync();
             var query = from c in companies
@@ -58,7 +58,7 @@ namespace Cursed.Models.Logic
                                    join t in db.TransactionBatch on c.Id equals t.CompanyId into tab
                                    group tab by c.Id) on c.Id equals t.Key into transcts
                         from cst in transcts.DefaultIfEmpty()
-                        select new CompanySingleModel
+                        select new CompanyModel
                         {
                             Id = c.Id,
                             Name = c.Name,

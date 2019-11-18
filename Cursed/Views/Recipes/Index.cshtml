@@ -1,14 +1,14 @@
-﻿@using Cursed.Models.Data.Recipe
+﻿@using Cursed.Models.Data.Recipes
 @using Cursed.Models.Data.Utility
 @using Cursed.Models.Data.Shared
-@model Pagenation<RecipeAllModel>
+@model Pagenation<RecipesModel>
 @{
     ViewData["Title"] = "Index";
-    ViewData["PagenationRouteLink"] = "RecipeAll";
+    ViewData["PagenationRouteLink"] = RecipesRouting.Index;
 }
 
 <h1>Recipe Index</h1>
-<p>@Html.RouteLink("Add", "GetForEditRecipeSingle")</p>
+<p>@Html.RouteLink("Add", RecipesRouting.AddSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
@@ -55,7 +55,7 @@
                 {
                     <td>
                         <p>@item.MaterialCount materials</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -66,7 +66,7 @@
                 {
                     <td>
                         <p>@item.ProductCount products</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -78,7 +78,7 @@
                 {
                     <td>
                         <p>@item.ChildRecipesCount childs</p>
-                        <p>@Html.RouteLink("See All", "RecipeSingle", new { key = item.Id })</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
                     </td>
                 }
                 else
@@ -86,9 +86,9 @@
                     <td>None</td>
                 }
                 <td>
-                    <p>@Html.RouteLink("Show", "RecipeSingle", new { key = item.Id })</p>
-                    <p>@Html.RouteLink("Edit", "GetForEditRecipeSingle", new { key = item.Id })</p>
-                    <form asp-antiforgery="true" method="post" asp-route="DeleteRecipeSingle">
+                    <p>@Html.RouteLink("Show", RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.DeleteSingleItem">
                         <input hidden type="number" name="key" value="@item.Id" />
                         <input type="submit" class="btn btn-dark" value="Delete" />
                     </form>

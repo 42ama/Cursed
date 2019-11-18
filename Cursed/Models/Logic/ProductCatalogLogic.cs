@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.ProductCatalog;
+using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductCatalogLogic : IRESTAsync<ProductCatalogAllModel, ProductCatalogSingleModel, ProductCatalog>
+    public class ProductCatalogLogic : IRESTAsync<ProductsCatalogModel, ProductCatalogModel, ProductCatalog>
     {
         private readonly CursedContext db;
         public ProductCatalogLogic(CursedContext db)
@@ -23,7 +23,7 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<ProductCatalogAllModel>> GetAllDataModelAsync()
+        public async Task<IEnumerable<ProductsCatalogModel>> GetAllDataModelAsync()
         {
             // probably need testing with different db connection combination
             var productCatalogs = await db.ProductCatalog.ToListAsync();
@@ -41,7 +41,7 @@ namespace Cursed.Models.Logic
                                          group t by pc.Id).Select(x => new { Id = x.Key, Count = x.Single().Count() })
                                          on pc.Id equals gB.Id into groupE
                              from e in groupE.DefaultIfEmpty()
-                             select new ProductCatalogAllModel
+                             select new ProductsCatalogModel
                              {
                                  ProductId = pc.Id,
                                  Name = pc.Name,
@@ -63,7 +63,7 @@ namespace Cursed.Models.Logic
             return dataModels;
         }
 
-        public async Task<ProductCatalogSingleModel> GetSingleDataModelAsync(object key)
+        public async Task<ProductCatalogModel> GetSingleDataModelAsync(object key)
         {
             int Uid = (int)key;
 
@@ -89,7 +89,7 @@ namespace Cursed.Models.Logic
                 }
             }
 
-            var dataModel = new ProductCatalogSingleModel
+            var dataModel = new ProductCatalogModel
             {
                 ProductId = Uid,
                 CAS = productCatalog.Cas,
