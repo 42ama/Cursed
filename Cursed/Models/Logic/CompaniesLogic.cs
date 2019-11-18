@@ -15,10 +15,10 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class CompanyLogic : IRESTAsync<CompaniesModel, CompanyModel, Company>
+    public class CompaniesLogic : IRESTAsync<CompaniesModel, CompanyModel, Company>
     {
         private readonly CursedContext db;
-        public CompanyLogic(CursedContext db)
+        public CompaniesLogic(CursedContext db)
         {
             this.db = db;
         }

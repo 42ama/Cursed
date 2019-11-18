@@ -15,10 +15,10 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipeLogic : IRESTAsync<RecipesModel, RecipeModel, Recipe>
+    public class RecipesLogic : IRESTAsync<RecipesModel, RecipeModel, Recipe>
     {
         private readonly CursedContext db;
-        public RecipeLogic(CursedContext db)
+        public RecipesLogic(CursedContext db)
         {
             this.db = db;
         }

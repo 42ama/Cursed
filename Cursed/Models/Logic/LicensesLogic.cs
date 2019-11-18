@@ -15,11 +15,11 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class LicenseLogic : IRESTAsync<LicensesDataModel, LicensesDataModel, License>
+    public class LicensesLogic : IRESTAsync<LicensesDataModel, LicensesDataModel, License>
     {
         private readonly CursedContext db;
         private readonly IQueryable<LicensesDataModel> basicDataModelQuery;
-        public LicenseLogic(CursedContext db)
+        public LicensesLogic(CursedContext db)
         {
             this.db = db;
 

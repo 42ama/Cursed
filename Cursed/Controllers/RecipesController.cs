@@ -19,10 +19,10 @@ namespace Cursed.Controllers
     [Route("recipes")]
     public class RecipesController : Controller, IControllerRESTAsync<Recipe>
     {
-        private readonly RecipeLogic logic;
+        private readonly RecipesLogic logic;
         public RecipesController(CursedContext db)
         {
-            logic = new RecipeLogic(db);
+            logic = new RecipesLogic(db);
         }
 
         [HttpGet("", Name = RecipesRouting.Index)]

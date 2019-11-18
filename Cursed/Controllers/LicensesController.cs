@@ -19,10 +19,10 @@ namespace Cursed.Controllers
     [Route("licenses")]
     public class LicensesController : Controller, IControllerRESTAsync<License>
     {
-        private readonly LicenseLogic logic;
+        private readonly LicensesLogic logic;
         public LicensesController(CursedContext db)
         {
-            logic = new LicenseLogic(db);
+            logic = new LicensesLogic(db);
         }
 
         [HttpGet("", Name = LicensesRouting.Index)]

@@ -19,11 +19,11 @@ namespace Cursed.Controllers
     public class ProductsCatalogController : Controller, IControllerRESTAsync<ProductCatalog>
     {
         private readonly ILogger<ProductsCatalogController> _logger;
-        private readonly ProductCatalogLogic logic;
+        private readonly ProductsCatalogLogic logic;
 
         public ProductsCatalogController(CursedContext db, ILogger<ProductsCatalogController> logger)
         {
-            logic = new ProductCatalogLogic(db);
+            logic = new ProductsCatalogLogic(db);
             _logger = logger;
         }
 

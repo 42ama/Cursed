@@ -19,11 +19,11 @@ namespace Cursed.Controllers
     [Route("companies")]
     public class CompaniesController : Controller, IControllerRESTAsync<Company>
     {
-        private readonly CompanyLogic logic;
+        private readonly CompaniesLogic logic;
 
         public CompaniesController(CursedContext db)
         {
-            logic = new CompanyLogic(db);
+            logic = new CompaniesLogic(db);
         }
         [HttpGet("", Name = CompanyRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
