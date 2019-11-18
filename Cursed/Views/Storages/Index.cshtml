@@ -1,0 +1,51 @@
+﻿@using Cursed.Models.Data.Storages
+
+@model Pagenation<StoragesModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = StoragesRouting.Index;
+}
+<h1>Storages</h1>
+<p>@Html.RouteLink("Add", StoragesRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Latitude</td>
+            <td>Longitude</td>
+            <td>Company</td>
+            <td>Products</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Latitude</td>
+                <td>@item.Longitude</td>
+                @if(item.Company != null)
+                {
+                    <td>@Html.RouteLink(item.Company.Title, CompaniesRouting.SingleItem, new { key = item.Company.Id })</td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>@item.ProductsCount</td>
+                <td>
+                    <p>@Html.RouteLink("Show", StoragesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", StoragesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@StoragesRouting.DeleteSingleItem">
+                        <input hidden type="number" name="key" value="@item.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

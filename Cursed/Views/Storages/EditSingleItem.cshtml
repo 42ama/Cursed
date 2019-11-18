@@ -1,0 +1,34 @@
+﻿@using Cursed.Models.Entities
+@model Storage
+@{
+    ViewData["Title"] = "EditSingleItem";
+    string saveRoute = (string)ViewData["SaveRoute"];
+}
+<h1>EditSingleItem</h1>
+
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
+    </div>
+    <div class="form-group">
+        <label for="Name">Name:*</label>
+        <div>
+            <input required asp-for="Name" type="text" name="Name" value="@Model?.Name">
+        </div>
+    </div>
+    <p>Latitude:</p> @Html.EditorFor(model => model.Latitude)
+    <p>Longitude:</p> @Html.EditorFor(model => model.Longitude)
+    <div class="form-group">
+        <label for="CompanyId">CompanyId:</label>
+        <div>
+            <input asp-for="CompanyId" type="number" name="CompanyId" value="@Model?.CompanyId">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>
