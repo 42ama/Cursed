@@ -12,10 +12,11 @@ using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductsCatalogLogic : IRESTAsync<ProductsCatalogModel, ProductCatalogModel, ProductCatalog>
+    public class ProductsCatalogLogic : IReadColection<ProductsCatalogModel>, IReadSingle<ProductCatalogModel>, IReadUpdateForm<ProductCatalog>, ICUD<ProductCatalog>
     {
         private readonly CursedContext db;
         public ProductsCatalogLogic(CursedContext db)
@@ -110,17 +111,17 @@ namespace Cursed.Models.Logic
             return productCatalog;
         }
 
-        public async Task AddDataModelAsync(ProductCatalog dataModel)
+        public async Task AddDataModelAsync(ProductCatalog model)
         {
-            dataModel.Id = default;
-            db.Add(dataModel);
+            model.Id = default;
+            db.Add(model);
             await db.SaveChangesAsync();
         }
 
-        public async Task UpdateDataModelAsync(ProductCatalog updatedDataModel)
+        public async Task UpdateDataModelAsync(ProductCatalog model)
         {
-            var currentModel = await db.ProductCatalog.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
+            var currentModel = await db.ProductCatalog.FirstOrDefaultAsync(i => i.Id == model.Id);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
 

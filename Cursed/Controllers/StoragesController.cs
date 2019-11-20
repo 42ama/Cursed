@@ -11,13 +11,13 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Routing;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Controllers
 {
     [Route("storages")]
-    public class StoragesController : Controller, IControllerRESTAsync<Storage>
+    public class StoragesController : Controller, ICUD<Storage>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly StoragesLogic logic;
 

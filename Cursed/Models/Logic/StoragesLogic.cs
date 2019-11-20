@@ -12,10 +12,11 @@ using Cursed.Models.Data.Storages;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class StoragesLogic : IRESTAsync<StoragesModel, StorageModel, Storage>
+    public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
         private readonly CursedContext db;
         public StoragesLogic(CursedContext db)
@@ -85,17 +86,17 @@ namespace Cursed.Models.Logic
             return await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(Storage dataModel)
+        public async Task AddDataModelAsync(Storage model)
         {
-            dataModel.Id = default;
-            db.Add(dataModel);
+            model.Id = default;
+            db.Add(model);
             await db.SaveChangesAsync();
         }
 
-        public async Task UpdateDataModelAsync(Storage updatedDataModel)
+        public async Task UpdateDataModelAsync(Storage model)
         {
-            var currentModel = await db.Storage.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
+            var currentModel = await db.Storage.FirstOrDefaultAsync(i => i.Id == model.Id);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
 

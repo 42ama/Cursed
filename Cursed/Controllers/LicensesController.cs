@@ -10,14 +10,14 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 
 namespace Cursed.Controllers
 {
     [Route("licenses")]
-    public class LicensesController : Controller, IControllerRESTAsync<License>
+    public class LicensesController : Controller, ICUD<License>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly LicensesLogic logic;
         public LicensesController(CursedContext db)

@@ -10,13 +10,13 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Data.Utility;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
 
 namespace Cursed.Controllers
 {
     [Route("products-catalog")]
-    public class ProductsCatalogController : Controller, IControllerRESTAsync<ProductCatalog>
+    public class ProductsCatalogController : Controller, ICUD<ProductCatalog>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly ILogger<ProductsCatalogController> _logger;
         private readonly ProductsCatalogLogic logic;

@@ -11,11 +11,11 @@ using Cursed.Models.Context;
 using Cursed.Models.Data.Licenses;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class LicensesLogic : IRESTAsync<LicensesDataModel, LicensesDataModel, License>
+    public class LicensesLogic : IReadColection<LicensesDataModel>, IReadSingle<LicensesDataModel>, IReadUpdateForm<License>, ICUD<License>
     {
         private readonly CursedContext db;
         private readonly IQueryable<LicensesDataModel> basicDataModelQuery;
@@ -57,17 +57,17 @@ namespace Cursed.Models.Logic
             return await db.License.SingleAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(License dataModel)
+        public async Task AddDataModelAsync(License model)
         {
-            dataModel.Id = default;
-            db.Add(dataModel);
+            model.Id = default;
+            db.Add(model);
             await db.SaveChangesAsync();
         }
 
-        public async Task UpdateDataModelAsync(License updatedDataModel)
+        public async Task UpdateDataModelAsync(License model)
         {
-            var currentModel = await db.License.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
+            var currentModel = await db.License.FirstOrDefaultAsync(i => i.Id == model.Id);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
 

@@ -11,13 +11,13 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Routing;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Controllers
 {
     [Route("facilities")]
-    public class FacilitiesController : Controller
+    public class FacilitiesController : Controller, ICUD<Facility>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly FacilitiesLogic logic;
 

@@ -10,14 +10,14 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 
 namespace Cursed.Controllers
 {
     [Route("recipes")]
-    public class RecipesController : Controller, IControllerRESTAsync<Recipe>
+    public class RecipesController : Controller, ICUD<Recipe>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly RecipesLogic logic;
         public RecipesController(CursedContext db)

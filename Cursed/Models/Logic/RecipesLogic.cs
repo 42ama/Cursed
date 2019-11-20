@@ -11,11 +11,11 @@ using Cursed.Models.Context;
 using Cursed.Models.Data.Recipes;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipesLogic : IRESTAsync<RecipesModel, RecipeModel, Recipe>
+    public class RecipesLogic : IReadColection<RecipesModel>, IReadSingle<RecipeModel>, IReadUpdateForm<Recipe>, ICUD<Recipe>
     {
         private readonly CursedContext db;
         public RecipesLogic(CursedContext db)
@@ -108,16 +108,16 @@ namespace Cursed.Models.Logic
         {
             return await db.Recipe.SingleAsync(i => i.Id == (int)key);
         }
-        public async Task AddDataModelAsync(Recipe dataModel)
+        public async Task AddDataModelAsync(Recipe model)
         {
-            dataModel.Id = default;
-            db.Add(dataModel);
+            model.Id = default;
+            db.Add(model);
             await db.SaveChangesAsync();
         }
-        public async Task UpdateDataModelAsync(Recipe updatedDataModel)
+        public async Task UpdateDataModelAsync(Recipe model)
         {
-            var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
+            var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == model.Id);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
         public async Task RemoveDataModelAsync(object key)

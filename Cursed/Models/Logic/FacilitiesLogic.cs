@@ -11,11 +11,11 @@ using Cursed.Models.Context;
 using Cursed.Models.Data.Facilities;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class FacilitiesLogic : IRESTAsync<FacilitiesModel, FacilityModel, Facility>
+    public class FacilitiesLogic : IReadColection<FacilitiesModel>, IReadSingle<FacilityModel>, IReadUpdateForm<Facility>, ICUD<Facility>
     {
         private readonly CursedContext db;
         public FacilitiesLogic(CursedContext db)
@@ -121,17 +121,17 @@ namespace Cursed.Models.Logic
             return await db.Facility.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(Facility dataModel)
+        public async Task AddDataModelAsync(Facility model)
         {
-            dataModel.Id = default;
-            db.Add(dataModel);
+            model.Id = default;
+            db.Add(model);
             await db.SaveChangesAsync();
         }
 
-        public async Task UpdateDataModelAsync(Facility updatedDataModel)
+        public async Task UpdateDataModelAsync(Facility model)
         {
-            var currentModel = await db.Facility.FirstOrDefaultAsync(i => i.Id == updatedDataModel.Id);
-            db.Entry(currentModel).CurrentValues.SetValues(updatedDataModel);
+            var currentModel = await db.Facility.FirstOrDefaultAsync(i => i.Id == model.Id);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
 

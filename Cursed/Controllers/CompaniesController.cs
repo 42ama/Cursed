@@ -11,13 +11,13 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Routing;
-using Cursed.Models;
+using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Controllers
 {
     [Route("companies")]
-    public class CompaniesController : Controller, IControllerRESTAsync<Company>
+    public class CompaniesController : Controller, ICUD<Company>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly CompaniesLogic logic;
 
