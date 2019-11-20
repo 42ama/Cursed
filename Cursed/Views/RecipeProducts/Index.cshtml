@@ -6,10 +6,9 @@
 @{
     int recipeId = (int)ViewData["RecipeId"];
     SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material});
-    Dictionary<string, int> cheatingWithRouting = new Dictionary<string, int> { { "currentPage", 1 }, { "itemsOnPage", 10 }, { "recipeId", recipeId } };
     ViewData["Title"] = "Index";
     ViewData["PagenationRouteLink"] = RecipeProductsRouting.Index;
-    ViewData["Lol"] = cheatingWithRouting;
+
 }
 
 <h1>Add products to recipe: @recipeId</h1>
@@ -22,6 +21,7 @@
             <td>CAS</td>
             <td>Type</td>
             <td>Quantity</td>
+            <td>@*buttons*@</td>
         </tr>
     </thead>
     <tbody>
@@ -39,6 +39,19 @@
                 }
                 <td>@item.Type</td>
                 <td>@item.Quantity mg</td>
+                <td>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.EditSingleItem">
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.ProductId" />
+                        <input hidden name="type" type="text" value="@item.Type" />
+                        <input required name="quantity" type="number" value="@item.Quantity" placeholder="Quantity">
+                        <input type="submit" class="btn btn-default" value="Edit" />
+                    </form>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.DeleteSingleItem">
+                        <input hidden name="key" type="number" value="@item.ProductId" />
+                        <input type="submit" class="btn btn-default" value="Delete" />
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
@@ -52,39 +65,35 @@
             <td>Product Name</td>
             <td>CAS</td>
             <td>Type</td>
-            <td>Quantity</td>
             <td>@*buttons*@</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Pagenation.PagenatedCollection)
         {
-            
-                <tr>
+            <tr>
+                <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
+                @if (item.Cas.HasValue)
+                {
+                    <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>
+                    <select required name="type" asp-items="selectType"></select>
+                </td>
+                <td>
                     <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.AddSingleItem">
                         <input hidden name="recipeId" type="number" value="@recipeId" />
                         <input hidden name="productId" type="number" value="@item.Id" />
-                        <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
-                        @if (item.Cas.HasValue)
-                        {
-                            <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
-                        }
-                        else
-                        {
-                            <td>None</td>
-                        }
-                        <td>
-                            <select required name="type" asp-items="selectType"></select>
-                        </td>
-                        <td>
-                            <input required name="quantity" type="number">
-                        </td>
-                        <td>
-                            <input type="submit" class="btn btn-default" value="Add" />
-                        </td>
+                        <input hidden name="type" type="text" value="@item.Type" />
+                        <input required name="quantity" type="number" placeholder="Quantity">
+                        <input type="submit" class="btn btn-default" value="Add" />
                     </form>
-                </tr>
-           
+                </td>
+            </tr>
         }
         </tbody>
 </table>

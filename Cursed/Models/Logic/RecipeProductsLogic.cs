@@ -10,12 +10,13 @@ using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
 using Cursed.Models.Data.RecipeProducts;
 using Cursed.Models.Entities;
+using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipeProductsLogic
+    public class RecipeProductsLogic : IReadCollectionByParam<RecipeProductsDataModel>, ICUD<RecipeProductChanges>
     {
         private readonly CursedContext db;
         public RecipeProductsLogic(CursedContext db)
@@ -23,8 +24,9 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<RecipeProductsDataModel>> GetAllDataModelAsync(int recipeId)
+        public async Task<IEnumerable<RecipeProductsDataModel>> GetAllDataModelAsync(object key)
         {
+            int recipeId = (int)key;
             var rpcList = await db.RecipeProductChanges.ToListAsync();
             var query = from rpcOut in rpcList
                         where rpcOut.RecipeId == recipeId
@@ -43,15 +45,34 @@ namespace Cursed.Models.Logic
             return query.ToArray();
         }
 
-        public async Task<IEnumerable<ProductCatalog>> GetProductsFromCatalog(IEnumerable<int> productIdsIgnore)
+        // doesn't fit into interfaces
+        public IEnumerable<ProductCatalog> GetProductsFromCatalog(IEnumerable<int> productIdsIgnore)
         {
             var query = from pc in db.ProductCatalog where !productIdsIgnore.Contains(pc.Id) select pc;
             return query;
         }
 
-        public async Task AddToRecipeProduct(RecipeProductChanges recipeProduct)
+        public async Task AddDataModelAsync(RecipeProductChanges model)
         {
+            db.Add(model);
+            await db.SaveChangesAsync();
+        }
 
+        public async Task UpdateDataModelAsync(RecipeProductChanges model)
+        {
+            var currentModel = await db.RecipeProductChanges.FirstOrDefaultAsync(i => i.RecipeId == model.RecipeId && i.ProductId == model.ProductId);
+            db.Entry(currentModel).CurrentValues.SetValues(model);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task RemoveDataModelAsync(object key)
+        {
+            Tuple<int, int> ids = (Tuple<int, int>)key;
+            var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == ids.Item1 && i.ProductId == ids.Item2);
+
+            db.RecipeProductChanges.Remove(entity);
+
+            await db.SaveChangesAsync();
         }
     }
 }
