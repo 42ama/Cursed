@@ -1,0 +1,62 @@
+﻿@using Cursed.Models.Data.Facilities
+
+@model Pagenation<FacilitiesModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = FacilitiesRouting.Index;
+}
+<h1>Facilities</h1>
+<p>@Html.RouteLink("Add", FacilitiesRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Latitude</td>
+            <td>Longitude</td>
+            <td>Recipe</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            string latitude = item.Latitude.HasValue ? item.Latitude.ToString() : "None";
+            string longitude = item.Longitude.HasValue ? item.Longitude.ToString() : "None";
+            <tr>
+                <td>@item.Name</td>
+                <td>@latitude</td>
+                <td>@longitude</td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Recipe Id</td>
+                                <td>Day Efficiency</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var recipe in item.TechProcesses)
+                            {
+                                <tr>
+                                    <td>@Html.RouteLink(recipe.RecipeId.ToString(), RecipesRouting.SingleItem, new { key = recipe.RecipeId })</td>
+                                    <td>@recipe.DayEffiency</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <p>@Html.RouteLink("Show", FacilitiesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", FacilitiesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@FacilitiesRouting.DeleteSingleItem">
+                        <input hidden type="number" name="key" value="@item.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

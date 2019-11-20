@@ -1,0 +1,86 @@
+﻿@using System.Text;
+@using Cursed.Models.Data.Facilities
+@using Cursed.Models.Data.Shared;
+@model FacilityModel
+@{
+    ViewData["Title"] = "SingleItem";
+}
+<h1>SingleItem</h1>
+
+<h1>@Model.Name</h1>
+<p>@Html.RouteLink("Edit", FacilitiesRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@FacilitiesRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Name:</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>Coordinates:</td>
+        @if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+        {
+            <td>Latitude: @Model.Latitude.Value; Longitude: @Model.Longitude.Value</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
+    </tr>
+
+    <tr>
+        <td>Products:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Recipe Id</td>
+                        <td>Product</td>
+                        <td>Type</td>
+                        <td>Day Efficiency</td>
+                        <td>Produced/consumed in day</td>
+                        <td>Valid state</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.Products)
+                    {
+                        string displayText;
+                        StringBuilder notvalidText = new StringBuilder("Not valid.");
+                        bool allValid = true;
+                        string validText = "Valid.";
+                        string recipeColor = "green", productColor = "green", validColor = "green";
+                        if (!(item.RecipeGovApprov && item.RecipeTechnoApprov))
+                        {
+                            allValid = false;
+                            validColor = "red";
+                            recipeColor = "red";
+                            notvalidText.Append("\nRecipe isn't valid.");
+                        }
+                        if (!item.IsValid)
+                        {
+                            allValid = false;
+                            validColor = "red";
+                            productColor = "red";
+                            notvalidText.Append("\nProduct isn't valid.");
+                        }
+                        var usedInDay = item.Quantity * item.RecipeEfficiency;
+
+                        displayText = allValid ? validText : notvalidText.ToString();
+                        <tr>
+                            <td bgcolor="@recipeColor">@Html.RouteLink(item.RecipeId.ToString(), RecipesRouting.SingleItem, new { key = item.RecipeId })</td>
+                            <td bgcolor="@productColor">@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                            <td>@item.ProductType</td>
+                            <td>@item.RecipeEfficiency</td>
+                            <td>@usedInDay</td>
+                            <td bgcolor="@validColor">@displayText</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
