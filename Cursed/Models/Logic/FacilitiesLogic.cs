@@ -50,7 +50,7 @@ namespace Cursed.Models.Logic
             var facilities = await db.Facility.ToListAsync();
             var licensesList = await db.License.ToListAsync();
 
-            var queryInner = from f in facilities
+            var queryInner = (from f in facilities
                              where f.Id == (int)key
                              join tp in db.TechProcess on f.Id equals tp.FacilityId into techprocesses
                              from tps in techprocesses.DefaultIfEmpty()
@@ -72,7 +72,7 @@ namespace Cursed.Models.Logic
                                  Quantity = rpcs.Quantity,
                                  ProductName = pcs.Name,
                                  LicenseRequired = pcs.LicenseRequired ?? false
-                             } by f.Id;
+                             } by f.Id).ToList();
 
             // for each product connect license from previously loaded list and set IsValid property,
             // baseed on validation
