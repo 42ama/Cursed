@@ -1,0 +1,18 @@
+﻿@using Cursed.Models.Data.Utility
+@model PagenationAbstract
+@{
+    string key = (string)ViewData["PagenationKey"];
+}
+
+<table align="right">
+    <tr>
+        @if (Model.Prev)
+        {
+            <td>@Html.RouteLink("Prev", ViewData["PagenationRouteLink"] as string, new { key = key, currentPage = Model.CurrentPage - 1, itemsOnPage = Model.ItemsOnPage })</td>
+        }
+        @if (Model.Next)
+        {
+            <td>@Html.RouteLink("Next", ViewData["PagenationRouteLink"] as string, new { key = key, currentPage = Model.CurrentPage + 1, itemsOnPage = Model.ItemsOnPage })</td>
+        }
+    </tr>
+</table>
