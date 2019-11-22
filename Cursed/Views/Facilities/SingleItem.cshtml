@@ -9,6 +9,7 @@
 
 <h1>@Model.Name</h1>
 <p>@Html.RouteLink("Edit", FacilitiesRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<p>@Html.RouteLink("Change technological process", FacilityTechProcessesRouting.Index, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@FacilitiesRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
