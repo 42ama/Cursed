@@ -1,0 +1,74 @@
+﻿@using Cursed.Models.Data.FacilityTechProcesses
+@using System.Text;
+
+@model Pagenation<FacilityTechProcessesDataModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = FacilityTechProcessesRouting.Index;
+    int facilityId = (int)ViewData["FacilityId"];
+    string facilitiyName = Model.PagenatedCollection.First().FacilityName;
+}
+<h1>Facilitiy: @facilitiyName</h1>
+<p>@Html.RouteLink("Back to facilitiy", FacilitiesRouting.SingleItem, new { key = facilityId.ToString() })</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.AddSingleItem">
+    <input hidden name="FacilityId" type="number" value="@facilityId" />
+    <input required name="RecipeId" type="number" placeholder="Recipe Id" />
+    <input required name="DayEffiency" type="number" placeholder="Day Efficiency" />
+    <input type="submit" class="btn btn-default" value="Add" />
+</form>
+<table>
+    <thead>
+        <tr>
+            <td>Recipe</td>
+            <td colspan="3">Content</td>
+            <td>Day Efficiency</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            bool isValid = true;
+            string validColor = "green";
+            string validText = "Recipe valid.";
+            StringBuilder notvalidText = new StringBuilder("Not validated by: ");
+            if(!item.RecipeGovApprov)
+            {
+                isValid = false;
+                validColor = "red";
+                notvalidText.Append("\nGoverment.");
+            }
+            if(!item.RecipeTechApprov)
+            {
+                isValid = false;
+                validColor = "red";
+                notvalidText.Append("\nTechnologist.");
+            }
+            string displayText = isValid ? validText : notvalidText.ToString();
+            <tr>
+                <td bgcolor="@validColor">
+                    <p>Id: @Html.RouteLink(item.RecipeId.ToString(), RecipesRouting.SingleItem, new { key = item.RecipeId })</p>
+                    <p>@displayText</p>
+                </td>
+                <td colspan="3">@item.RecipeContent</td>
+                <td>@item.DayEffiency</td>
+                <td>
+                    <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.EditSingleItem">
+                        <input hidden name="FacilityId" type="number" value="@facilityId" />
+                        <input hidden name="RecipeId" type="number" value="@item.RecipeId" />
+                        <input required name="DayEffiency" type="number" value="@item.DayEffiency" placeholder="Day Efficiency"/>
+                        <input type="submit" class="btn btn-default" value="Edit" />
+                    </form>
+                    <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.DeleteSingleItem">
+                        <input hidden name="FacilityId" type="number" value="@facilityId" />
+                        <input hidden name="RecipeId" type="number" value="@item.RecipeId" />
+                        <input type="submit" class="btn btn-default" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)
