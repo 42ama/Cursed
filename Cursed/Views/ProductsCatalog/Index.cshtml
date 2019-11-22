@@ -7,7 +7,7 @@
 }
 
 <h1>Product Catalog Index</h1>
-<p>@Html.RouteLink("Add", ProductsCatalogRouting.AddSingleItem)</p>
+<p>@Html.RouteLink("Add", ProductsCatalogRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
 <table>
