@@ -16,7 +16,7 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
-    public class RecipeProductsLogic : IReadCollectionByParam<RecipeProductsDataModel>, ICUD<RecipeProductChanges>
+    public class RecipeProductsLogic : IReadCollectionByParam<RecipeProductsDataModel>, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
         private readonly CursedContext db;
         public RecipeProductsLogic(CursedContext db)
@@ -65,10 +65,9 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
         }
 
-        public async Task RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(RecipeProductChanges model)
         {
-            Tuple<int, int> ids = (Tuple<int, int>)key;
-            var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == ids.Item1 && i.ProductId == ids.Item2);
+            var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == model.RecipeId && i.ProductId == model.ProductId);
 
             db.RecipeProductChanges.Remove(entity);
 

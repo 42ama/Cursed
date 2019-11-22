@@ -16,7 +16,7 @@ using Cursed.Models.Routing;
 namespace Cursed.Controllers
 {
     [Route("recipes/products")]
-    public class RecipeProductsController : Controller, ICUD<RecipeProductChanges>, IReadCollectionByParam
+    public class RecipeProductsController : Controller, IReadCollectionByParam, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
         private readonly RecipeProductsLogic logic;
         public RecipeProductsController(CursedContext db)
@@ -44,22 +44,21 @@ namespace Cursed.Controllers
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
         {
             await logic.AddDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = (int)ViewData["RecipeId"] });
+            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
 
         [HttpPost("edit", Name = RecipeProductsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
         {
             await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(CompaniesRouting.Index, new { key = (int)ViewData["RecipeId"] });
+            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
 
         [HttpPost("delete", Name = RecipeProductsRouting.DeleteSingleItem)]
-        public async Task<IActionResult> DeleteSingleItem(string key)
+        public async Task<IActionResult> DeleteSingleItem(RecipeProductChanges model)
         {
-            int productId = Int32.Parse(key);
-            await logic.RemoveDataModelAsync(((int)ViewData["RecipeId"], productId));
-            return RedirectToRoute(CompaniesRouting.Index, new { key = (int)ViewData["RecipeId"] });
+            await logic.RemoveDataModelAsync(model);
+            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
     }
 }

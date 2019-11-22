@@ -48,7 +48,8 @@
                         <input type="submit" class="btn btn-default" value="Edit" />
                     </form>
                     <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.DeleteSingleItem">
-                        <input hidden name="key" type="number" value="@item.ProductId" />
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.ProductId" />
                         <input type="submit" class="btn btn-default" value="Delete" />
                     </form>
                 </td>
