@@ -5,7 +5,7 @@ namespace Cursed.Models.Interfaces.LogicCRUD
     /// <summary>
     /// Delete action of CRUD model
     /// </summary>
-    public interface IDelete
+    public interface IDeleteByKey
     {
         /// <summary>
         /// Delete data model from database
