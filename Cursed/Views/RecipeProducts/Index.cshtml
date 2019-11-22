@@ -5,6 +5,7 @@
 @model CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
 @{
     int recipeId = (int)ViewData["RecipeId"];
+    ViewData["PagenationKey"] = recipeId.ToString();
     SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material});
     ViewData["Title"] = "Index";
     ViewData["PagenationRouteLink"] = RecipeProductsRouting.Index;
@@ -57,8 +58,8 @@
         }
     </tbody>
 </table>
-@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model.Pagenation, ViewData)
-@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model.Pagenation, ViewData)
+@await Html.PartialAsync("_PagenationByParam/ItemsOnPageControl", (PagenationAbstract)Model.Pagenation, ViewData)
+@await Html.PartialAsync("_PagenationByParam/PagesControl", (PagenationAbstract)Model.Pagenation, ViewData)
 <h2>All products:</h2>
 <table>
     <thead>
@@ -98,4 +99,4 @@
         }
         </tbody>
 </table>
-@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model.Pagenation, ViewData)
+@await Html.PartialAsync("_PagenationByParam/PrevNextControl", (PagenationAbstract)Model.Pagenation, ViewData)

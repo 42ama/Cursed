@@ -6,12 +6,13 @@
     ViewData["Title"] = "Index";
     ViewData["PagenationRouteLink"] = FacilityTechProcessesRouting.Index;
     int facilityId = (int)ViewData["FacilityId"];
+    ViewData["PagenationKey"] = facilityId.ToString();
     string facilitiyName = Model.PagenatedCollection.First().FacilityName;
 }
 <h1>Facilitiy: @facilitiyName</h1>
 <p>@Html.RouteLink("Back to facilitiy", FacilitiesRouting.SingleItem, new { key = facilityId.ToString() })</p>
-@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
-@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_PagenationByParam/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_PagenationByParam/PagesControl", (PagenationAbstract)Model, ViewData)
 <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.AddSingleItem">
     <input hidden name="FacilityId" type="number" value="@facilityId" />
     <input required name="RecipeId" type="number" placeholder="Recipe Id" />
@@ -71,4 +72,4 @@
         }
     </tbody>
 </table>
-@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_PagenationByParam/PrevNextControl", (PagenationAbstract)Model, ViewData)
