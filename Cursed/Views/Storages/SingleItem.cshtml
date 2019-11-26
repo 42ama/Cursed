@@ -6,11 +6,13 @@
 <h1>SingleItem</h1>
 
 <h1>@Model.Name</h1>
+<p>@Html.RouteLink("Products", ProductsRouting.Index, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Edit", StoragesRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@StoragesRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
 </form>
+
 <table>
     <tr>
         <td>Name:</td>
@@ -61,7 +63,6 @@
                         <td>@item.Price $</td>
                         <td>@total $</td>
                         <td>
-                            <p>@Html.RouteLink("Show", ProductsRouting.SingleItem, new { key = item.Uid })</p>
                             <p>@Html.RouteLink("Show in catalog", ProductsCatalogRouting.SingleItem, new { key = item.Uid })</p>
                         </td>
                     </tr>

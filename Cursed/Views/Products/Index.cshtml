@@ -1,0 +1,36 @@
+﻿@using Cursed.Models.Data.Products
+@model Pagenation<ProductsDataModel>
+@{
+    ViewData["Title"] = "Index";
+    int storageId = (int)ViewData["StorageId"];
+}
+
+<h1>Products at @Html.RouteLink($"storage №{storageId}", StoragesRouting.SingleItem, new { key = storageId })</h1>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Type</td>
+            <td>Quantity</td>
+            <td>Price</td>
+            <td>Total</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            string quantity = $"{item.Quantity} {item.QuantityUnit}.";
+            decimal total = item.Price * item.Quantity;
+            <tr>
+                <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Uid })</td>
+                <td>@item.Type</td>
+                <td>@quantity</td>
+                <td>@item.Price $</td>
+                <td>@total $</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)
