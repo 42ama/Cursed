@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Cursed\Cursed.csproj" />
+  </ItemGroup>
+
 </Project>
