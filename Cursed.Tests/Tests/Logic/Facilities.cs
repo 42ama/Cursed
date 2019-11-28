@@ -7,6 +7,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Facilities;
 using Cursed.Models.Data.Shared;
+using Cursed.Tests.Helpers;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -359,14 +360,14 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     Id = 44440,
                     GovermentNum = 4040404,
-                    Date = DateTime.Now.AddDays(1),
+                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
                     ProductId = 44442
                 },
                 new License
                 {
                     Id = 44441,
                     GovermentNum = 4040414,
-                    Date = DateTime.Now.AddDays(-1),
+                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(-1),
                     ProductId = 44444
                 }
             };

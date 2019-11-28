@@ -7,6 +7,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Companies;
 using Cursed.Models.Data.Utility;
+using Cursed.Tests.Helpers;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -145,7 +146,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionBatch
                 {
                     CompanyId = 44441,
-                    Date = DateTime.Now,
+                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
                     Id = 44440,
                     Type = "income"
                 }
@@ -242,7 +243,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionBatch
                 {
                     CompanyId = 44441,
-                    Date = DateTime.Now,
+                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
                     Id = 44440,
                     Type = "income"
                 }
