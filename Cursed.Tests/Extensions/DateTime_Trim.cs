@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Cursed.Tests.Helpers
+namespace Cursed.Tests.Extensions
 {
-    public static partial class Helper
+    public static partial class Extension
     {
         public static DateTime Trim(this DateTime date, long roundTicks)
         {
