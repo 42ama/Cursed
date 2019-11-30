@@ -11,132 +11,60 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class RecipeProducts : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class RecipeProductsTests
     {
         private readonly TestsFixture fixture;
         private readonly RecipeProductsLogic logic;
 
-        public RecipeProducts(TestsFixture fixture)
+        public RecipeProductsTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new RecipeProductsLogic(fixture.db);
         }
 
-        [Fact]
-        public async void AddDataModelAsync()
+        private RecipeProductChanges GetRecipeProductChanges()
         {
-            // arrange
-            var expected = new RecipeProductChanges
+            return new RecipeProductChanges
             {
                 ProductId = 44440,
                 RecipeId = 44440,
                 Quantity = (decimal)12.3456,
                 Type = ProductCatalogTypes.Product
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == expected.ProductId && i.RecipeId == expected.RecipeId);
-            Assert.Equal(expected.ProductId, actual.ProductId);
-            Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.Quantity, actual.Quantity);
-            Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            fixture.db.RecipeProductChanges.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<RecipeProductChanges> GetRecipeProductsChanges()
         {
-            // arrange
-            var recipeProductChanges = new RecipeProductChanges
-            {
-                ProductId = 44440,
-                RecipeId = 44440,
-                Quantity = (decimal)12.3456,
-                Type = ProductCatalogTypes.Product
-            };
-            fixture.db.Add(recipeProductChanges);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(recipeProductChanges);
-
-            // assert
-            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == recipeProductChanges.ProductId && i.RecipeId == recipeProductChanges.RecipeId);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var recipeProductChanges = new RecipeProductChanges
-            {
-                ProductId = 44440,
-                RecipeId = 44440,
-                Quantity = (decimal)12.3456,
-                Type = ProductCatalogTypes.Product
-            };
-            fixture.db.Add(recipeProductChanges);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new RecipeProductChanges
-            {
-                ProductId = 44440,
-                RecipeId = 44440,
-                Quantity = (decimal)78.9012,
-                Type = ProductCatalogTypes.Product
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == recipeProductChanges.ProductId && i.RecipeId == recipeProductChanges.RecipeId);
-            Assert.Equal(expected.ProductId, actual.ProductId);
-            Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.Quantity, actual.Quantity);
-            Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            fixture.db.RecipeProductChanges.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            int recipeId = 44440;
-            var recipeProductsChanges = new RecipeProductChanges[]
+            return new RecipeProductChanges[]
             {
                 new RecipeProductChanges
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44440,
                     Quantity = 15,
                     Type = ProductCatalogTypes.Product
                 },
                 new RecipeProductChanges
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44441,
                     Quantity = 9,
                     Type = ProductCatalogTypes.Material
                 },
                 new RecipeProductChanges
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44442,
                     Quantity = 10,
                     Type = ProductCatalogTypes.Material
                 }
             };
-            var productsCatalog = new ProductCatalog[]
+        }
+
+        private IEnumerable<ProductCatalog> GetProductsCatalog()
+        {
+            return new ProductCatalog[]
             {
                 new ProductCatalog
                 {
@@ -159,6 +87,80 @@ namespace Cursed.Tests.Tests.Logic
                     Cas = 4041404
                 }
             };
+        }
+
+        [Fact]
+        public async void AddRecipeProduct_ToEmptyDbTable_AddedRecipeProductEqualExpectedRecipeProduct()
+        {
+            // arrange
+            var expected = GetRecipeProductChanges();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == expected.ProductId && i.RecipeId == expected.RecipeId);
+            Assert.Equal(expected.ProductId, actual.ProductId);
+            Assert.Equal(expected.RecipeId, actual.RecipeId);
+            Assert.Equal(expected.Quantity, actual.Quantity);
+            Assert.Equal(expected.Type, actual.Type);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveRecipeProductChanges_FromInitializedDbTable_RemovedRecipeProductChangesNotFoundInDb()
+        {
+            // arrange
+            var recipeProductChanges = GetRecipeProductChanges();
+            fixture.db.Add(recipeProductChanges);
+
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(recipeProductChanges);
+
+            // assert
+            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == recipeProductChanges.ProductId && i.RecipeId == recipeProductChanges.RecipeId);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateRecipeProductChanges_AtInitializedDbTable_UpdatedRecipeProductChangesEqualExpectedRecipeProductChanges()
+        {
+            // arrange
+            var recipeProductChanges = GetRecipeProductChanges();
+            fixture.db.Add(recipeProductChanges);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new RecipeProductChanges
+            {
+                ProductId = recipeProductChanges.ProductId,
+                RecipeId = recipeProductChanges.RecipeId,
+                Quantity = (decimal)78.9012,
+                Type = ProductCatalogTypes.Product
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.RecipeProductChanges.FirstOrDefaultAsync(i => i.ProductId == recipeProductChanges.ProductId && i.RecipeId == recipeProductChanges.RecipeId);
+            Assert.Equal(expected.ProductId, actual.ProductId);
+            Assert.Equal(expected.RecipeId, actual.RecipeId);
+            Assert.Equal(expected.Quantity, actual.Quantity);
+            Assert.Equal(expected.Type, actual.Type);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void GetListRecipeProductsDataModel_FromInitializedDbTables_LogicRecipeProductsDataModelsEqualExpectedRecipeProductsDataModels()
+        {
+            var recipeProductsChanges = GetRecipeProductsChanges();
+            var productsCatalog = GetProductsCatalog();
 
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.RecipeProductChanges.AddRange(recipeProductsChanges);
@@ -167,7 +169,7 @@ namespace Cursed.Tests.Tests.Logic
             {
                 new RecipeProductsDataModel
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44440,
                     Type = ProductCatalogTypes.Product,
                     Quantity = 15,
@@ -177,7 +179,7 @@ namespace Cursed.Tests.Tests.Logic
                 },
                 new RecipeProductsDataModel
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44441,
                     Type = ProductCatalogTypes.Material,
                     Quantity = 9,
@@ -187,7 +189,7 @@ namespace Cursed.Tests.Tests.Logic
                 },
                 new RecipeProductsDataModel
                 {
-                    RecipeId = recipeId,
+                    RecipeId = 44440,
                     ProductId = 44442,
                     Type = ProductCatalogTypes.Material,
                     Quantity = 10,
@@ -198,7 +200,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetAllDataModelAsync(recipeId)).ToList();
+            var actual = (await logic.GetAllDataModelAsync(expected.First().RecipeId)).ToList();
 
             // assert
             foreach (var expectedItem in expected)
@@ -214,9 +216,7 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.RecipeProductChanges.RemoveRange(recipeProductsChanges);
-            fixture.db.ProductCatalog.RemoveRange(productsCatalog);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

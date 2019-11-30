@@ -11,22 +11,21 @@ using Cursed.Models.Data.Utility;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class Storages : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class StoragesTests
     {
         private readonly TestsFixture fixture;
         private readonly StoragesLogic logic;
 
-        public Storages(TestsFixture fixture)
+        public StoragesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new StoragesLogic(fixture.db);
         }
 
-        [Fact]
-        public async void AddDataModelAsync()
+        private Storage GetStorage()
         {
-            // arrange
-            var expected = new Storage
+            return new Storage
             {
                 Id = 44440,
                 Name = "Test storage",
@@ -34,90 +33,11 @@ namespace Cursed.Tests.Tests.Logic
                 Longitude = (decimal)78.9012,
                 CompanyId = 44440
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Latitude, actual.Latitude);
-            Assert.Equal(expected.Longitude, actual.Longitude);
-            Assert.Equal(expected.CompanyId, actual.CompanyId);
-
-            // dispose
-            fixture.db.Storage.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<Storage> GetStorages()
         {
-            // arrange
-            var storage = new Storage
-            {
-                Id = 44440,
-                Name = "Test storage",
-                Latitude = (decimal)12.3456,
-                Longitude = (decimal)78.9012,
-                CompanyId = 44440
-            };
-            fixture.db.Add(storage);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(storage.Id);
-
-            // assert
-            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == storage.Id);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var storage = new Storage
-            {
-                Id = 44440,
-                Name = "Test storage",
-                Latitude = (decimal)12.3456,
-                Longitude = (decimal)78.9012,
-                CompanyId = 44440
-            }; 
-            fixture.db.Add(storage);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new Storage
-            {
-                Id = 44440,
-                Name = "Tested storage",
-                Latitude = (decimal)12.3456,
-                Longitude = (decimal)78.9012,
-                CompanyId = 44440
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Latitude, actual.Latitude);
-            Assert.Equal(expected.Longitude, actual.Longitude);
-            Assert.Equal(expected.CompanyId, actual.CompanyId);
-
-            // dispose
-            fixture.db.Storage.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            var storages = new Storage[]
+            return new Storage[]
             {
                 new Storage
                 {
@@ -144,17 +64,29 @@ namespace Cursed.Tests.Tests.Logic
                     CompanyId = 44441
                 }
             };
-            var products = new Product[]
+        }
+
+        private IEnumerable<Product> GetProducts()
+        {
+            return new Product[]
             {
                 new Product
                 {
                     Id = 44440,
-                    StorageId = 44440
+                    Uid = 44440,
+                    StorageId = 44440,
+                    Price = 15,
+                    Quantity = 12,
+                    QuantityUnit = "mg."
                 },
                 new Product
                 {
                     Id = 44441,
-                    StorageId = 44440
+                    Uid = 44441,
+                    StorageId = 44440,
+                    Price = 17,
+                    Quantity = 2,
+                    QuantityUnit = "mg."
                 },
                 new Product
                 {
@@ -167,7 +99,11 @@ namespace Cursed.Tests.Tests.Logic
                     StorageId = 44442
                 }
             };
-            var companies = new Company[]
+        }
+
+        private IEnumerable<Company> GetCompanies()
+        {
+            return new Company[]
             {
                 new Company
                 {
@@ -180,6 +116,100 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Company #2"
                 }
             };
+        }
+
+        private IEnumerable<ProductCatalog> GetProductCatalogs()
+        {
+            return new ProductCatalog[]
+            {
+                new ProductCatalog
+                {
+                    Id = 44440,
+                    Name = "Testin"
+                },
+                new ProductCatalog
+                {
+                    Id = 44441,
+                    Name = "Testesteron"
+                }
+            };
+        }
+
+        [Fact]
+        public async void AddStorage_ToEmptyDbTable_AddedStorageEqualExpectedStorage()
+        {
+            // arrange
+            var expected = GetStorage();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.Latitude, actual.Latitude);
+            Assert.Equal(expected.Longitude, actual.Longitude);
+            Assert.Equal(expected.CompanyId, actual.CompanyId);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveStorag_FromInitializedDbTable_RemovedStoragNotFoundInDb()
+        {
+            // arrange
+            var storage = GetStorage();
+            fixture.db.Add(storage);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(storage.Id);
+
+            // assert
+            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == storage.Id);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateStorage_AtInitializedDbTable_UpdatedStorageEqualExpectedStorage()
+        {
+            // arrange
+            var storage = GetStorage();
+            fixture.db.Add(storage);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new Storage
+            {
+                Id = storage.Id,
+                Name = "Tested storage",
+                Latitude = (decimal)12.3456,
+                Longitude = (decimal)78.9012,
+                CompanyId = 44440
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.Storage.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.Latitude, actual.Latitude);
+            Assert.Equal(expected.Longitude, actual.Longitude);
+            Assert.Equal(expected.CompanyId, actual.CompanyId);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void GetListStoragesModel_FromInitializedDbTables_LogicStoragesModelsEqualExpectedStoragesModels()
+        {
+            var storages = GetStorages();
+            var products = GetProducts();
+            var companies = GetCompanies();
 
             fixture.db.Storage.AddRange(storages);
             fixture.db.Product.AddRange(products);
@@ -233,71 +263,19 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.Product.RemoveRange(products);
-            fixture.db.Storage.RemoveRange(storages);
-            fixture.db.Company.RemoveRange(companies);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleDataModelAsync()
+        public async void GetStorageModel_FromInitializedDbTables_LogicStorageModelEqualExpectedStorageModel()
         {
             // arrange
-            var storages = new Storage[]
-            {
-                new Storage
-                {
-                    Id = 44440,
-                    Name = "Test storage #1",
-                    Latitude = (decimal)12.3456,
-                    Longitude = (decimal)78.9012,
-                    CompanyId = 44440
-                }
-            };
-            var productsCatalog = new ProductCatalog[]
-            {
-                new ProductCatalog
-                {
-                    Id = 44440,
-                    Name = "Testin"
-                },
-                new ProductCatalog
-                {
-                    Id = 44441,
-                    Name = "Testesteron"
-                }
-            };
-            var products = new Product[]
-            {
-                new Product
-                {
-                    Id = 44440,
-                    Uid = 44440,
-                    StorageId = 44440,
-                    Price = 15,
-                    Quantity = 12,
-                    QuantityUnit = "mg."
-                },
-                new Product
-                {
-                    Id = 44441,
-                    Uid = 44441,
-                    StorageId = 44440,
-                    Price = 17,
-                    Quantity = 2,
-                    QuantityUnit = "mg."
-                }
-            };
-            var companies = new Company[]
-            {
-                new Company
-                {
-                    Id = 44440,
-                    Name = "Company #1"
-                }
-            };
+            var productsCatalog = GetProductCatalogs();
+            var storages = GetStorages();
+            var products = GetProducts();
+            var companies = GetCompanies();
 
-            
+
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.Storage.AddRange(storages);
             fixture.db.Product.AddRange(products);
@@ -312,7 +290,7 @@ namespace Cursed.Tests.Tests.Logic
                 Company = new TitleIdContainer { Title = "Company #1", Id = 44440 },
                 Products = new List<ProductContainer>()
             };
-            foreach (var product in products)
+            foreach (var product in products.Where(i => i.StorageId == expected.Id))
 	        {
                 var productCatalog = productsCatalog.Single(i => product.Uid == i.Id);
                 expected.Products.Add(new ProductContainer
@@ -348,25 +326,14 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.Company.RemoveRange(companies);
-            fixture.db.Product.RemoveRange(products);
-            fixture.db.Storage.RemoveRange(storages);
-            fixture.db.ProductCatalog.RemoveRange(productsCatalog);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleUpdateModelAsync()
+        public async void GetStorage_FromInitializedDbTable_LogicStorageEqualExpectedStorage()
         {
             // arrange
-            var expected = new Storage
-            {
-                Id = 44440,
-                Name = "Test storage #1",
-                Latitude = (decimal)12.3456,
-                Longitude = (decimal)78.9012,
-                CompanyId = 44440
-            };
+            var expected = GetStorage();
 
             fixture.db.Add(expected);
             await fixture.db.SaveChangesAsync();
@@ -382,8 +349,7 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.CompanyId, actual.CompanyId);
 
             // dispose
-            fixture.db.Storage.Remove(actual);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

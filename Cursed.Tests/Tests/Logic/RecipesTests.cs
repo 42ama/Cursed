@@ -10,109 +10,32 @@ using Cursed.Models.Data.Recipes;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class Recipes : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class RecipesTests
     {
         private readonly TestsFixture fixture;
         private readonly RecipesLogic logic;
 
-        public Recipes(TestsFixture fixture)
+        public RecipesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new RecipesLogic(fixture.db);
         }
 
-        [Fact]
-        public async void AddDataModelAsync()
+        private Recipe GetRecipe()
         {
-            // arrange
-            var expected = new Recipe
+            return new Recipe
             {
                 Id = 44440,
                 Content = "Test content",
                 GovermentApproval = true,
                 TechApproval = false
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.Content, actual.Content);
-            Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
-            Assert.Equal(expected.TechApproval, actual.TechApproval);
-
-            // dispose
-            fixture.db.Recipe.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<Recipe> GetRecipes()
         {
-            // arrange
-            var recipe = new Recipe
-            {
-                Id = 44440,
-                Content = "Test content",
-                GovermentApproval = true,
-                TechApproval = false
-            };
-            fixture.db.Add(recipe);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(recipe.Id);
-
-            // assert
-            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var recipe = new Recipe
-            {
-                Id = 44440,
-                Content = "Test content",
-                GovermentApproval = true,
-                TechApproval = false
-            };
-            fixture.db.Add(recipe);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new Recipe
-            {
-                Id = 44440,
-                Content = "Tested content",
-                GovermentApproval = true,
-                TechApproval = false
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.Content, actual.Content);
-            Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
-            Assert.Equal(expected.TechApproval, actual.TechApproval);
-
-            // dispose
-            fixture.db.Recipe.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            // arrange
-            var recipe = new Recipe[]
+            return new Recipe[]
             {
                 new Recipe
                 {
@@ -129,8 +52,11 @@ namespace Cursed.Tests.Tests.Logic
                     TechApproval = false
                 }
             };
+        }
 
-            var recipeInheritance = new RecipeInheritance[]
+        private IEnumerable<RecipeInheritance> GetRecipeInheritances()
+        {
+            return new RecipeInheritance[]
             {
                 new RecipeInheritance
                 {
@@ -138,8 +64,11 @@ namespace Cursed.Tests.Tests.Logic
                     ChildId = 44441
                 },
             };
+        }
 
-            var productsCatalog = new ProductCatalog[]
+        private IEnumerable<ProductCatalog> GetProductsCatalog()
+        {
+            return new ProductCatalog[]
             {
                 new ProductCatalog
                 {
@@ -174,8 +103,11 @@ namespace Cursed.Tests.Tests.Logic
                     Type = ProductCatalogTypes.Material
                 },
             };
+        }
 
-            var recipeProductsChanges = new RecipeProductChanges[]
+        private IEnumerable<RecipeProductChanges> GetRecipeProductsChanges()
+        {
+            return new RecipeProductChanges[]
             {
                 new RecipeProductChanges
                 {
@@ -220,9 +152,86 @@ namespace Cursed.Tests.Tests.Logic
                     Quantity = (decimal)12.3456
                 },
             };
+        }
+
+        [Fact]
+        public async void AddRecipe_ToEmptyDbTable_AddedRecipeEqualExpectedRecipe()
+        {
+            // arrange
+            var expected = GetRecipe();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.Content, actual.Content);
+            Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
+            Assert.Equal(expected.TechApproval, actual.TechApproval);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveRecipe_FromInitializedDbTable_RemovedRecipeNotFoundInDb()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(recipe.Id);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateRecipe_AtInitializedDbTable_UpdatedRecipeEqualExpectedRecipe()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new Recipe
+            {
+                Id = recipe.Id,
+                Content = "Tested content",
+                GovermentApproval = true,
+                TechApproval = false
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.Content, actual.Content);
+            Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
+            Assert.Equal(expected.TechApproval, actual.TechApproval);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+
+        [Fact]
+        public async void GetListRecipesModel_FromInitializedDbTables_LogicRecipesModelsEqualExpectedRecipesModels()
+        {
+            // arrange
+            var recipe = GetRecipes();
+            var recipeInheritances = GetRecipeInheritances();
+            var productsCatalog = GetProductsCatalog();
+            var recipeProductsChanges = GetRecipeProductsChanges();
 
             fixture.db.Recipe.AddRange(recipe);
-            fixture.db.RecipeInheritance.AddRange(recipeInheritance);
+            fixture.db.RecipeInheritance.AddRange(recipeInheritances);
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.RecipeProductChanges.AddRange(recipeProductsChanges);
             await fixture.db.SaveChangesAsync();
@@ -270,89 +279,17 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.RecipeInheritance.RemoveRange(recipeInheritance);
-            fixture.db.RecipeProductChanges.RemoveRange(recipeProductsChanges);
-            fixture.db.Recipe.RemoveRange(recipe);
-            fixture.db.ProductCatalog.RemoveRange(productsCatalog);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleDataModelAsync()
+        public async void GetRecipeModel_FromInitializedDbTables_LogicRecipeModelEqualExpectedRecipeModel()
         {
             // arrange
-            var recipe = new Recipe[]
-            {
-                new Recipe
-                {
-                    Id = 44440,
-                    Content = "I am recipe #1",
-                    GovermentApproval = true,
-                    TechApproval = true
-                }
-            };
-
-            var recipeInheritance = new RecipeInheritance[]
-            {
-                new RecipeInheritance
-                {
-                    ParentId = 44440,
-                    ChildId = 44441
-                },
-            };
-
-            var productsCatalog = new ProductCatalog[]
-            {
-                new ProductCatalog
-                {
-                    Id = 44440,
-                    Cas = 4040404,
-                    Name = "Testesteron",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Product
-                },
-                new ProductCatalog
-                {
-                    Id = 44441,
-                    Cas = 4040414,
-                    Name = "Testin",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Material
-                },
-                new ProductCatalog
-                {
-                    Id = 44442,
-                    Cas = 4041404,
-                    Name = "Testonion",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Material
-                }
-            };
-
-            var recipeProductsChanges = new RecipeProductChanges[]
-            {
-                new RecipeProductChanges
-                {
-                    RecipeId = 44440,
-                    ProductId = 44440,
-                    Type = ProductCatalogTypes.Product,
-                    Quantity = 10
-                },
-                new RecipeProductChanges
-                {
-                    RecipeId = 44440,
-                    ProductId = 44441,
-                    Type = ProductCatalogTypes.Material,
-                    Quantity = (decimal)12.3456
-                },
-                new RecipeProductChanges
-                {
-                    RecipeId = 44440,
-                    ProductId = 44442,
-                    Type = ProductCatalogTypes.Material,
-                    Quantity = (decimal)12.3456
-                }
-            };
+                        var recipe = GetRecipes();
+            var recipeInheritance = GetRecipeInheritances();
+            var productsCatalog = GetProductsCatalog();
+            var recipeProductsChanges = GetRecipeProductsChanges();
 
             fixture.db.Recipe.AddRange(recipe);
             fixture.db.RecipeInheritance.AddRange(recipeInheritance);
@@ -397,7 +334,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = await logic.GetSingleDataModelAsync(44440);
+            var actual = await logic.GetSingleDataModelAsync(expected.Id);
 
             // assert
             Assert.Equal(expected.Id, actual.Id);
@@ -417,24 +354,14 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.RecipeInheritance.RemoveRange(recipeInheritance);
-            fixture.db.RecipeProductChanges.RemoveRange(recipeProductsChanges);
-            fixture.db.Recipe.RemoveRange(recipe);
-            fixture.db.ProductCatalog.RemoveRange(productsCatalog);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleUpdateModelAsync()
+        public async void GetRecipe_FromInitializedDbTable_LogicRecipeEqualExpectedRecipe()
         {
             // arrange
-            var expected = new Recipe
-            {
-                Id = 44440,
-                Content = "I am recipe #1",
-                GovermentApproval = true,
-                TechApproval = true
-            };
+            var expected = GetRecipe();
 
             fixture.db.Add(expected);
             await fixture.db.SaveChangesAsync();
@@ -449,8 +376,7 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.TechApproval, actual.TechApproval);
 
             // dispose
-            fixture.db.Recipe.Remove(actual);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

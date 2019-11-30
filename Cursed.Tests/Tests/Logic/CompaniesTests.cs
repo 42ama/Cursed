@@ -7,100 +7,34 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Companies;
 using Cursed.Models.Data.Utility;
-using Cursed.Tests.Helpers;
+using Cursed.Tests.Extensions;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class Companies : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class CompaniesTests
     {
         private readonly TestsFixture fixture;
         private readonly CompaniesLogic logic;
 
-        public Companies(TestsFixture fixture)
+        public CompaniesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new CompaniesLogic(fixture.db);
         }
 
-        [Fact]
-        public async void AddDataModelAsync()
+        private Company GetCompany()
         {
-            // arrange
-            var expected = new Company
+            return new Company
             {
                 Id = 44440,
                 Name = "Test company"
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-            
-            // assert
-            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.True(actual.Id == expected.Id);
-            Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            fixture.db.Company.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<Company> GetCompanies()
         {
-            // arrange
-            var company = new Company
-            {
-                Id = 44440,
-                Name = "Test company"
-            };
-            fixture.db.Add(company);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(company.Id);
-
-            // assert
-            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == company.Id);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var company = new Company
-            {
-                Id = 44440,
-                Name = "Test company"
-            };
-            fixture.db.Add(company);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new Company
-            {
-                Id = 44440,
-                Name = "Tested company"
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.True(actual.Id == expected.Id);
-            Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            fixture.db.Company.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            // arrange
-            var companies = new Company[]
+            return new Company[]
             {
                 new Company
                 {
@@ -113,8 +47,11 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Test company #2",
                 }
             };
-
-            var storages = new Storage[]
+        }
+        
+        private IEnumerable<Storage> GetStorages()
+        {
+            return new Storage[]
             {
                 new Storage
                 {
@@ -141,7 +78,11 @@ namespace Cursed.Tests.Tests.Logic
                     CompanyId = 44441
                 }
             };
-            var transactions = new TransactionBatch[]
+        }
+
+        private IEnumerable<TransactionBatch> GetTransactions()
+        {
+            return new TransactionBatch[]
             {
                 new TransactionBatch
                 {
@@ -151,6 +92,77 @@ namespace Cursed.Tests.Tests.Logic
                     Type = "income"
                 }
             };
+        }
+
+
+        [Fact]
+        public async void AddCompany_ToEmptyDbTable_AddedCompanyEqualExpectedCompany()
+        {
+            // arrange
+            var expected = GetCompany();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+            
+            // assert
+            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.True(actual.Id == expected.Id);
+            Assert.True(actual.Name == expected.Name);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveCompany_FromInitializedDbTable_RemovedCompanyNotFoundInDb()
+        {
+            // arrange
+            var company = GetCompany();
+            fixture.db.Add(company);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(company.Id);
+
+            // assert
+            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == company.Id);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateCompany_AtInitializedDbTable_UpdatedCompanyEqualExpectedCompany()
+        {
+            // arrange
+            var company = GetCompany();
+            fixture.db.Add(company);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new Company
+            {
+                Id = company.Id,
+                Name = "Tested company"
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.True(actual.Id == expected.Id);
+            Assert.True(actual.Name == expected.Name);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void GetListCompaniesModel_FromInitializedDbTables_LogicCompaniesModelsEqualExpectedCompaniesModels()
+        {
+            // arrange
+            var companies = GetCompanies();
+            var storages = GetStorages();
+            var transactions = GetTransactions();
+
             fixture.db.Company.AddRange(companies);
             fixture.db.Storage.AddRange(storages);
             fixture.db.TransactionBatch.AddRange(transactions);
@@ -187,83 +199,30 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.Storage.RemoveRange(storages);
-            fixture.db.TransactionBatch.RemoveRange(transactions);
-            fixture.db.Company.RemoveRange(companies);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleDataModelAsync()
+        public async void GetCompanyModel_FromInitializedDbTables_LogicCompanyModelEqualExpectedCompanyModel()
         {
             // arrange
-            var companies = new Company[]
-            {
-                new Company
-                {
-                    Id = 44440,
-                    Name = "Test company #1",
-                },
-                new Company
-                {
-                    Id = 44441,
-                    Name = "Test company #2",
-                }
-            };
-
-            var storages = new Storage[]
-            {
-                new Storage
-                {
-                    Id = 44440,
-                    Name = "Test storage #1",
-                    CompanyId = 44440
-                },
-                new Storage
-                {
-                    Id = 44441,
-                    Name = "Test storage #2",
-                    CompanyId = 44440
-                },
-                new Storage
-                {
-                    Id = 44442,
-                    Name = "Test storage #3",
-                    CompanyId = 44440
-                },
-                new Storage
-                {
-                    Id = 44443,
-                    Name = "Test storage #4",
-                    CompanyId = 44441
-                }
-            };
-            var transactions = new TransactionBatch[]
-            {
-                new TransactionBatch
-                {
-                    CompanyId = 44441,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
-                    Id = 44440,
-                    Type = "income"
-                }
-            };
+            var companies = GetCompanies();
+            var storages = GetStorages();
+            var transactions = GetTransactions();
 
             fixture.db.Company.AddRange(companies);
             fixture.db.Storage.AddRange(storages);
             fixture.db.TransactionBatch.AddRange(transactions);
             await fixture.db.SaveChangesAsync();
 
-            int companyId = 44440;
-
             var expected = new CompanyModel
             {
-                Id = companyId,
+                Id = 44440,
                 Name = "Test company #1"
             };
 
             var storagesTitleIds = new List<TitleIdContainer>();
-            foreach (var storage in storages.Where(i => i.CompanyId == companyId))
+            foreach (var storage in storages.Where(i => i.CompanyId == expected.Id))
             {
                 storagesTitleIds.Add(new TitleIdContainer
                 {
@@ -275,7 +234,7 @@ namespace Cursed.Tests.Tests.Logic
             expected.Storages = storagesTitleIds;
 
             var transactionsTitleIds = new List<TitleIdContainer>();
-            foreach (var transaction in transactions.Where(i => i.CompanyId == companyId))
+            foreach (var transaction in transactions.Where(i => i.CompanyId == expected.Id))
             {
                 transactionsTitleIds.Add(new TitleIdContainer
                 {
@@ -287,7 +246,7 @@ namespace Cursed.Tests.Tests.Logic
             expected.Transactions = transactionsTitleIds;
 
             // act
-            var actual = await logic.GetSingleDataModelAsync(companyId);
+            var actual = await logic.GetSingleDataModelAsync(expected.Id);
 
             // assert
             Assert.True(actual.Id == expected.Id);
@@ -306,21 +265,14 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.Storage.RemoveRange(storages);
-            fixture.db.TransactionBatch.RemoveRange(transactions);
-            fixture.db.Company.RemoveRange(companies);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleUpdateModelAsync()
+        public async void GetCompany_FromInitializedDbTable_LogicCompanyEqualExpectedCompany()
         {
             // arrange
-            var expected =  new Company
-            {
-                Id = 44440,
-                Name = "Test company #1",
-            };
+            var expected =  GetCompany();
 
             fixture.db.Company.Add(expected);
             await fixture.db.SaveChangesAsync();
@@ -331,10 +283,9 @@ namespace Cursed.Tests.Tests.Logic
             // assert
             Assert.True(actual.Id == expected.Id);
             Assert.True(actual.Name == expected.Name);
-            
+
             // dispose
-            fixture.db.Company.Remove(actual);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

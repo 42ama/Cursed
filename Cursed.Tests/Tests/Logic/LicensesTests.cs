@@ -7,112 +7,36 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Licenses;
 using Cursed.Models.Data.Utility;
-using Cursed.Tests.Helpers;
+using Cursed.Tests.Extensions;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class Licenses : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class LicensesTests
     {
         private readonly TestsFixture fixture;
         private readonly LicensesLogic logic;
 
-        public Licenses(TestsFixture fixture)
+        public LicensesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new LicensesLogic(fixture.db);
         }
-
-        [Fact]
-        public async void AddDataModelAsync()
+        
+        private License GetLicense()
         {
-            // arrange
-            var expected = new License
+            return new License
             {
                 Id = 44440,
                 ProductId = 44440,
                 Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
                 GovermentNum = 4040404
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.ProductId, actual.ProductId);
-            Assert.Equal(expected.Date, actual.Date);
-            Assert.Equal(expected.GovermentNum, actual.GovermentNum);
-
-            // dispose
-            fixture.db.License.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<ProductCatalog> GetProductsCatalog()
         {
-            // arrange
-            var license = new License
-            {
-                Id = 44440,
-                ProductId = 44440,
-                Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
-                GovermentNum = 4040404
-            }; ;
-            fixture.db.Add(license);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(license.Id);
-
-            // assert
-            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == license.Id);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var license = new License
-            {
-                Id = 44440,
-                ProductId = 44440,
-                Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
-                GovermentNum = 4040404
-            };
-            fixture.db.Add(license);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new License
-            {
-                Id = 44440,
-                ProductId = 44440,
-                Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
-                GovermentNum = 5050505
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == expected.Id);
-            Assert.Equal(expected.Id, actual.Id);
-            Assert.Equal(expected.ProductId, actual.ProductId);
-            Assert.Equal(expected.Date, actual.Date);
-            Assert.Equal(expected.GovermentNum, actual.GovermentNum);
-
-            // dispose
-            fixture.db.License.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            // arrange
-            var products = new ProductCatalog[]
+            return new ProductCatalog[]
             {
                 new ProductCatalog
                 {
@@ -127,7 +51,11 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Testotin",
                 }
             };
-            var licenses = new License[]
+        }
+
+        private IEnumerable<License> GetLicenses()
+        {
+            return new License[]
             {
                 new License
                 {
@@ -151,10 +79,85 @@ namespace Cursed.Tests.Tests.Logic
                     ProductId = 44441
                 },
             };
+        }
 
+        [Fact]
+        public async void AddLicense_ToEmptyDbTable_AddedLicenseEqualExpectedLicense()
+        {
+            // arrange
+            var expected = GetLicense();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.ProductId, actual.ProductId);
+            Assert.Equal(expected.Date, actual.Date);
+            Assert.Equal(expected.GovermentNum, actual.GovermentNum);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveLicense_FromInitializedDbTable_RemovedLicenseNotFoundInDb()
+        {
+            // arrange
+            var license = GetLicense();
+
+            fixture.db.Add(license);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(license.Id);
+
+            // assert
+            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == license.Id);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateLicense_AtInitializedDbTable_UpdatedLicenseEqualExpectedLicense()
+        {
+            // arrange
+            var license = GetLicense();
+            fixture.db.Add(license);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new License
+            {
+                Id = license.Id,
+                ProductId = 44440,
+                Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
+                GovermentNum = 5050505
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.License.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.ProductId, actual.ProductId);
+            Assert.Equal(expected.Date, actual.Date);
+            Assert.Equal(expected.GovermentNum, actual.GovermentNum);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void GetListLicensesDataModels_FromInitializedDbTables_LogicLicensesDataModelsEqualExpectedLicensesDataModels()
+        {
+            // arrange
+            var products = GetProductsCatalog();
+            var licenses = GetLicenses();
             fixture.db.ProductCatalog.AddRange(products);
             fixture.db.License.AddRange(licenses);
             await fixture.db.SaveChangesAsync();
+
             var expected = new List<LicensesDataModel>
             {
                 new LicensesDataModel
@@ -202,34 +205,15 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.License.RemoveRange(licenses);
-            fixture.db.ProductCatalog.RemoveRange(products);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleDataModelAsync()
+        public async void GetLicensesDataModel_FromInitializedDbTables_LogicLicensesDataModelEqualExpectedLicensesDataModel()
         {
             // arrange
-            var products = new ProductCatalog[]
-            {
-                new ProductCatalog
-                {
-                    Id = 44440,
-                    Cas = 4040404,
-                    Name = "Testin",
-                }
-            };
-            var licenses = new License[]
-            {
-                new License
-                {
-                    Id = 44441,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
-                    GovermentNum = 4040414,
-                    ProductId = 44440
-                }
-            };
+            var products = GetProductsCatalog();
+            var licenses = GetLicenses();
 
             fixture.db.ProductCatalog.AddRange(products);
             fixture.db.License.AddRange(licenses);
@@ -255,23 +239,15 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.ProductCAS, expected.ProductCAS);
             Assert.Equal(actual.ProductName, expected.ProductName);
 
-            // dispose1
-            fixture.db.License.RemoveRange(licenses);
-            fixture.db.ProductCatalog.RemoveRange(products);
-            await fixture.db.SaveChangesAsync();
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
-        public async void GetSingleUpdateModelAsync()
+        public async void GetLicense_FromInitializedDbTable_LogicLicenseEqualExpectedLicense()
         {
             // arrange
-            var expected = new License
-            {
-                Id = 44441,
-                Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
-                GovermentNum = 4040414,
-                ProductId = 44440
-            };
+            var expected = GetLicense();
 
             fixture.db.License.Add(expected);
             await fixture.db.SaveChangesAsync();
@@ -286,8 +262,7 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.ProductId, expected.ProductId);
 
             // dispose
-            fixture.db.License.Remove(actual);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

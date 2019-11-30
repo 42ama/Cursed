@@ -9,109 +9,43 @@ using Cursed.Models.Data.FacilityTechProcesses;
 
 namespace Cursed.Tests.Tests.Logic
 {
-    public class FacilityTechProcesses : IClassFixture<TestsFixture>
+    [Collection("Tests collection")]
+    public class FacilityTechProcessesTests
     {
         private readonly TestsFixture fixture;
         private readonly FacilityTechProcessesLogic logic;
 
-        public FacilityTechProcesses(TestsFixture fixture)
+        public FacilityTechProcessesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
             logic = new FacilityTechProcessesLogic(fixture.db);
         }
 
-        [Fact]
-        public async void AddDataModelAsync()
+        private TechProcess GetTechProcess()
         {
-            // arrange
-            var expected = new TechProcess
+            return new TechProcess
             {
                 FacilityId = 44440,
                 RecipeId = 44440,
                 DayEffiency = (decimal)12.3456
             };
-
-            // act
-            await logic.AddDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == expected.FacilityId && i.RecipeId == expected.RecipeId);
-            Assert.Equal(expected.FacilityId, actual.FacilityId);
-            Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
-            // dispose
-            fixture.db.TechProcess.Remove(actual);
-            await fixture.db.SaveChangesAsync();
         }
 
-        [Fact]
-        public async void RemoveDataModelAsync()
+        private IEnumerable<Facility> GetFacilities()
         {
-            // arrange
-            var techProcess = new TechProcess
-            {
-                FacilityId = 44440,
-                RecipeId = 44440,
-                DayEffiency = (decimal)12.3456
-            };
-            fixture.db.Add(techProcess);
-            await fixture.db.SaveChangesAsync();
-
-            // act
-            await logic.RemoveDataModelAsync(techProcess);
-
-            // assert
-            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == techProcess.FacilityId && i.RecipeId == techProcess.RecipeId);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void UpdateDataModelAsync()
-        {
-            // arrange
-            var techProcess = new TechProcess
-            {
-                FacilityId = 44440,
-                RecipeId = 44440,
-                DayEffiency = (decimal)12.3456
-            };
-            fixture.db.Add(techProcess);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new TechProcess
-            {
-                FacilityId = 44440,
-                RecipeId = 44440,
-                DayEffiency = (decimal)78.9012
-            };
-
-            // act
-            await logic.UpdateDataModelAsync(expected);
-
-            // assert
-            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == techProcess.FacilityId && i.RecipeId == techProcess.RecipeId);
-            Assert.Equal(expected.FacilityId, actual.FacilityId);
-            Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
-
-            // dispose
-            fixture.db.TechProcess.Remove(actual);
-            await fixture.db.SaveChangesAsync();
-        }
-
-        [Fact]
-        public async void GetAllDataModelAsync()
-        {
-            int facilityId = 44440;
-            var facilities = new Facility[]
+            return new Facility[]
             {
                 new Facility
                 {
-                    Id = facilityId,
+                    Id = 44440,
                     Name = "Test facility"
                 }
             };
-            var recipes = new Recipe[]
+        }
+
+        private IEnumerable<Recipe> GetRecipes()
+        {
+            return new Recipe[]
             {
                 new Recipe
                 {
@@ -135,27 +69,102 @@ namespace Cursed.Tests.Tests.Logic
                     TechApproval = true
                 }
             };
-            var techProcesses = new TechProcess[]
+        }
+
+        private IEnumerable<TechProcess> GetTechProcesses()
+        {
+            return new TechProcess[]
             {
                 new TechProcess
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     RecipeId = 44440,
                     DayEffiency = 41
                 },
                 new TechProcess
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     RecipeId = 44441,
                     DayEffiency = 42
                 },
                 new TechProcess
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     RecipeId = 44442,
                     DayEffiency = 43
                 }
             };
+        }
+
+        [Fact]
+        public async void AddTechProcess_ToEmptyDbTable_AddedTechProcessEqualExpectedTechProcess()
+        {
+            // arrange
+            var expected = GetTechProcess();
+
+            // act
+            await logic.AddDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == expected.FacilityId && i.RecipeId == expected.RecipeId);
+            Assert.Equal(expected.FacilityId, actual.FacilityId);
+            Assert.Equal(expected.RecipeId, actual.RecipeId);
+            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void RemoveTechProcess_FromInitializedDbTable_RemovedTechProcessNotFoundInDb()
+        {
+            // arrange
+            var techProcess = GetTechProcess();
+            fixture.db.Add(techProcess);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.RemoveDataModelAsync(techProcess);
+
+            // assert
+            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == techProcess.FacilityId && i.RecipeId == techProcess.RecipeId);
+            Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void UpdateTechProcess_AtInitializedDbTable_UpdatedTechProcessEqualExpectedTechProcess()
+        {
+            // arrange
+            var techProcess = GetTechProcess();
+            fixture.db.Add(techProcess);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = new TechProcess
+            {
+                FacilityId = techProcess.FacilityId,
+                RecipeId = techProcess.RecipeId,
+                DayEffiency = (decimal)78.9012
+            };
+
+            // act
+            await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == techProcess.FacilityId && i.RecipeId == techProcess.RecipeId);
+            Assert.Equal(expected.FacilityId, actual.FacilityId);
+            Assert.Equal(expected.RecipeId, actual.RecipeId);
+            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
+
+            // dispose
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
+        [Fact]
+        public async void GetListFacilityTechProcessesDataModel_FromInitializedDbTables_LogicFacilityTechProcessesDataModelsEqualExpectedFacilityTechProcessesDataModels()
+        {
+            var facilities = GetFacilities();
+            var recipes = GetRecipes();
+            var techProcesses = GetTechProcesses();
             fixture.db.Facility.AddRange(facilities);
             fixture.db.Recipe.AddRange(recipes);
             fixture.db.TechProcess.AddRange(techProcesses);
@@ -165,7 +174,7 @@ namespace Cursed.Tests.Tests.Logic
             {
                 new FacilityTechProcessesDataModel
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     FacilityName = "Test facility",
                     DayEffiency = 41,
                     RecipeId = 44440,
@@ -175,7 +184,7 @@ namespace Cursed.Tests.Tests.Logic
                 },
                 new FacilityTechProcessesDataModel
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     FacilityName = "Test facility",
                     DayEffiency = 42,
                     RecipeId = 44441,
@@ -185,7 +194,7 @@ namespace Cursed.Tests.Tests.Logic
                 },
                 new FacilityTechProcessesDataModel
                 {
-                    FacilityId = facilityId,
+                    FacilityId = 44440,
                     FacilityName = "Test facility",
                     DayEffiency = 43,
                     RecipeId = 44442,
@@ -196,7 +205,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetAllDataModelAsync(facilityId)).ToList();
+            var actual = (await logic.GetAllDataModelAsync(expected.First().FacilityId)).ToList();
 
             // assert
             foreach (var expectedItem in expected)
@@ -212,10 +221,7 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // dispose
-            fixture.db.TechProcess.RemoveRange(techProcesses);
-            fixture.db.Facility.RemoveRange(facilities);
-            fixture.db.Recipe.RemoveRange(recipes);
-            await fixture.db.SaveChangesAsync();
+            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }
