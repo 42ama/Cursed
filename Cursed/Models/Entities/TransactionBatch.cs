@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cursed.Models.Extensions;
 
 namespace Cursed.Models.Entities
 {
@@ -10,9 +11,11 @@ namespace Cursed.Models.Entities
             Operation = new HashSet<Operation>();
         }
 
+        private DateTime _date;
+
         public int Id { get; set; }
         public int CompanyId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get { return _date; } set { _date = value.TrimUpToDays(); } }
         public string Type { get; set; }
 
         public virtual Company Company { get; set; }
