@@ -31,7 +31,7 @@
             string bgColor;
             if (item.LicenseRequired)
             {
-                if (item.License?.IsValid == true)
+                if (item.IsValid == true)
                 {
                     licenseSummary = "Valid";
                     bgColor = "green";
@@ -47,34 +47,10 @@
                 licenseSummary = "Not required";
                 bgColor = "grey";
             }
-            string govNum;
-            string licensedUntil;
-            if(item.License != null)
-            {
-                govNum = item.License.GovermentNum.ToString();
-                licensedUntil = item.License.Date.ToShortDateString();
-            }
-            else
-            {
-                govNum = "---";
-                licensedUntil = "---";
-            }
             <tr>
                 <td style="text-align:center">@item.Name</td>
                 <td style="text-align:center">@item.CAS</td>
                 <td style="text-align:center">@item.Type</td>
-                <td style="text-align:center" bgcolor="@bgColor">@licensedUntil</td>
-                <td style="text-align:center" bgcolor="@bgColor">
-                    @if (item.License != null)
-                    {
-                        <p>@govNum</p>
-                        <p>@Html.RouteLink("License", LicensesRouting.SingleItem, new { key = item.License.Id })</p>
-                    }
-                    else
-                    {
-                        @govNum
-                    }
-                </td>
                 <td style="text-align:center" bgcolor="@bgColor">@licenseSummary</td>
                 <td style="text-align:center">
                     <p>@item.RecipesCount Recipes</p>

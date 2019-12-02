@@ -9,6 +9,7 @@ using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Tests.Extensions;
+using Cursed.Tests.Stubs;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -21,7 +22,7 @@ namespace Cursed.Tests.Tests.Logic
         public ProductsCatalogTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logic = new ProductsCatalogLogic(fixture.db);
+            logic = new ProductsCatalogLogic(fixture.db, new LicenseValidationStub());
         }
 
         private ProductCatalog GetProductCatalog()
@@ -270,12 +271,7 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Testin",
                     Type = ProductCatalogTypes.Material,
                     LicenseRequired = true,
-                    License = new LicenseValid( new License
-                    {
-                        Id = 44441,
-                        Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
-                        GovermentNum = 4040414
-                    }),
+                    IsValid = true,
                     StoragesCount = 3,
                     RecipesCount = 1
                 },
@@ -286,13 +282,7 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Testotin",
                     Type = ProductCatalogTypes.Product,
                     LicenseRequired = false,
-                    License = new LicenseValid( new License
-                    {
-                        Id = 44442,
-                        Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
-                        GovermentNum = 4041404,
-                        ProductId = 44441
-                    }),
+                    IsValid = true,
                     StoragesCount = 1,
                     RecipesCount = 2
                 }
@@ -310,7 +300,7 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.Name == actualItem.Name &&
                     expectedItem.Type == actualItem.Type &&
                     expectedItem.LicenseRequired == actualItem.LicenseRequired &&
-                    expectedItem.License == actualItem.License &&
+                    expectedItem.IsValid == actualItem.IsValid &&
                     expectedItem.StoragesCount == actualItem.StoragesCount &&
                     expectedItem.RecipesCount == actualItem.RecipesCount);
             }
@@ -343,21 +333,15 @@ namespace Cursed.Tests.Tests.Logic
                 CAS = 4040404,
                 Name = "Testin",
                 Type = ProductCatalogTypes.Material,
-                LicenseRequired = true
-            };
-            expected.Licenses = new List<LicenseValid>();
-            expected.Storages = new List<TitleIdContainer>();
-            expected.Recipes = new List<TitleIdContainer>();
+                LicenseRequired = true,
+                Licenses = new List<(License license, bool isValid)>(),
+                Storages = new List<TitleIdContainer>(),
+                Recipes = new List<TitleIdContainer>()
+        };
+            
             foreach (var license in licenses)
             {
-                if (expected.LicenseRequired)
-                {
-                    expected.Licenses.Add(new LicenseValid(license));
-                }
-                else
-                {
-                    expected.Licenses.Add(new LicenseValid(license, true));
-                }
+                expected.Licenses.Add((license,true));
             }
             foreach (var storage in storages)
             {

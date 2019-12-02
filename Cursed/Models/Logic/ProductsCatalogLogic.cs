@@ -12,6 +12,7 @@ using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Services;
 using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
@@ -19,9 +20,11 @@ namespace Cursed.Models.Logic
     public class ProductsCatalogLogic : IReadColection<ProductsCatalogModel>, IReadSingle<ProductCatalogModel>, IReadUpdateForm<ProductCatalog>, ICUD<ProductCatalog>
     {
         private readonly CursedContext db;
-        public ProductsCatalogLogic(CursedContext db)
+        private readonly ILicenseValidation licenseValidation;
+        public ProductsCatalogLogic(CursedContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
+            this.licenseValidation = licenseValidation;
         }
 
         public async Task<IEnumerable<ProductsCatalogModel>> GetAllDataModelAsync()
@@ -29,9 +32,7 @@ namespace Cursed.Models.Logic
             // probably need testing with different db connection combination
             var productCatalogs = await db.ProductCatalog.ToListAsync();
 
-            var dataModels = from pc in productCatalogs
-                             join l in db.License on pc.Id equals l.ProductId into groupC
-                             from c in groupC.DefaultIfEmpty()
+            var dataModels = (from pc in productCatalogs
                              join gA in (from pc in productCatalogs
                                          join p in db.Product on pc.Id equals p.Uid into t
                                          group t by pc.Id).Select(x => new { Id = x.Key, Count = x.Single().Count() })
@@ -49,17 +50,30 @@ namespace Cursed.Models.Logic
                                  CAS = pc.Cas,
                                  Type = pc.Type,
                                  LicenseRequired = pc.LicenseRequired ?? false,
-                                 License = c?.Id != null
-                                 ? new LicenseValid( new License
-                                 {
-                                     Id = c.Id,
-                                     GovermentNum = c.GovermentNum,
-                                     Date = c.Date
-                                 })
-                                 : null,
                                  StoragesCount = d.Count,
                                  RecipesCount = e.Count
-                             };
+                             }).ToList();
+
+            // setup validation state to each of products, using ILicenseValidation
+            foreach (var item in dataModels)
+            {
+                if(item.LicenseRequired == true)
+                {
+                    item.IsValid = false;
+                    foreach (var license in db.License.Where(i => i.ProductId == item.ProductId))
+                    {
+                        if(licenseValidation.IsValid(license))
+                        {
+                            item.IsValid = true;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    item.IsValid = true;
+                }
+            }
 
             return dataModels;
         }
@@ -77,16 +91,16 @@ namespace Cursed.Models.Logic
                 .Where(i => i.Uid == Uid)
                 .Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToListAsync();
             bool licenseRequired = productCatalog.LicenseRequired ?? false;
-            List<LicenseValid> validLicenses = new List<LicenseValid>();
+            var validLicenses = new List<(License license, bool isValid)>();
             foreach (var license in licenses)
             {
-                if (licenseRequired)
+                if (!licenseRequired)
                 {
-                    validLicenses.Add(new LicenseValid(license));
+                    validLicenses.Add((license, true));
                 }
                 else
                 {
-                    validLicenses.Add(new LicenseValid(license, true));
+                    validLicenses.Add((license, licenseValidation.IsValid(license)));
                 }
             }
 

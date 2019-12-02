@@ -12,15 +12,18 @@ using Cursed.Models.Data.Facilities;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Services;
 
 namespace Cursed.Models.Logic
 {
     public class FacilitiesLogic : IReadColection<FacilitiesModel>, IReadSingle<FacilityModel>, IReadUpdateForm<Facility>, ICUD<Facility>
     {
         private readonly CursedContext db;
-        public FacilitiesLogic(CursedContext db)
+        private readonly ILicenseValidation licenseValidation;
+        public FacilitiesLogic(CursedContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
+            this.licenseValidation = licenseValidation;
         }
 
         public async Task<IEnumerable<FacilitiesModel>> GetAllDataModelAsync()
@@ -86,7 +89,7 @@ namespace Cursed.Models.Logic
                         var licenses = licensesList.Where(i => i.ProductId == item.ProductId);
                         foreach (var license in licenses)
                         {
-                            if (LicenseValid.Validate(license))
+                            if (licenseValidation.IsValid(license))
                             {
                                 item.IsValid = true;
                                 break;

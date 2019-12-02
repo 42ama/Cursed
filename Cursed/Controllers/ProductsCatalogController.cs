@@ -12,19 +12,18 @@ using Cursed.Models.Logic;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
     [Route("products-catalog")]
     public class ProductsCatalogController : Controller, ICUD<ProductCatalog>, IReadColection, IReadSingle, IReadUpdateForm
     {
-        private readonly ILogger<ProductsCatalogController> _logger;
         private readonly ProductsCatalogLogic logic;
 
-        public ProductsCatalogController(CursedContext db, ILogger<ProductsCatalogController> logger)
+        public ProductsCatalogController(CursedContext db, [FromServices] ILicenseValidation licenseValidation)
         {
-            logic = new ProductsCatalogLogic(db);
-            _logger = logger;
+            logic = new ProductsCatalogLogic(db, licenseValidation);
         }
 
         [HttpGet("", Name = ProductsCatalogRouting.Index)]

@@ -13,6 +13,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -20,9 +21,11 @@ namespace Cursed.Controllers
     public class LicensesController : Controller, ICUD<License>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly LicensesLogic logic;
-        public LicensesController(CursedContext db)
+        private readonly ILicenseValidation licenseValidation;
+        public LicensesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation)
         {
             logic = new LicensesLogic(db);
+            this.licenseValidation = licenseValidation;
         }
 
         [HttpGet("", Name = LicensesRouting.Index)]
@@ -40,7 +43,7 @@ namespace Cursed.Controllers
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
                     ProductCAS = item.ProductCAS,
-                    IsValid = LicenseValid.Validate(item.Date)
+                    IsValid = licenseValidation.IsValid(new License { Date = item.Date })
                 });
             }
             var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
@@ -61,7 +64,7 @@ namespace Cursed.Controllers
                 ProductId = dataModel.ProductId,
                 ProductName = dataModel.ProductName,
                 ProductCAS = dataModel.ProductCAS,
-                IsValid = LicenseValid.Validate(dataModel.Date)
+                IsValid = licenseValidation.IsValid(new License { Date = dataModel.Date })
             };
             return View(viewModel);
         }

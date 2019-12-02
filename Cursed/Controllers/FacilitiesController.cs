@@ -13,6 +13,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -21,9 +22,9 @@ namespace Cursed.Controllers
     {
         private readonly FacilitiesLogic logic;
 
-        public FacilitiesController(CursedContext db)
+        public FacilitiesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation)
         {
-            logic = new FacilitiesLogic(db);
+            logic = new FacilitiesLogic(db, licenseValidation);
         }
         [HttpGet("", Name = FacilitiesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)

@@ -5,7 +5,13 @@ namespace Cursed.Models.Services
 {
     public class LicenseValidation : ILicenseValidation
     {
-        public bool IsValid(DateTime date)
+        // validate licenses by date
+        public bool IsValid(License license)
+        {
+            return IsDateValid(license.Date);
+        }
+
+        private bool IsDateValid(DateTime date)
         {
             if (date > DateTime.UtcNow)
             {
@@ -17,9 +23,6 @@ namespace Cursed.Models.Services
             }
         }
 
-        public bool IsValid(License license)
-        {
-            return IsValid(license.Date);
-        }
+        
     }
 }

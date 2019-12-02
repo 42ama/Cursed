@@ -63,8 +63,8 @@
                 <table>
                         @foreach (var item in Model.Licenses)
                         {
-                            string bgColor = item.IsValid ? "green" : "red";
-                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.GovermentNum}: {item.Date.ToShortDateString()}", LicensesRouting.SingleItem, new { key = item.Id })</td></tr>
+                            string bgColor = item.isValid ? "green" : "red";
+                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.license.GovermentNum}: {item.license.Date.ToShortDateString()}", LicensesRouting.SingleItem, new { key = item.license.Id })</td></tr>
                         }
                 </table>
             }

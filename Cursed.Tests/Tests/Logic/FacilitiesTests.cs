@@ -8,6 +8,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Facilities;
 using Cursed.Models.Data.Shared;
 using Cursed.Tests.Extensions;
+using Cursed.Tests.Stubs;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -20,7 +21,7 @@ namespace Cursed.Tests.Tests.Logic
         public FacilitiesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logic = new FacilitiesLogic(fixture.db);
+            logic = new FacilitiesLogic(fixture.db, new LicenseValidationStub());
         }
 
         private Facility GetFacility()
@@ -406,11 +407,8 @@ namespace Cursed.Tests.Tests.Logic
                     {
                         foreach(var license in licenses.Where(i => i.ProductId == rpc.ProductId))
                         {
-                            if(LicenseValid.Validate(license))
-                            {
-                                facilityContainer.IsValid = true;
-                                break;
-                            }
+
+                            facilityContainer.IsValid = true;
                         }
                     }
 

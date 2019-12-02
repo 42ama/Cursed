@@ -6,6 +6,5 @@ namespace Cursed.Models.Services
     public interface ILicenseValidation
     {
         bool IsValid(License license);
-        bool IsValid(DateTime date);
     }
 }
