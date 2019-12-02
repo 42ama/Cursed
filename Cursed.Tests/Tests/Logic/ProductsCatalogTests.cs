@@ -67,21 +67,21 @@ namespace Cursed.Tests.Tests.Logic
                 new License
                 {
                     Id = 44440,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(-1),
+                    Date = DateTime.UtcNow,
                     GovermentNum = 4040404,
                     ProductId = 44440
                 },
                 new License
                 {
                     Id = 44441,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
+                    Date = DateTime.UtcNow,
                     GovermentNum = 4040414,
                     ProductId = 44440
                 },
                 new License
                 {
                     Id = 44442,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
+                    Date = DateTime.UtcNow,
                     GovermentNum = 4041404,
                     ProductId = 44441
                 }

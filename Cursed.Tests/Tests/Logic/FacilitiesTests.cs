@@ -206,14 +206,14 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     Id = 44440,
                     GovermentNum = 4040404,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(1),
+                    Date = DateTime.UtcNow,
                     ProductId = 44442
                 },
                 new License
                 {
                     Id = 44441,
                     GovermentNum = 4040414,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay).AddDays(-1),
+                    Date = DateTime.UtcNow,
                     ProductId = 44444
                 }
             };

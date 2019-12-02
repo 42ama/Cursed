@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cursed.Tests.Extensions
 {
-    public static partial class Extension
+    public static class DbSetExtensions
     {
         // used to clear tables in dbset
         public static async Task ClearIfAny<T>(this DbSet<T> dbSet) where T : class

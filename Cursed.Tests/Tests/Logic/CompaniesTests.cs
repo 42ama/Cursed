@@ -87,7 +87,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionBatch
                 {
                     CompanyId = 44441,
-                    Date = DateTime.Now.Trim(TimeSpan.TicksPerDay),
+                    Date = DateTime.UtcNow,
                     Id = 44440,
                     Type = "income"
                 }
