@@ -20,9 +20,11 @@ namespace Cursed.Models.Logic
     public class TransactionsLogic
     {
         private readonly CursedContext db;
-        public TransactionsLogic(CursedContext db)
+        private readonly IOperationValidation operationValidation;
+        public TransactionsLogic(CursedContext db, IOperationValidation operationValidation)
         {
             this.db = db;
+            this.operationValidation = operationValidation;
         }
 
         public async Task<IEnumerable<TransactionsModel>> GetAllDataModelAsync()

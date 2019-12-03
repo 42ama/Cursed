@@ -22,7 +22,7 @@ namespace Cursed.Tests.Tests.Logic
         public TransactionsTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logic = new TransactionsLogic(fixture.db);
+            logic = new TransactionsLogic(fixture.db, new OperationValidationStub());
         }
 
         public async void Dispose()
