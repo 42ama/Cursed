@@ -257,6 +257,9 @@ namespace Cursed.Models.Context
             {
                 entity.Property(e => e.Date).HasColumnType("date");
 
+                entity.Property(e => e.IsOpen)
+                    .IsRequired();
+
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .HasMaxLength(16)
