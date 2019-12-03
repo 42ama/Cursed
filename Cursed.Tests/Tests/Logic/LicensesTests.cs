@@ -12,7 +12,7 @@ using Cursed.Tests.Extensions;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class LicensesTests
+    public class LicensesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly LicensesLogic logic;
@@ -22,7 +22,12 @@ namespace Cursed.Tests.Tests.Logic
             this.fixture = fixture;
             logic = new LicensesLogic(fixture.db);
         }
-        
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
+        }
+
         private License GetLicense()
         {
             return new License
@@ -96,9 +101,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.ProductId, actual.ProductId);
             Assert.Equal(expected.Date, actual.Date);
             Assert.Equal(expected.GovermentNum, actual.GovermentNum);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -143,9 +145,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.ProductId, actual.ProductId);
             Assert.Equal(expected.Date, actual.Date);
             Assert.Equal(expected.GovermentNum, actual.GovermentNum);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -203,9 +202,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.ProductCAS == actualItem.ProductCAS &&
                     expectedItem.ProductName == actualItem.ProductName);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -238,9 +234,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.ProductId, expected.ProductId);
             Assert.Equal(actual.ProductCAS, expected.ProductCAS);
             Assert.Equal(actual.ProductName, expected.ProductName);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -260,9 +253,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.Date, expected.Date);
             Assert.Equal(actual.GovermentNum, expected.GovermentNum);
             Assert.Equal(actual.ProductId, expected.ProductId);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

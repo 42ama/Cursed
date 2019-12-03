@@ -11,7 +11,7 @@ using Cursed.Models.Data.Recipes;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class RecipesTests
+    public class RecipesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly RecipesLogic logic;
@@ -20,6 +20,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new RecipesLogic(fixture.db);
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private Recipe GetRecipe()
@@ -169,9 +174,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
             Assert.Equal(expected.TechApproval, actual.TechApproval);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -215,9 +217,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
             Assert.Equal(expected.TechApproval, actual.TechApproval);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
 
@@ -277,9 +276,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.ProductCount == actualItem.ProductCount &&
                     expectedItem.MaterialCount == actualItem.MaterialCount);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -352,9 +348,6 @@ namespace Cursed.Tests.Tests.Logic
                 expectedItem.Quantity == actualItem.Quantity &&
                 expectedItem.Type == actualItem.Type);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -374,9 +367,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Content, actual.Content);
             Assert.Equal(expected.GovermentApproval, actual.GovermentApproval);
             Assert.Equal(expected.TechApproval, actual.TechApproval);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

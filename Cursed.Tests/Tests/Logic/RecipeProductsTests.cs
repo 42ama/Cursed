@@ -12,7 +12,7 @@ using Cursed.Models.Data.Utility;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class RecipeProductsTests
+    public class RecipeProductsTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly RecipeProductsLogic logic;
@@ -21,6 +21,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new RecipeProductsLogic(fixture.db);
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private RecipeProductChanges GetRecipeProductChanges()
@@ -104,9 +109,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.RecipeId, actual.RecipeId);
             Assert.Equal(expected.Quantity, actual.Quantity);
             Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -151,9 +153,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.RecipeId, actual.RecipeId);
             Assert.Equal(expected.Quantity, actual.Quantity);
             Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -214,9 +213,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.Cas == actualItem.Cas &&
                     expectedItem.LicenseRequired == actualItem.LicenseRequired);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

@@ -10,7 +10,7 @@ using Cursed.Models.Data.FacilityTechProcesses;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class FacilityTechProcessesTests
+    public class FacilityTechProcessesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly FacilityTechProcessesLogic logic;
@@ -19,6 +19,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new FacilityTechProcessesLogic(fixture.db);
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private TechProcess GetTechProcess()
@@ -110,9 +115,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.FacilityId, actual.FacilityId);
             Assert.Equal(expected.RecipeId, actual.RecipeId);
             Assert.Equal(expected.DayEffiency, actual.DayEffiency);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -154,9 +156,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.FacilityId, actual.FacilityId);
             Assert.Equal(expected.RecipeId, actual.RecipeId);
             Assert.Equal(expected.DayEffiency, actual.DayEffiency);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -219,9 +218,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.RecipeGovApprov == actualItem.RecipeGovApprov &&
                     expectedItem.RecipeTechApprov == actualItem.RecipeTechApprov);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

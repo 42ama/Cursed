@@ -12,7 +12,7 @@ using Cursed.Tests.Extensions;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class CompaniesTests
+    public class CompaniesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly CompaniesLogic logic;
@@ -21,6 +21,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new CompaniesLogic(fixture.db);
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private Company GetCompany()
@@ -108,9 +113,6 @@ namespace Cursed.Tests.Tests.Logic
             var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
             Assert.True(actual.Id == expected.Id);
             Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -150,9 +152,6 @@ namespace Cursed.Tests.Tests.Logic
             var actual = await fixture.db.Company.FirstOrDefaultAsync(i => i.Id == expected.Id);
             Assert.True(actual.Id == expected.Id);
             Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -197,9 +196,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.StoragesCount == actualItem.StoragesCount &&
                     expectedItem.TransactionsCount == actualItem.TransactionsCount);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -263,9 +259,6 @@ namespace Cursed.Tests.Tests.Logic
                     actualTransaction.Id == expectedTransaction.Id &&
                     actualTransaction.Title == expectedTransaction.Title);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -283,9 +276,6 @@ namespace Cursed.Tests.Tests.Logic
             // assert
             Assert.True(actual.Id == expected.Id);
             Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

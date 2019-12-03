@@ -12,7 +12,7 @@ using Cursed.Models.Data.Utility;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class StoragesTests
+    public class StoragesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly StoragesLogic logic;
@@ -21,6 +21,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new StoragesLogic(fixture.db);
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private Storage GetStorage()
@@ -151,9 +156,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Latitude, actual.Latitude);
             Assert.Equal(expected.Longitude, actual.Longitude);
             Assert.Equal(expected.CompanyId, actual.CompanyId);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -199,9 +201,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Latitude, actual.Latitude);
             Assert.Equal(expected.Longitude, actual.Longitude);
             Assert.Equal(expected.CompanyId, actual.CompanyId);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -261,9 +260,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.Company.Id == actualItem.Company.Id &&
                     expectedItem.ProductsCount == actualItem.ProductsCount);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -324,9 +320,6 @@ namespace Cursed.Tests.Tests.Logic
                     actualProduct.Quantity == expectedProduct.Quantity &&
                     actualProduct.QuantityUnit == expectedProduct.QuantityUnit);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -347,9 +340,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Latitude, actual.Latitude);
             Assert.Equal(expected.Longitude, actual.Longitude);
             Assert.Equal(expected.CompanyId, actual.CompanyId);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

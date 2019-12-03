@@ -14,7 +14,7 @@ using Cursed.Tests.Stubs;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class ProductsCatalogTests
+    public class ProductsCatalogTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly ProductsCatalogLogic logic;
@@ -23,6 +23,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new ProductsCatalogLogic(fixture.db, new LicenseValidationStub());
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private ProductCatalog GetProductCatalog()
@@ -195,9 +200,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -243,9 +245,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -304,9 +303,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.StoragesCount == actualItem.StoragesCount &&
                     expectedItem.RecipesCount == actualItem.RecipesCount);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -386,9 +382,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedRecipe.Id == actualRecipe.Id &&
                     expectedRecipe.Title == actualRecipe.Title);
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -409,9 +402,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Type, actual.Type);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }

@@ -13,7 +13,7 @@ using Cursed.Tests.Stubs;
 namespace Cursed.Tests.Tests.Logic
 {
     [Collection("Tests collection")]
-    public class FacilitiesTests
+    public class FacilitiesTests : IDisposable
     {
         private readonly TestsFixture fixture;
         private readonly FacilitiesLogic logic;
@@ -22,6 +22,11 @@ namespace Cursed.Tests.Tests.Logic
         {
             this.fixture = fixture;
             logic = new FacilitiesLogic(fixture.db, new LicenseValidationStub());
+        }
+
+        public async void Dispose()
+        {
+            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         private Facility GetFacility()
@@ -234,9 +239,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.True(expected.Name == actual.Name);
             Assert.True(expected.Latitude == actual.Latitude);
             Assert.True(expected.Longitude == actual.Longitude);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -280,9 +282,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.True(expected.Name == actual.Name);
             Assert.True(expected.Latitude == actual.Latitude);
             Assert.True(expected.Longitude == actual.Longitude);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -345,9 +344,6 @@ namespace Cursed.Tests.Tests.Logic
                         actualTechProcess.DayEffiency == techProcess.DayEffiency);
                 }
             }
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -442,10 +438,6 @@ namespace Cursed.Tests.Tests.Logic
                     // not correct output, validation will be removed in issue #27
                     );
             }
-
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
 
         [Fact]
@@ -463,9 +455,6 @@ namespace Cursed.Tests.Tests.Logic
             // assert
             Assert.True(actual.Id == expected.Id);
             Assert.True(actual.Name == expected.Name);
-
-            // dispose
-            await TestsFixture.ClearDatabase(fixture.db);
         }
     }
 }
