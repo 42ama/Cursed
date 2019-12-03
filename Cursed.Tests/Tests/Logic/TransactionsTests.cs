@@ -256,7 +256,7 @@ namespace Cursed.Tests.Tests.Logic
             var actualTransaction = await fixture.db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == transaction.Id);
             Assert.Null(actualTransaction);
 
-            foreach (var operation in operations)
+            foreach (var operation in operations.Where(i => i.TransactionId == transaction.Id))
             {
                 var actualOperation = await fixture.db.Operation.FirstOrDefaultAsync(i => i.Id == operation.Id);
                 Assert.Null(actualOperation);
