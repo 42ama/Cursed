@@ -62,6 +62,19 @@ namespace Cursed.Tests.Tests.Services
             };
         }
 
+        private TransactionBatch GetTransaction()
+        {
+            return new TransactionBatch
+            {
+                Id = 44440,
+                Date = DateTime.UtcNow,
+                CompanyId = 44440,
+                Type = TransactionTypes.Income,
+                IsOpen = true,
+                Comment = "Why chicken cross the road?"
+            };
+        }
+
         private IEnumerable<Storage> GetStorages()
         {
             return new Storage[]
@@ -103,7 +116,7 @@ namespace Cursed.Tests.Tests.Services
         {
             return new Operation
             {
-                TransactionId = 44441,
+                TransactionId = 44440,
                 Id = 44441,
                 ProductId = 44440,
                 StorageToId = 44441,
@@ -120,9 +133,11 @@ namespace Cursed.Tests.Tests.Services
             var productsCatalog = GetProductCatalog();
             var products = GetProducts();
             var storages = GetStorages();
+            var transactions = GetTransaction();
             fixture.db.AddRange(productsCatalog);
             fixture.db.AddRange(products);
             fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
             await fixture.db.SaveChangesAsync();
 
             var expected = GetOperationIncome();
@@ -141,9 +156,11 @@ namespace Cursed.Tests.Tests.Services
             var productsCatalog = GetProductCatalog();
             var products = GetProducts();
             var storages = GetStorages();
+            var transactions = GetTransaction();
             fixture.db.AddRange(productsCatalog);
             fixture.db.AddRange(products);
             fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
             await fixture.db.SaveChangesAsync();
 
             var expected = GetOperationOutcome();
@@ -153,6 +170,90 @@ namespace Cursed.Tests.Tests.Services
 
             // assert
             Assert.False(actual);
+        }
+
+        [Fact]
+        public async void IsOperationValid_DbInitializedOperationHaveWrongProductId_ThrowsInvalidOperationException()
+        {
+            // arrange
+            var productsCatalog = GetProductCatalog();
+            var products = GetProducts();
+            var storages = GetStorages();
+            var transactions = GetTransaction();
+            fixture.db.AddRange(productsCatalog);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = GetOperationOutcome();
+            expected.ProductId = 0;
+
+            // act + assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+        }
+
+        [Fact]
+        public async void IsOperationValid_DbInitializedOperationHaveWrongTransactionId_ThrowsInvalidOperationException()
+        {
+            // arrange
+            var productsCatalog = GetProductCatalog();
+            var products = GetProducts();
+            var storages = GetStorages();
+            var transactions = GetTransaction();
+            fixture.db.AddRange(productsCatalog);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = GetOperationOutcome();
+            expected.TransactionId = 0;
+
+            // act + assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+        }
+
+        [Fact]
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageToId_ThrowsInvalidOperationException()
+        {
+            // arrange
+            var productsCatalog = GetProductCatalog();
+            var products = GetProducts();
+            var storages = GetStorages();
+            var transactions = GetTransaction();
+            fixture.db.AddRange(productsCatalog);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = GetOperationOutcome();
+            expected.StorageToId = 0;
+
+            // act + assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+        }
+
+        [Fact]
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageFromId_ThrowsInvalidOperationException()
+        {
+            // arrange
+            var productsCatalog = GetProductCatalog();
+            var products = GetProducts();
+            var storages = GetStorages();
+            var transactions = GetTransaction();
+            fixture.db.AddRange(productsCatalog);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var expected = GetOperationOutcome();
+            expected.StorageFromId = 0;
+
+            // act + assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
         }
     }
 }
