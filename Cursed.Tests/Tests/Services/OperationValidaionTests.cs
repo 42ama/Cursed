@@ -5,6 +5,7 @@ using Cursed.Models.Services;
 using System.Collections.Generic;
 using Cursed.Models.Data.Shared;
 using System.Text;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Services
 {
@@ -127,7 +128,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationValid_ReturnsTrue()
+        public async void IsOperationValid_DbInitializedOperationValid_StatusMessageReturnsTrue()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -146,11 +147,11 @@ namespace Cursed.Tests.Tests.Services
             var actual = await validation.IsValidAsync(expected);
 
             // assert
-            Assert.True(actual);
+            Assert.True(actual.IsCompleted);
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongQuantity_ReturnsFalse()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongQuantity_StatusMessageFalseExpectedProblemContains()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -164,16 +165,25 @@ namespace Cursed.Tests.Tests.Services
             await fixture.db.SaveChangesAsync();
 
             var expected = GetOperationOutcome();
+            var expectedProblem = new Problem
+            {
+                Entity = "Product at storage from.",
+                Message = $"Quantity of product at storage from (10) is lesser, then " +
+                        $"operation is trying to withdraw ({expected.Quantity})."
+            };
 
-            // act
+            // act 
             var actual = await validation.IsValidAsync(expected);
 
             // assert
-            Assert.False(actual);
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongProductId_ThrowsInvalidOperationException()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongProductId_StatusMessageFalseExpectedProblemContains()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -188,13 +198,24 @@ namespace Cursed.Tests.Tests.Services
 
             var expected = GetOperationOutcome();
             expected.ProductId = 0;
+            var expectedProblem = new Problem
+            {
+                Entity = $"Product at storage from. Id: {expected.ProductId}",
+                Message = "Product isn't found."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+            // act 
+            var actual = await validation.IsValidAsync(expected);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem => 
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongTransactionId_ThrowsInvalidOperationException()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongTransactionId_StatusMessageFalseExpectedProblemContains()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -209,13 +230,24 @@ namespace Cursed.Tests.Tests.Services
 
             var expected = GetOperationOutcome();
             expected.TransactionId = 0;
+            var expectedProblem = new Problem
+            {
+                Entity = $"Transaction. Id: {expected.TransactionId}",
+                Message = "Transaction isn't found."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+            // act 
+            var actual = await validation.IsValidAsync(expected);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageToId_ThrowsInvalidOperationException()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageToId_StatusMessageFalseExpectedProblemContains()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -230,13 +262,24 @@ namespace Cursed.Tests.Tests.Services
 
             var expected = GetOperationOutcome();
             expected.StorageToId = 0;
+            var expectedProblem = new Problem
+            {
+                Entity = $"Storage to product coming. Id: {expected.StorageToId}",
+                Message = "Storage isn't found."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+            // act 
+            var actual = await validation.IsValidAsync(expected);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageFromId_ThrowsInvalidOperationException()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageFromId_StatusMessageFalseExpectedProblemContains()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -251,9 +294,20 @@ namespace Cursed.Tests.Tests.Services
 
             var expected = GetOperationOutcome();
             expected.StorageFromId = 0;
+            var expectedProblem = new Problem
+            {
+                Entity = $"Storage from product coming. Id: {expected.StorageFromId}",
+                Message = "Storage isn't found."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => validation.IsValidAsync(expected));
+            // act 
+            var actual = await validation.IsValidAsync(expected);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
     }
 }
