@@ -22,7 +22,7 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
             }
         }
         public string Entity { get; set; }
-        public List<Problem> Problems { get; set; }
+        public List<Problem> Problems { get; set; } = new List<Problem>();
     }
 
     public class StatusMessage : AbstractStatusMessage
@@ -31,6 +31,6 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
 
     public class StatusMessage<T> : AbstractStatusMessage
     {
-        public T RetrunValue { get; set; }
+        public T ReturnValue { get; set; }
     }
 }
