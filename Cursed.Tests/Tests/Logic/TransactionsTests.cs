@@ -10,6 +10,7 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Tests.Extensions;
 using Cursed.Tests.Stubs;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -227,16 +228,27 @@ namespace Cursed.Tests.Tests.Logic
         }
 
         [Fact]
-        public async void RemoveClosedTransaction_AtInitializedDbTable_ExceptionThrown()
+        public async void RemoveClosedTransaction_AtInitializedDbTable_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var transaction = GetTransaction();
             transaction.IsOpen = false;
             fixture.db.Add(transaction);
             await fixture.db.SaveChangesAsync();
+            var expectedProblem = new Problem
+            {
+                Entity = "Transaction open status.",
+                Message = "Can't delete transaction, when it closed."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<Exception>(() => logic.RemoveDataModelAsync(transaction.Id));
+            // act 
+            var actual = await logic.RemoveDataModelAsync(transaction.Id);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
@@ -296,7 +308,7 @@ namespace Cursed.Tests.Tests.Logic
         }
 
         [Fact]
-        public async void UpdateClosedTransaction_AtInitializedDbTable_ExceptionThrown()
+        public async void UpdateClosedTransaction_AtInitializedDbTable_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var transaction = GetTransaction();
@@ -313,9 +325,20 @@ namespace Cursed.Tests.Tests.Logic
                 IsOpen = false,
                 Comment = "Cause nest is on the other side."
             };
+            var expectedProblem = new Problem
+            {
+                Entity = "Transaction open status.",
+                Message = "Can't update transaction, when it closed."
+            };
 
-            // act + assert
-            await Assert.ThrowsAsync<Exception>(() => logic.UpdateDataModelAsync(expected));
+            // act 
+            var actual = await logic.UpdateDataModelAsync(expected);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+            Assert.Contains(actual.Problems, actualProblem =>
+                actualProblem.Message == expectedProblem.Message &&
+                actualProblem.Entity == expectedProblem.Entity);
         }
 
         [Fact]
@@ -392,7 +415,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetAllDataModelAsync()).ToList();
+            var actual = (await logic.GetAllDataModelAsync()).ReturnValue.ToList();
 
             // assert
             foreach (var expectedItem in expected)
@@ -438,7 +461,7 @@ namespace Cursed.Tests.Tests.Logic
             }
 
             // act
-            var actual = await logic.GetSingleDataModelAsync(expected.Id);
+            var actual = (await logic.GetSingleDataModelAsync(expected.Id)).ReturnValue;
 
 
             // assert
@@ -473,7 +496,7 @@ namespace Cursed.Tests.Tests.Logic
             await fixture.db.SaveChangesAsync();
 
             // act
-            var actual = await logic.GetSingleUpdateModelAsync(expected.Id);
+            var actual = (await logic.GetSingleUpdateModelAsync(expected.Id)).ReturnValue;
 
             // assert
             Assert.NotNull(actual);
