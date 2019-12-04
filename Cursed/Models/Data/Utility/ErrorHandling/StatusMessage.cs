@@ -22,6 +22,7 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
             }
         }
         public string Entity { get; set; }
+        public object EntityKey { get; set; }
         public List<Problem> Problems { get; set; } = new List<Problem>();
     }
 
