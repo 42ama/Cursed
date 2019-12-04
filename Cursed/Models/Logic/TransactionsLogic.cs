@@ -83,7 +83,52 @@ namespace Cursed.Models.Logic
 
         public async Task CloseTransactionAsync(object key)
         {
+            //operationValidation
+            var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
+            foreach (var operation in transaction.Operation)
+            {
+                if(!await operationValidation.IsValidAsync(operation))
+                {
+                    throw new Exception();
+                }
+            }
+            foreach(var operation in transaction.Operation)
+            {
+                var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
+                var productTo = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
 
+                if (productTo == null)
+                {
+                    db.Add(new Product
+                    {
+                        Uid = operation.ProductId,
+                        Quantity = operation.Quantity,
+                        QuantityUnit = "mg.",
+                        Price = operation.Price,
+                        StorageId = operation.StorageToId
+                    });
+                }
+                else
+                {
+                    var updatedProductTo = productTo;
+                    updatedProductTo.Quantity += operation.Quantity;
+                    updatedProductTo.Price = ((productTo.Quantity * productTo.Price) + (operation.Quantity * operation.Price)) / 2;
+                    db.Entry(productTo).CurrentValues.SetValues(updatedProductTo);
+                }
+
+                if(productFrom.Quantity == operation.Quantity)
+                {
+                    db.Remove(productFrom);
+                }
+                else
+                {
+                    var updatedProductFrom = productFrom;
+                    updatedProductFrom.Quantity -= operation.Quantity;
+                    db.Entry(productFrom).CurrentValues.SetValues(updatedProductFrom);
+                }
+
+                db.SaveChanges();
+            }
         }
 
         public async Task AddDataModelAsync(TransactionBatch model)

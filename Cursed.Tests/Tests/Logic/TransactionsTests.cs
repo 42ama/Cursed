@@ -345,13 +345,12 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            await logic.CloseTransactionAsync(transaction);
+            await logic.CloseTransactionAsync(transaction.Id);
 
             // assert
             var actual = await fixture.db.Product.FirstOrDefaultAsync(i => i.Uid == expected.Uid && i.StorageId == expected.StorageId);
             Assert.NotNull(actual);
             Assert.Equal(expected.Quantity, actual.Quantity);
-            Assert.Equal(expected.QuantityUnit, actual.QuantityUnit);
         }
 
         [Fact]
