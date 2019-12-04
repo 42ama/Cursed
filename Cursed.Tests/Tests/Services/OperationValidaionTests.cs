@@ -151,7 +151,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongQuantity_StatusMessageFalseExpectedProblemContains()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongQuantity_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -183,7 +183,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongProductId_StatusMessageFalseExpectedProblemContains()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongProductId_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -215,7 +215,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongTransactionId_StatusMessageFalseExpectedProblemContains()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongTransactionId_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -247,7 +247,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageToId_StatusMessageFalseExpectedProblemContains()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageToId_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
@@ -279,7 +279,7 @@ namespace Cursed.Tests.Tests.Services
         }
 
         [Fact]
-        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageFromId_StatusMessageFalseExpectedProblemContains()
+        public async void IsOperationValid_DbInitializedOperationHaveWrongStorageFromId_StatusMessageFalseExpectedProblemContained()
         {
             // arrange
             var productsCatalog = GetProductCatalog();
