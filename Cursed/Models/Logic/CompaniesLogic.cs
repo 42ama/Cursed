@@ -12,10 +12,11 @@ using Cursed.Models.Data.Companies;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class CompaniesLogic : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
+    public class CompaniesLogic// : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
     {
         private readonly CursedContext db;
         public CompaniesLogic(CursedContext db)
@@ -23,8 +24,12 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
-        public async Task<IEnumerable<CompaniesModel>> GetAllDataModelAsync()
+        public async Task<StatusMessage<IEnumerable<CompaniesModel>>> GetAllDataModelAsync()
         {
+            var statusMessage = new StatusMessage<IEnumerable<CompaniesModel>>
+            {
+                Entity = "All companies."
+            };
             var companies = await db.Company.ToListAsync();
             var query = from c in companies
                         join s in (from c in companies
@@ -42,14 +47,19 @@ namespace Cursed.Models.Logic
                             StoragesCount = cs.Single().Count(),
                             TransactionsCount = cst.Single().Count()
                         };
-            return query;
+            statusMessage.ReturnValue = query;
+            return statusMessage;
         }
 
-        public async Task<CompanyModel> GetSingleDataModelAsync(object key)
+        public async Task<StatusMessage<CompanyModel>> GetSingleDataModelAsync(object key)
         {
-            var companies = await db.Company.ToListAsync();
+            var statusMessage = new StatusMessage<CompanyModel>
+            {
+                Entity = $"Company. Id: {key}.",
+                EntityKey = key
+            };
+            var companies = await db.Company.Where(i => i.Id == (int)key).ToListAsync();
             var query = from c in companies
-                        where c.Id == (int)key
                         join s in (from c in companies
                                    join s in db.Storage on c.Id equals s.CompanyId into tab
                                    group tab by c.Id) on c.Id equals s.Key into storages
@@ -65,35 +75,67 @@ namespace Cursed.Models.Logic
                             Storages = cs.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Name }).ToList(),
                             Transactions = cst.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Date.ToShortDateString() }).ToList()
                         };
-            return query.Single();
+
+            statusMessage.ReturnValue = query.Single();
+            return statusMessage;
         }
 
-        public async Task<Company> GetSingleUpdateModelAsync(object key)
+        public async Task<StatusMessage<Company>> GetSingleUpdateModelAsync(object key)
         {
-            return await db.Company.SingleOrDefaultAsync(i => i.Id == (int)key);
+            var statusMessage = new StatusMessage<Company>
+            {
+                Entity = $"Company. Id: {key}.",
+                EntityKey = key
+            };
+
+            var company = await db.Company.SingleOrDefaultAsync(i => i.Id == (int)key);
+            statusMessage.ReturnValue = company;
+
+            return statusMessage;
         }
 
-        public async Task AddDataModelAsync(Company model)
+        public async Task<StatusMessage> AddDataModelAsync(Company model)
         {
+            var statusMessage = new StatusMessage
+            {
+                Entity = $"Company. Id: <NotSetuped>."
+            };
+
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task UpdateDataModelAsync(Company model)
+        public async Task<StatusMessage> UpdateDataModelAsync(Company model)
         {
+            var statusMessage = new StatusMessage
+            {
+                Entity = $"Company. Id: {model.Id}.",
+                EntityKey = model.Id
+            };
+
             var currentModel = await db.Company.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task RemoveDataModelAsync(object key)
+        public async Task<StatusMessage> RemoveDataModelAsync(object key)
         {
+            var statusMessage = new StatusMessage
+            {
+                Entity = $"Company. Id: {key}.",
+                EntityKey = key
+            };
+
             var entity = await db.Company.FindAsync((int)key);
-
             db.Company.Remove(entity);
-
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
     }
 }
