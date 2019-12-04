@@ -21,7 +21,8 @@ namespace Cursed.Models.Services
         {
             var statusMessage = new StatusMessage
             {
-                Entity = $"Operation. Id: {operation.Id}"
+                Entity = $"Operation. Id: {operation.Id}",
+                EntityKey = operation.Id
             };
             var product = await db.Product.SingleOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
             var storageFrom = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageFromId);
@@ -34,6 +35,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = $"Product at storage from. Id: {operation.ProductId}",
+                    EntityKey = operation.ProductId,
                     Message = "Product isn't found."
                 });
             }
@@ -43,6 +45,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = $"Storage from product coming. Id: {operation.StorageFromId}",
+                    EntityKey = operation.StorageFromId,
                     Message = "Storage isn't found."
                 });
             }
@@ -52,6 +55,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = $"Storage to product coming. Id: {operation.StorageToId}",
+                    EntityKey = operation.StorageToId,
                     Message = "Storage isn't found."
                 });
             }
@@ -61,6 +65,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = $"Transaction. Id: {operation.TransactionId}",
+                    EntityKey = operation.TransactionId,
                     Message = "Transaction isn't found."
                 });
             }
@@ -72,6 +77,7 @@ namespace Cursed.Models.Services
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Product at storage from.",
+                        EntityKey = product.Id,
                         Message = $"Quantity of product at storage from ({product.Quantity}) is lesser, then " +
                         $"operation is trying to withdraw ({operation.Quantity})."
                     });

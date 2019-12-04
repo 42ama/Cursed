@@ -168,6 +168,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = "Product at storage from.",
+                EntityKey = expected.ProductId,
                 Message = $"Quantity of product at storage from (10) is lesser, then " +
                         $"operation is trying to withdraw ({expected.Quantity})."
             };
@@ -179,7 +180,8 @@ namespace Cursed.Tests.Tests.Services
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
-                actualProblem.Entity == expectedProblem.Entity);
+                actualProblem.Entity == expectedProblem.Entity &&
+                (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
 
         [Fact]
@@ -201,6 +203,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Product at storage from. Id: {expected.ProductId}",
+                EntityKey = expected.ProductId,
                 Message = "Product isn't found."
             };
 
@@ -211,7 +214,8 @@ namespace Cursed.Tests.Tests.Services
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem => 
                 actualProblem.Message == expectedProblem.Message &&
-                actualProblem.Entity == expectedProblem.Entity);
+                actualProblem.Entity == expectedProblem.Entity &&
+                (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
 
         [Fact]
@@ -233,6 +237,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Transaction. Id: {expected.TransactionId}",
+                EntityKey = expected.TransactionId,
                 Message = "Transaction isn't found."
             };
 
@@ -243,7 +248,8 @@ namespace Cursed.Tests.Tests.Services
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
-                actualProblem.Entity == expectedProblem.Entity);
+                actualProblem.Entity == expectedProblem.Entity &&
+                (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
 
         [Fact]
@@ -265,6 +271,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Storage to product coming. Id: {expected.StorageToId}",
+                EntityKey = expected.StorageToId,
                 Message = "Storage isn't found."
             };
 
@@ -275,7 +282,8 @@ namespace Cursed.Tests.Tests.Services
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
-                actualProblem.Entity == expectedProblem.Entity);
+                actualProblem.Entity == expectedProblem.Entity &&
+                (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
 
         [Fact]
@@ -297,6 +305,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Storage from product coming. Id: {expected.StorageFromId}",
+                EntityKey = expected.StorageFromId,
                 Message = "Storage isn't found."
             };
 
@@ -307,7 +316,8 @@ namespace Cursed.Tests.Tests.Services
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
-                actualProblem.Entity == expectedProblem.Entity);
+                actualProblem.Entity == expectedProblem.Entity &&
+                (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
     }
 }

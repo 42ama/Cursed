@@ -246,6 +246,7 @@ namespace Cursed.Tests.Tests.Logic
 
             // assert
             Assert.False(actual.IsCompleted);
+            Assert.Equal((int)actual.EntityKey, transaction.Id);
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity);
@@ -339,6 +340,7 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Contains(actual.Problems, actualProblem =>
                 actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity);
+            Assert.Equal((int)actual.EntityKey, transaction.Id);
         }
 
         [Fact]

@@ -62,7 +62,8 @@ namespace Cursed.Models.Logic
         {
             var statusMessage = new StatusMessage<TransactionModel>
             {
-                Entity = $"Transaction. Id: {key}"
+                Entity = $"Transaction. Id: {key}",
+                EntityKey = key
             };
             var transactions = await db.TransactionBatch.Where(i => i.Id == (int)key).ToListAsync();
             var query = from t in transactions
@@ -91,7 +92,8 @@ namespace Cursed.Models.Logic
         {
             var statusMessage = new StatusMessage<TransactionBatch>
             {
-                Entity = $"Transaction. Id: {key}"
+                Entity = $"Transaction. Id: {key}",
+                EntityKey = key
             };
             var transaction = await db.TransactionBatch.SingleAsync(i => i.Id == (int)key);
             statusMessage.ReturnValue = transaction;
@@ -102,7 +104,8 @@ namespace Cursed.Models.Logic
         {
             var statusMessage = new StatusMessage
             {
-                Entity = $"Transaction. Id: {key}"
+                Entity = $"Transaction. Id: {key}",
+                EntityKey = key
             };
 
             // operation validation
@@ -183,7 +186,8 @@ namespace Cursed.Models.Logic
         {
             var statusMessage = new StatusMessage
             {
-                Entity = $"Transaction. Id: {model.Id}"
+                Entity = $"Transaction. Id: {model.Id}",
+                EntityKey = model.Id
             };
 
             var currentModel = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == model.Id);
@@ -203,13 +207,14 @@ namespace Cursed.Models.Logic
 
         public async Task<StatusMessage> RemoveDataModelAsync(object key)
         {
-            int transactionId = (int)key;
             var statusMessage = new StatusMessage
             {
-                Entity = $"Transaction. Id: {transactionId}"
+                Entity = $"Transaction. Id: {key}",
+                EntityKey = key
             };
 
-            
+            int transactionId = (int)key;
+
             var entity = await db.TransactionBatch.FindAsync(transactionId);
             if (!entity.IsOpen)
             {
