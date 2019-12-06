@@ -38,7 +38,7 @@ namespace Cursed.Controllers
             }
             else
             {
-                return View("CustomError");
+                return View("CustomError", statusMessage);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Cursed.Controllers
             }
             else
             {
-                return View("CustomError");
+                return View("CustomError", statusMessage);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Cursed.Controllers
                 }
                 else
                 {
-                    return View("CustomError");
+                    return View("CustomError", statusMessage);
                 }
             }
             else
@@ -91,7 +91,7 @@ namespace Cursed.Controllers
             }
             else
             {
-                return View("CustomError");
+                return View("CustomError", statusMessage);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Cursed.Controllers
             }
             else
             {
-                return View("CustomError");
+                return View("CustomError", statusMessage);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Cursed.Controllers
             }
             else
             {
-                return View("CustomError");
+                return View("CustomError", statusMessage);
             }
         }
     }
