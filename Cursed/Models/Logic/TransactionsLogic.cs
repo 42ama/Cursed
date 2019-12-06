@@ -22,18 +22,17 @@ namespace Cursed.Models.Logic
     {
         private readonly CursedContext db;
         private readonly IOperationValidation operationValidation;
+        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public TransactionsLogic(CursedContext db, IOperationValidation operationValidation)
         {
             this.db = db;
             this.operationValidation = operationValidation;
+            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<StatusMessage<IEnumerable<TransactionsModel>>> GetAllDataModelAsync()
+        public async Task<AbstractErrorHandler<IEnumerable<TransactionsModel>>> GetAllDataModelAsync()
         {
-            var statusMessage = new StatusMessage<IEnumerable<TransactionsModel>>
-            {
-                Entity = "All transactions."
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<TransactionsModel>>("All transactions.");
 
             var transactions = await db.TransactionBatch.ToListAsync();
             var query = from t in transactions
@@ -58,13 +57,10 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage<TransactionModel>> GetSingleDataModelAsync(object key)
+        public async Task<AbstractErrorHandler<TransactionModel>> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = new StatusMessage<TransactionModel>
-            {
-                Entity = $"Transaction. Id: {key}",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<TransactionModel>("Transaction.", key);
+
             var transactions = await db.TransactionBatch.Where(i => i.Id == (int)key).ToListAsync();
             var query = from t in transactions
                         join c in db.Company on t.CompanyId equals c.Id into companies
@@ -88,25 +84,17 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage<TransactionBatch>> GetSingleUpdateModelAsync(object key)
+        public async Task<AbstractErrorHandler<TransactionBatch>> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = new StatusMessage<TransactionBatch>
-            {
-                Entity = $"Transaction. Id: {key}",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<TransactionBatch>("Transaction.", key);
             var transaction = await db.TransactionBatch.SingleAsync(i => i.Id == (int)key);
             statusMessage.ReturnValue = transaction;
             return statusMessage;
         }
 
-        public async Task<StatusMessage> CloseTransactionAsync(object key)
+        public async Task<AbstractErrorHandler> CloseTransactionAsync(object key)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Transaction. Id: {key}",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
 
             // operation validation
             var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
@@ -168,12 +156,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> AddDataModelAsync(TransactionBatch model)
+        public async Task<AbstractErrorHandler> AddDataModelAsync(TransactionBatch model)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Transaction. Id: <NotSetuped>"
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.");
 
             model.Id = default;
             db.Add(model);
@@ -182,13 +167,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> UpdateDataModelAsync(TransactionBatch model)
+        public async Task<AbstractErrorHandler> UpdateDataModelAsync(TransactionBatch model)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Transaction. Id: {model.Id}",
-                EntityKey = model.Id
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", model.Id);
 
             var currentModel = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == model.Id);
             if(!currentModel.IsOpen)
@@ -205,13 +186,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> RemoveDataModelAsync(object key)
+        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Transaction. Id: {key}",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
 
             int transactionId = (int)key;
 

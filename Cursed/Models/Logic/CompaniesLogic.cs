@@ -19,17 +19,17 @@ namespace Cursed.Models.Logic
     public class CompaniesLogic// : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
     {
         private readonly CursedContext db;
+        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public CompaniesLogic(CursedContext db)
         {
             this.db = db;
+            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<StatusMessage<IEnumerable<CompaniesModel>>> GetAllDataModelAsync()
+        public async Task<AbstractErrorHandler<IEnumerable<CompaniesModel>>> GetAllDataModelAsync()
         {
-            var statusMessage = new StatusMessage<IEnumerable<CompaniesModel>>
-            {
-                Entity = "All companies."
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<CompaniesModel>>("All companies.");
+
             var companies = await db.Company.ToListAsync();
             var query = from c in companies
                         join s in (from c in companies
@@ -51,13 +51,10 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage<CompanyModel>> GetSingleDataModelAsync(object key)
+        public async Task<AbstractErrorHandler<CompanyModel>> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = new StatusMessage<CompanyModel>
-            {
-                Entity = $"Company. Id: {key}.",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<CompanyModel>("Company.", key);
+
             var companies = await db.Company.Where(i => i.Id == (int)key).ToListAsync();
             var query = from c in companies
                         join s in (from c in companies
@@ -80,13 +77,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage<Company>> GetSingleUpdateModelAsync(object key)
+        public async Task<AbstractErrorHandler<Company>> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = new StatusMessage<Company>
-            {
-                Entity = $"Company. Id: {key}.",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<Company>("Company.", key);
 
             var company = await db.Company.SingleOrDefaultAsync(i => i.Id == (int)key);
             statusMessage.ReturnValue = company;
@@ -94,12 +87,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> AddDataModelAsync(Company model)
+        public async Task<AbstractErrorHandler> AddDataModelAsync(Company model)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Company. Id: <NotSetuped>."
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Company.");
 
             model.Id = default;
             db.Add(model);
@@ -108,13 +98,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> UpdateDataModelAsync(Company model)
+        public async Task<AbstractErrorHandler> UpdateDataModelAsync(Company model)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Company. Id: {model.Id}.",
-                EntityKey = model.Id
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Company.", model.Id);
 
             var currentModel = await db.Company.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
@@ -123,13 +109,9 @@ namespace Cursed.Models.Logic
             return statusMessage;
         }
 
-        public async Task<StatusMessage> RemoveDataModelAsync(object key)
+        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
         {
-            var statusMessage = new StatusMessage
-            {
-                Entity = $"Company. Id: {key}.",
-                EntityKey = key
-            };
+            var statusMessage = errorHandlerFactory.NewErrorHandler<Company>("Company.", key);
 
             var entity = await db.Company.FindAsync((int)key);
             db.Company.Remove(entity);

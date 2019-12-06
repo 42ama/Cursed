@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Cursed.Models.Data.Utility.ErrorHandling
 {
-    public abstract class AbstractStatusMessage
+    public class StatusMessage : AbstractErrorHandler
     {
-        public bool IsCompleted
+        public override bool IsCompleted
         {
             get
             {
-                if(Problems.Count > 0)
+                if (Problems.Count() > 0)
                 {
                     return false;
                 }
@@ -21,17 +21,25 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
                 }
             }
         }
-        public string Entity { get; set; }
-        public object EntityKey { get; set; }
-        public List<Problem> Problems { get; set; } = new List<Problem>();
+        public override List<Problem> Problems { get; set; } = new List<Problem>();
     }
 
-    public class StatusMessage : AbstractStatusMessage
+    public class StatusMessage<T> : AbstractErrorHandler<T>
     {
-    }
-
-    public class StatusMessage<T> : AbstractStatusMessage
-    {
-        public T ReturnValue { get; set; }
+        public override bool IsCompleted
+        {
+            get
+            {
+                if (Problems.Count() > 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        public override List<Problem> Problems { get; set; } = new List<Problem>();
     }
 }
