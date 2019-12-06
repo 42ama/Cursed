@@ -13,19 +13,24 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
+    public class StoragesLogic// : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
         private readonly CursedContext db;
+        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public StoragesLogic(CursedContext db)
         {
             this.db = db;
+            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<IEnumerable<StoragesModel>> GetAllDataModelAsync()
+        public async Task<AbstractErrorHandler<IEnumerable<StoragesModel>>> GetAllDataModelAsync()
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<StoragesModel>>("Storages.");
+
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         join p in (from s in storages
@@ -43,11 +48,16 @@ namespace Cursed.Models.Logic
                             Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
                             ProductsCount = t.Single().Count()
                         };
-            return query;
+
+            statusMessage.ReturnValue = query;
+
+            return statusMessage;
         }
 
-        public async Task<StorageModel> GetSingleDataModelAsync(object key)
+        public async Task<AbstractErrorHandler<StorageModel>> GetSingleDataModelAsync(object key)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler<StorageModel>("Storage.", key);
+
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         where s.Id == (int)key
@@ -77,36 +87,53 @@ namespace Cursed.Models.Logic
                             Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
                             Products = t.ToList()
                         };
-            return query.Single();
+
+            statusMessage.ReturnValue = query.Single();
+
+            return statusMessage;
         }
     
 
-        public async Task<Storage> GetSingleUpdateModelAsync(object key)
+        public async Task<AbstractErrorHandler<Storage>> GetSingleUpdateModelAsync(object key)
         {
-            return await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler<Storage>("Storage.", key);
+
+            statusMessage.ReturnValue = await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
+
+            return statusMessage;
         }
 
-        public async Task AddDataModelAsync(Storage model)
+        public async Task<AbstractErrorHandler> AddDataModelAsync(Storage model)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.");
+
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task UpdateDataModelAsync(Storage model)
+        public async Task<AbstractErrorHandler> UpdateDataModelAsync(Storage model)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.", model.Id);
+
             var currentModel = await db.Storage.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task RemoveDataModelAsync(object key)
+        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.", key);
+
             var entity = await db.Storage.FindAsync((int)key);
-
             db.Storage.Remove(entity);
-
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
     }
 }
