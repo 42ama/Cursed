@@ -30,30 +30,58 @@ namespace Cursed.Controllers
         {
             int facilityId = Int32.Parse(key);
             ViewData["FacilityId"] = facilityId;
-            var model = await logic.GetAllDataModelAsync(facilityId);
-            var pagenationModel = new Pagenation<FacilityTechProcessesDataModel>(model, itemsOnPage, currentPage);
-            return View(pagenationModel);
+            var statusMessage = await logic.GetAllDataModelAsync(facilityId);
+            if(statusMessage.IsCompleted)
+            {
+                var pagenationModel = new Pagenation<FacilityTechProcessesDataModel>(statusMessage.ReturnValue, itemsOnPage, currentPage);
+                return View(pagenationModel);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("add", Name = FacilityTechProcessesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TechProcess model)
         {
-            await logic.AddDataModelAsync(model);
-            return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            var statusMessage = await logic.AddDataModelAsync(model);
+            if(statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("edit", Name = FacilityTechProcessesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TechProcess model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            var statusMessage = await logic.UpdateDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("delete", Name = FacilityTechProcessesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(TechProcess model)
         {
-            await logic.RemoveDataModelAsync(model);
-            return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            var statusMessage = await logic.RemoveDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }
