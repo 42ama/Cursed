@@ -30,9 +30,16 @@ namespace Cursed.Controllers
         {
             int storageId = Int32.Parse(key);
             ViewData["StorageId"] = storageId;
-            var model = await logic.GetAllDataModelAsync(storageId);
-            var pagenationModel = new Pagenation<ProductsDataModel>(model, itemsOnPage, currentPage);
-            return View(pagenationModel);
+            var statusMessage = await logic.GetAllDataModelAsync(storageId);
+            if(statusMessage.IsCompleted)
+            {
+                var pagenationModel = new Pagenation<ProductsDataModel>(statusMessage.ReturnValue, itemsOnPage, currentPage);
+                return View(pagenationModel);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }

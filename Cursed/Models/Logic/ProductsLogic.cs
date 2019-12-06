@@ -12,19 +12,24 @@ using Cursed.Models.Data.Products;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductsLogic : IReadCollectionByParam<ProductsDataModel>
+    public class ProductsLogic// : IReadCollectionByParam<ProductsDataModel>
     {
         private readonly CursedContext db;
+        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public ProductsLogic(CursedContext db)
         {
             this.db = db;
+            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<IEnumerable<ProductsDataModel>> GetAllDataModelAsync(object key)
+        public async Task<AbstractErrorHandler<IEnumerable<ProductsDataModel>>> GetAllDataModelAsync(object key)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<ProductsDataModel>>("Products.", key);
+
             int storageId = (int)key;
             var query = from p in db.Product
                         where p.StorageId == storageId
@@ -39,7 +44,10 @@ namespace Cursed.Models.Logic
                             QuantityUnit = p.QuantityUnit,
                             Uid = p.Uid
                         };
-            return query;
+
+            statusMessage.ReturnValue = query;
+
+            return statusMessage;
         }
     }
 }
