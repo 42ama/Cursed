@@ -28,16 +28,32 @@ namespace Cursed.Controllers
         [HttpGet("", Name = RecipesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
-            var model = await logic.GetAllDataModelAsync();
-            var pagenationModel = new Pagenation<RecipesModel>(model, itemsOnPage, currentPage);
-            return View(pagenationModel);
+            var statusMessage = await logic.GetAllDataModelAsync();
+            if(statusMessage.IsCompleted)
+            {
+                var pagenationModel = new Pagenation<RecipesModel>(statusMessage.ReturnValue, itemsOnPage, currentPage);
+                return View(pagenationModel);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpGet("recipe", Name = RecipesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
-            return View(await logic.GetSingleDataModelAsync(id));
+            var statusMessage = await logic.GetSingleDataModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                return View(statusMessage.ReturnValue);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+            
         }
 
         [HttpGet("recipe/edit", Name = RecipesRouting.GetEditSingleItem)]
@@ -47,8 +63,15 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = RecipesRouting.EditSingleItem;
-                var model = await logic.GetSingleUpdateModelAsync(id);
-                return View("EditSingleItem", model);
+                var statusMessage = await logic.GetSingleUpdateModelAsync(id);
+                if (statusMessage.IsCompleted)
+                {
+                    return View("EditSingleItem", statusMessage.ReturnValue);
+                }
+                else
+                {
+                    return View("CustomError", statusMessage);
+                }
             }
             else
             {
@@ -60,23 +83,44 @@ namespace Cursed.Controllers
         [HttpPost("recipe/add", Name = RecipesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Recipe model)
         {
-            await logic.AddDataModelAsync(model);
-            return RedirectToRoute(RecipesRouting.Index);
+            var statusMessage = await logic.AddDataModelAsync(model);
+            if(statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("recipe/edit", Name = RecipesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Recipe model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(RecipesRouting.Index);
+            var statusMessage = await logic.UpdateDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("recipe/delete", Name = RecipesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            await logic.RemoveDataModelAsync(id);
-            return RedirectToRoute(RecipesRouting.Index);
+            var statusMessage = await logic.RemoveDataModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }
