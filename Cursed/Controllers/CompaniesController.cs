@@ -18,7 +18,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 namespace Cursed.Controllers
 {
     [Route("companies")]
-    public class CompaniesController : Controller//, ICUD<Company>, IReadColection, IReadSingle, IReadUpdateForm
+    public class CompaniesController : Controller, ICUD<Company>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly CompaniesLogic logic;
 
