@@ -14,21 +14,25 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Services;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductsCatalogLogic : IReadColection<ProductsCatalogModel>, IReadSingle<ProductCatalogModel>, IReadUpdateForm<ProductCatalog>, ICUD<ProductCatalog>
+    public class ProductsCatalogLogic// : IReadColection<ProductsCatalogModel>, IReadSingle<ProductCatalogModel>, IReadUpdateForm<ProductCatalog>, ICUD<ProductCatalog>
     {
         private readonly CursedContext db;
+        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         private readonly ILicenseValidation licenseValidation;
         public ProductsCatalogLogic(CursedContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
             this.licenseValidation = licenseValidation;
+            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<IEnumerable<ProductsCatalogModel>> GetAllDataModelAsync()
+        public async Task<AbstractErrorHandler<IEnumerable<ProductsCatalogModel>>> GetAllDataModelAsync()
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<ProductsCatalogModel>>("All products catalog.");
             // probably need testing with different db connection combination
             var productCatalogs = await db.ProductCatalog.ToListAsync();
 
@@ -75,11 +79,14 @@ namespace Cursed.Models.Logic
                 }
             }
 
-            return dataModels;
+            statusMessage.ReturnValue = dataModels;
+
+            return statusMessage;
         }
 
-        public async Task<ProductCatalogModel> GetSingleDataModelAsync(object key)
+        public async Task<AbstractErrorHandler<ProductCatalogModel>> GetSingleDataModelAsync(object key)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler<ProductCatalogModel>("Product in catalog.", key);
             int Uid = (int)key;
 
             var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == Uid);
@@ -115,38 +122,54 @@ namespace Cursed.Models.Logic
                 Recipes = recipes,
                 Storages = storages
             };
-            return dataModel;
+
+            statusMessage.ReturnValue = dataModel;
+
+            return statusMessage;
         }
 
         //Add to interface
-        public async Task<ProductCatalog> GetSingleUpdateModelAsync(object key)
+        public async Task<AbstractErrorHandler<ProductCatalog>> GetSingleUpdateModelAsync(object key)
         {
-            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)key);
-            return productCatalog;
+            var statusMessage = errorHandlerFactory.NewErrorHandler<ProductCatalog>("Product in catalog.", key);
+
+            statusMessage.ReturnValue = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)key);
+
+            return statusMessage;
         }
 
-        public async Task AddDataModelAsync(ProductCatalog model)
+        public async Task<AbstractErrorHandler> AddDataModelAsync(ProductCatalog model)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Product in catalog.");
+
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task UpdateDataModelAsync(ProductCatalog model)
+        public async Task<AbstractErrorHandler> UpdateDataModelAsync(ProductCatalog model)
         {
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Product in catalog.", model.Id);
+
             var currentModel = await db.ProductCatalog.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
 
-        public async Task RemoveDataModelAsync(object key)
+        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
         {
-            var entity = await db.ProductCatalog.FindAsync((int)key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler("Product in catalog.", key);
 
+            var entity = await db.ProductCatalog.FindAsync((int)key);
             //catch execption if related entites are exist and display error message
             db.ProductCatalog.Remove(entity);
-
             await db.SaveChangesAsync();
+
+            return statusMessage;
         }
     }
 }
