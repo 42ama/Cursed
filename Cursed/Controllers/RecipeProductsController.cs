@@ -28,37 +28,68 @@ namespace Cursed.Controllers
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
         {
             int recipeId = Int32.Parse(key);
-            var addedProducts = await logic.GetAllDataModelAsync(recipeId);
-            var ignoreProducts = addedProducts.Select(i => i.ProductId).Distinct();
-            var notAddedProducts = logic.GetProductsFromCatalog(ignoreProducts);
-            ViewData["RecipeId"] = recipeId;
-            var model = new CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
+            var statusMessage = await logic.GetAllDataModelAsync(recipeId);
+            if(statusMessage.IsCompleted)
             {
-                Collection = addedProducts,
-                Pagenation = new Pagenation<ProductCatalog>(notAddedProducts, itemsOnPage, currentPage)
-            };
-            return View(model);
+                var addedProducts = statusMessage.ReturnValue;
+                var ignoreProducts = addedProducts.Select(i => i.ProductId).Distinct();
+                var notAddedProducts = logic.GetProductsFromCatalog(ignoreProducts);
+                ViewData["RecipeId"] = recipeId;
+                var model = new CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
+                {
+                    Collection = addedProducts,
+                    Pagenation = new Pagenation<ProductCatalog>(notAddedProducts, itemsOnPage, currentPage)
+                };
+                return View(model);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+
         }
 
         [HttpPost("add", Name = RecipeProductsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
         {
-            await logic.AddDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = await logic.AddDataModelAsync(model);
+            if(statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+            
         }
 
         [HttpPost("edit", Name = RecipeProductsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = await logic.UpdateDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("delete", Name = RecipeProductsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(RecipeProductChanges model)
         {
-            await logic.RemoveDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = await logic.RemoveDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }
