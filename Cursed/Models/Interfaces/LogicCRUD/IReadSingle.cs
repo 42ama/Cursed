@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {
@@ -12,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// </summary>
         /// <param name="key">Unique identificator</param>
         /// <returns>Single model from database in specific section, choosen by unique identificator</returns>
-        Task<T> GetSingleDataModelAsync(object key);
+        Task<AbstractErrorHandler<T>> GetSingleDataModelAsync(object key);
     }
 }

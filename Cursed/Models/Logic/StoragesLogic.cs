@@ -17,7 +17,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class StoragesLogic// : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
+    public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
         private readonly CursedContext db;
         private readonly AbstractErrorHandlerFactory errorHandlerFactory;

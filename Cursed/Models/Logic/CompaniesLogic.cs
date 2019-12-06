@@ -16,7 +16,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class CompaniesLogic// : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
+    public class CompaniesLogic : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
     {
         private readonly CursedContext db;
         private readonly AbstractErrorHandlerFactory errorHandlerFactory;

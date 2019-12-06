@@ -16,7 +16,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
-    public class ProductsLogic// : IReadCollectionByParam<ProductsDataModel>
+    public class ProductsLogic : IReadCollectionByParam<ProductsDataModel>
     {
         private readonly CursedContext db;
         private readonly AbstractErrorHandlerFactory errorHandlerFactory;

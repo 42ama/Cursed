@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {
@@ -12,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Returns collection of all models from database in specific section
         /// </summary>
         /// <returns>Collection of all models from database in specific section</returns>
-        Task<IEnumerable<T>> GetAllDataModelAsync();
+        Task<AbstractErrorHandler<IEnumerable<T>>> GetAllDataModelAsync();
     }
 }

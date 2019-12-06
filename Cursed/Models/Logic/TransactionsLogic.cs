@@ -18,7 +18,7 @@ using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class TransactionsLogic
+    public class TransactionsLogic : IReadColection<TransactionsModel>, IReadSingle<TransactionModel>, IReadUpdateForm<TransactionBatch>, ICUD<TransactionBatch>
     {
         private readonly CursedContext db;
         private readonly IOperationValidation operationValidation;

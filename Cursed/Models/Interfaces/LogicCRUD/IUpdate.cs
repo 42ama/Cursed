@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {
@@ -12,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Update data model at database
         /// </summary>
         /// <param name="model">Data model to be updated</param>
-        Task UpdateDataModelAsync(T model);
+        Task<AbstractErrorHandler> UpdateDataModelAsync(T model);
     }
 }

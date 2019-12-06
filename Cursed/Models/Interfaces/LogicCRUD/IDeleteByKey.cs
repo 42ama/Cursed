@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {
@@ -11,6 +12,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Delete data model from database
         /// </summary>
         /// <param name="key">Unique identificator of data model</param>
-        Task RemoveDataModelAsync(object key);
+        Task<AbstractErrorHandler> RemoveDataModelAsync(object key);
     }
 }
