@@ -22,6 +22,11 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
             }
         }
         public override List<Problem> Problems { get; set; } = new List<Problem>();
+
+        public override void AddProblem(Problem problem)
+        {
+            Problems.Add(problem);
+        }
     }
 
     public class StatusMessage<T> : AbstractErrorHandler<T>
@@ -41,5 +46,10 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
             }
         }
         public override List<Problem> Problems { get; set; } = new List<Problem>();
+
+        public override void AddProblem(Problem problem)
+        {
+            Problems.Add(problem);
+        }
     }
 }

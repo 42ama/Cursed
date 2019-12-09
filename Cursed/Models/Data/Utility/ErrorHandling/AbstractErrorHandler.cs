@@ -11,6 +11,8 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
         public string Entity { get; set; }
         public object EntityKey { get; set; }
         public abstract List<Problem> Problems { get; set; }
+
+        public abstract void AddProblem(Problem problem);
     }
 
     public abstract class AbstractErrorHandler<T> : AbstractErrorHandler
