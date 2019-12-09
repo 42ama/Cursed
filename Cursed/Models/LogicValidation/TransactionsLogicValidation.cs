@@ -84,14 +84,15 @@ namespace Cursed.Models.LogicValidation
                     {
                         statusMessage.Problems.Add(new Problem
                         {
-                            Entity = operationMessage.Entity + problem.Entity,
-                            Message = problem.Entity
+                            Entity = operationMessage.Entity + " " + problem.Entity,
+                            EntityKey = problem.EntityKey,
+                            Message = problem.Message
                         });
                     }
                 }
             }
 
-            return await CheckClosed(key);
+            return statusMessage;
         }
 
         private async Task<AbstractErrorHandler> CheckExists(object key)
