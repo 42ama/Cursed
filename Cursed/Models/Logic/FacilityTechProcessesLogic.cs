@@ -19,17 +19,13 @@ namespace Cursed.Models.Logic
     public class FacilityTechProcessesLogic : IReadCollectionByParam<FacilityTechProcessesDataModel>, ICreate<TechProcess>, IUpdate<TechProcess>, IDeleteByModel<TechProcess>
     {
         private readonly CursedContext db;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public FacilityTechProcessesLogic(CursedContext db)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<FacilityTechProcessesDataModel>>> GetAllDataModelAsync(object key)
+        public async Task<IEnumerable<FacilityTechProcessesDataModel>> GetAllDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<FacilityTechProcessesDataModel>>("Tech processes.", key);
-
             int facilityId = (int)key;
             var query = from f in db.TechProcess
                         where f.FacilityId == facilityId
@@ -48,41 +44,27 @@ namespace Cursed.Models.Logic
                             RecipeTechApprov = rs.TechApproval ?? false
                         };
 
-            statusMessage.ReturnValue = query;
-
-            return statusMessage;
+            return query;
         }
 
-        public async Task<AbstractErrorHandler> AddDataModelAsync(TechProcess model)
+        public async Task AddDataModelAsync(TechProcess model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Tech process.", (facilityId: model.FacilityId, recipeId: model.RecipeId));
-
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(TechProcess model)
+        public async Task UpdateDataModelAsync(TechProcess model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Tech process.", (facilityId: model.FacilityId, recipeId: model.RecipeId));
-
             var currentModel = await db.TechProcess.FirstOrDefaultAsync(i => i.RecipeId == model.RecipeId && i.FacilityId == model.FacilityId);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(TechProcess model)
+        public async Task RemoveDataModelAsync(TechProcess model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Tech process.", (facilityId: model.FacilityId, recipeId: model.RecipeId));
-
             var entity = await db.TechProcess.SingleAsync(i => i.RecipeId == model.RecipeId && i.FacilityId == model.FacilityId);
             db.TechProcess.Remove(entity);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }

@@ -12,6 +12,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Delete data model from database
         /// </summary>
         /// <param name="key">Unique identificator of data model</param>
-        Task<AbstractErrorHandler> RemoveDataModelAsync(object key);
+        Task RemoveDataModelAsync(object key);
     }
 }

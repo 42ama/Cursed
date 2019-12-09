@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,6 +14,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
+using Cursed.Models.LogicValidation;
 
 namespace Cursed.Controllers
 {
@@ -21,52 +22,47 @@ namespace Cursed.Controllers
     public class LicensesController : Controller, ICUD<License>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly LicensesLogic logic;
+        private readonly LicensesLogicValidation logicValidation;
         private readonly ILicenseValidation licenseValidation;
         public LicensesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation)
         {
             logic = new LicensesLogic(db);
+            logicValidation = new LicensesLogicValidation(db);
             this.licenseValidation = licenseValidation;
         }
 
         [HttpGet("", Name = LicensesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
-            var statusMessage = await logic.GetAllDataModelAsync();
-            if(statusMessage.IsCompleted)
+            var model = await logic.GetAllDataModelAsync();
+
+            var viewModel = new List<LicensesViewModel>();
+            foreach (var item in model)
             {
-                var viewModel = new List<LicensesViewModel>();
-                foreach (var item in statusMessage.ReturnValue)
+                viewModel.Add(new LicensesViewModel
                 {
-                    viewModel.Add(new LicensesViewModel
-                    {
-                        Id = item.Id,
-                        GovermentNum = item.GovermentNum,
-                        Date = item.Date.ToShortDateString(),
-                        ProductId = item.ProductId,
-                        ProductName = item.ProductName,
-                        ProductCAS = item.ProductCAS,
-                        IsValid = licenseValidation.IsValid(new License { Date = item.Date })
-                    });
-                }
-                var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
-
-                return View(pagenationModel);
+                    Id = item.Id,
+                    GovermentNum = item.GovermentNum,
+                    Date = item.Date.ToShortDateString(),
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    ProductCAS = item.ProductCAS,
+                    IsValid = licenseValidation.IsValid(new License { Date = item.Date })
+                });
             }
-            else
-            {
-                return View("CustomError", statusMessage);
-            }
+            var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
 
+            return View(pagenationModel);
         }
 
         [HttpGet("license", Name = LicensesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
-            var statusMessage = await logic.GetSingleDataModelAsync(id);
+            var statusMessage = await logicValidation.CheckGetSingleDataModelAsync(id);
             if (statusMessage.IsCompleted)
             {
-                var dataModel = statusMessage.ReturnValue;
+                var dataModel = await logic.GetSingleDataModelAsync(id);
                 var viewModel = new LicensesViewModel
                 {
                     Id = dataModel.Id,
@@ -92,10 +88,11 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = LicensesRouting.EditSingleItem;
-                var statusMessage = await logic.GetSingleUpdateModelAsync(id);
+                var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
                 if (statusMessage.IsCompleted)
                 {
-                    return View("EditSingleItem", statusMessage.ReturnValue);
+                    var model = await logic.GetSingleUpdateModelAsync(id);
+                    return View("EditSingleItem", model);
                 }
                 else
                 {
@@ -112,23 +109,17 @@ namespace Cursed.Controllers
         [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
         {
-            var statusMessage = await logic.AddDataModelAsync(model);
-            if(statusMessage.IsCompleted)
-            {
-                return RedirectToRoute(LicensesRouting.Index);
-            }
-            else
-            {
-                return View("CustomError", statusMessage);
-            }
+            await logic.AddDataModelAsync(model);
+            return RedirectToRoute(LicensesRouting.Index);
         }
 
         [HttpPost("license/edit", Name = LicensesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(License model)
         {
-            var statusMessage = await logic.UpdateDataModelAsync(model);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
             if (statusMessage.IsCompleted)
             {
+                await logic.UpdateDataModelAsync(model);
                 return RedirectToRoute(LicensesRouting.Index);
             }
             else
@@ -141,9 +132,10 @@ namespace Cursed.Controllers
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            var statusMessage = await logic.RemoveDataModelAsync(id);
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync(id);
             if (statusMessage.IsCompleted)
             {
+                await logic.RemoveDataModelAsync(id);
                 return RedirectToRoute(LicensesRouting.Index);
             }
             else

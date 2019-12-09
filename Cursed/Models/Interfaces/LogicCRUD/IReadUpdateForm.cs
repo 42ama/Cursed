@@ -13,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// </summary>
         /// <param name="key">Unique identificator</param>
         /// <returns>Single model to be updated from database in specific section, choosen by unique identificator</returns>
-        Task<AbstractErrorHandler<T>> GetSingleUpdateModelAsync(object key);
+        Task<T> GetSingleUpdateModelAsync(object key);
     }
 }

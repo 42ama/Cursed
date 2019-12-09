@@ -13,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Delete data model from database
         /// </summary>
         /// <param name="model">Data model to be deleted</param>
-        Task<AbstractErrorHandler> RemoveDataModelAsync(T model);
+        Task RemoveDataModelAsync(T model);
     }
 }

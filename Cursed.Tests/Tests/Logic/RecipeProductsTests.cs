@@ -199,7 +199,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetAllDataModelAsync(expected.First().RecipeId)).ReturnValue.ToList();
+            var actual = (await logic.GetAllDataModelAsync(expected.First().RecipeId)).ToList();
 
             // assert
             foreach (var expectedItem in expected)

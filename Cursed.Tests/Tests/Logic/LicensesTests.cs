@@ -189,7 +189,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetAllDataModelAsync()).ReturnValue.ToList();
+            var actual = (await logic.GetAllDataModelAsync()).ToList();
 
             // assert
             foreach (var expectedItem in expected)
@@ -225,7 +225,7 @@ namespace Cursed.Tests.Tests.Logic
             };
 
             // act
-            var actual = (await logic.GetSingleDataModelAsync(expected.Id)).ReturnValue;
+            var actual = await logic.GetSingleDataModelAsync(expected.Id);
 
             // assert
             Assert.Equal(actual.Id, expected.Id);
@@ -246,7 +246,7 @@ namespace Cursed.Tests.Tests.Logic
             await fixture.db.SaveChangesAsync();
 
             // act
-            var actual = (await logic.GetSingleUpdateModelAsync(expected.Id)).ReturnValue;
+            var actual = await logic.GetSingleUpdateModelAsync(expected.Id);
 
             // assert
             Assert.Equal(actual.Id, expected.Id);

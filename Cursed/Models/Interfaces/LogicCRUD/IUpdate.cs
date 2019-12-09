@@ -13,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Update data model at database
         /// </summary>
         /// <param name="model">Data model to be updated</param>
-        Task<AbstractErrorHandler> UpdateDataModelAsync(T model);
+        Task UpdateDataModelAsync(T model);
     }
 }

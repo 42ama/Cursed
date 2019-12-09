@@ -21,18 +21,14 @@ namespace Cursed.Models.Logic
     {
         private readonly CursedContext db;
         private readonly ILicenseValidation licenseValidation;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public FacilitiesLogic(CursedContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
             this.licenseValidation = licenseValidation;
-            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<FacilitiesModel>>> GetAllDataModelAsync()
+        public async Task<IEnumerable<FacilitiesModel>> GetAllDataModelAsync()
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<FacilitiesModel>>("All facilities.");
-
             var facilities = await db.Facility.ToListAsync();
             var query = from f in facilities
                         join q in (from f in facilities
@@ -49,15 +45,11 @@ namespace Cursed.Models.Logic
                             TechProcesses = tab.ToList()
                         };
 
-            statusMessage.ReturnValue = query;
-
-            return statusMessage;
+            return query;
         }
 
-        public async Task<AbstractErrorHandler<FacilityModel>> GetSingleDataModelAsync(object key)
+        public async Task<FacilityModel> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<FacilityModel>("Facility.", key);
-
             var facilities = await db.Facility.ToListAsync();
             var licensesList = await db.License.ToListAsync();
 
@@ -123,52 +115,34 @@ namespace Cursed.Models.Logic
                             Products = qi.ToList()
                         };
 
-            statusMessage.ReturnValue = queryOuter.Single();
-
-            return statusMessage;
+            return queryOuter.Single();
         }
 
 
-        public async Task<AbstractErrorHandler<Facility>> GetSingleUpdateModelAsync(object key)
+        public async Task<Facility> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<Facility>("Facility.", key);
-
-            statusMessage.ReturnValue = await db.Facility.SingleOrDefaultAsync(i => i.Id == (int)key);
-
-            return statusMessage;
+            return await db.Facility.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task<AbstractErrorHandler> AddDataModelAsync(Facility model)
+        public async Task AddDataModelAsync(Facility model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Facility.");
-
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(Facility model)
+        public async Task UpdateDataModelAsync(Facility model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Facility.", model.Id);
-
             var currentModel = await db.Facility.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<Facility>("Facility.", key);
-
             var entity = await db.Facility.FindAsync((int)key);
             db.Facility.Remove(entity);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }

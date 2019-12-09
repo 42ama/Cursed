@@ -15,6 +15,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// </summary>
         /// <param name="key">Unique identificator</param>
         /// <returns>Collection of all models from database in specific section, choosen by unique identificator</returns>
-        Task<AbstractErrorHandler<IEnumerable<T>>> GetAllDataModelAsync(object key);
+        Task<IEnumerable<T>> GetAllDataModelAsync(object key);
     }
 }

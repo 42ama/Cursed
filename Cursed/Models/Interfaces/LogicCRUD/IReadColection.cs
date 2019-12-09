@@ -13,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Returns collection of all models from database in specific section
         /// </summary>
         /// <returns>Collection of all models from database in specific section</returns>
-        Task<AbstractErrorHandler<IEnumerable<T>>> GetAllDataModelAsync();
+        Task<IEnumerable<T>> GetAllDataModelAsync();
     }
 }

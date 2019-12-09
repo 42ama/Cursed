@@ -20,11 +20,10 @@ namespace Cursed.Models.Logic
     {
         private readonly CursedContext db;
         private readonly IQueryable<LicensesDataModel> basicDataModelQuery;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
+
         public LicensesLogic(CursedContext db)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
             // probably will remain static between calls, and not will be updated after db changes. Dig into
             // got an answer, that linq querys are delayed to each call, so it will process normaly
             basicDataModelQuery = db.License.Join
@@ -44,64 +43,40 @@ namespace Cursed.Models.Logic
                 );
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<LicensesDataModel>>> GetAllDataModelAsync()
+        public async Task<IEnumerable<LicensesDataModel>> GetAllDataModelAsync()
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<LicensesDataModel>>("All licenses.");
-
-            statusMessage.ReturnValue = basicDataModelQuery;
-
-            return statusMessage;
+            return basicDataModelQuery;
         }
 
-        public async Task<AbstractErrorHandler<LicensesDataModel>> GetSingleDataModelAsync(object key)
+        public async Task<LicensesDataModel> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<LicensesDataModel>("License.", key);
-
-            statusMessage.ReturnValue = basicDataModelQuery.Single(i => i.Id == (int)key);
-
-            return statusMessage;
+            return basicDataModelQuery.Single(i => i.Id == (int)key);
         }
 
-        public async Task<AbstractErrorHandler<License>> GetSingleUpdateModelAsync(object key)
+        public async Task<License> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<License>("License.", key);
-
-            statusMessage.ReturnValue = await db.License.SingleAsync(i => i.Id == (int)key);
-
-            return statusMessage;
+            return await db.License.SingleAsync(i => i.Id == (int)key);
         }
 
-        public async Task<AbstractErrorHandler> AddDataModelAsync(License model)
+        public async Task AddDataModelAsync(License model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("License.");
-
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(License model)
+        public async Task UpdateDataModelAsync(License model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("License.", model.Id);
-
             var currentModel = await db.License.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<License>("License.", key);
-
             var entity = await db.License.FindAsync((int)key);
             db.License.Remove(entity);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }

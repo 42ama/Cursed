@@ -26,10 +26,8 @@ namespace Cursed.Models.Logic
             errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<ProductsDataModel>>> GetAllDataModelAsync(object key)
+        public async Task<IEnumerable<ProductsDataModel>> GetAllDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<ProductsDataModel>>("Products.", key);
-
             int storageId = (int)key;
             var query = from p in db.Product
                         where p.StorageId == storageId
@@ -45,9 +43,7 @@ namespace Cursed.Models.Logic
                             Uid = p.Uid
                         };
 
-            statusMessage.ReturnValue = query;
-
-            return statusMessage;
+            return query;
         }
     }
 }

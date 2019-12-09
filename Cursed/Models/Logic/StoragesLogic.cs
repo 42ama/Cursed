@@ -20,17 +20,13 @@ namespace Cursed.Models.Logic
     public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
         private readonly CursedContext db;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public StoragesLogic(CursedContext db)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<StoragesModel>>> GetAllDataModelAsync()
+        public async Task<IEnumerable<StoragesModel>> GetAllDataModelAsync()
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<StoragesModel>>("Storages.");
-
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         join p in (from s in storages
@@ -49,15 +45,11 @@ namespace Cursed.Models.Logic
                             ProductsCount = t.Single().Count()
                         };
 
-            statusMessage.ReturnValue = query;
-
-            return statusMessage;
+            return query;
         }
 
-        public async Task<AbstractErrorHandler<StorageModel>> GetSingleDataModelAsync(object key)
+        public async Task<StorageModel> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<StorageModel>("Storage.", key);
-
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         where s.Id == (int)key
@@ -88,52 +80,34 @@ namespace Cursed.Models.Logic
                             Products = t.ToList()
                         };
 
-            statusMessage.ReturnValue = query.Single();
-
-            return statusMessage;
+            return query.Single();
         }
     
 
-        public async Task<AbstractErrorHandler<Storage>> GetSingleUpdateModelAsync(object key)
+        public async Task<Storage> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<Storage>("Storage.", key);
-
-            statusMessage.ReturnValue = await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
-
-            return statusMessage;
+            return await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task<AbstractErrorHandler> AddDataModelAsync(Storage model)
+        public async Task AddDataModelAsync(Storage model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.");
-
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(Storage model)
+        public async Task UpdateDataModelAsync(Storage model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.", model.Id);
-
             var currentModel = await db.Storage.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Storage.", key);
-
             var entity = await db.Storage.FindAsync((int)key);
             db.Storage.Remove(entity);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }

@@ -13,7 +13,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.LogicValidation;
 
 namespace Cursed.Controllers
 {
@@ -21,35 +21,33 @@ namespace Cursed.Controllers
     public class CompaniesController : Controller, ICUD<Company>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly CompaniesLogic logic;
-
+        private readonly CompaniesLogicValidation logicValidation;
         public CompaniesController(CursedContext db)
         {
             logic = new CompaniesLogic(db);
+            logicValidation = new CompaniesLogicValidation(db);
         }
+
         [HttpGet("", Name = CompaniesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
-            var statusMessage = await logic.GetAllDataModelAsync();
-            if (statusMessage.IsCompleted)
-            {
-                var pagenationModel = new Pagenation<CompaniesModel>(statusMessage.ReturnValue, itemsOnPage, currentPage);
+            var model = await logic.GetAllDataModelAsync();
 
-                return View(pagenationModel);
-            }
-            else
-            {
-                return View("CustomError", statusMessage);
-            }
+            var pagenationModel = new Pagenation<CompaniesModel>(model, itemsOnPage, currentPage);
+
+            return View(pagenationModel);
+
         }
 
         [HttpGet("company", Name = CompaniesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
-            var statusMessage = await logic.GetSingleDataModelAsync(id);
+            var statusMessage = await logicValidation.CheckGetSingleDataModelAsync(id);
             if(statusMessage.IsCompleted)
             {
-                return View(statusMessage.ReturnValue);
+                var model = await logic.GetSingleDataModelAsync(id);
+                return View(model);
             }
             else
             {
@@ -64,10 +62,11 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = CompaniesRouting.EditSingleItem;
-                var statusMessage = await logic.GetSingleUpdateModelAsync(id);
+                var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
                 if(statusMessage.IsCompleted)
                 {
-                    return View("EditSingleItem", statusMessage);
+                    var model = await logic.GetSingleUpdateModelAsync(id);
+                    return View("EditSingleItem", model);
                 }
                 else
                 {
@@ -84,23 +83,17 @@ namespace Cursed.Controllers
         [HttpPost("company/add", Name = CompaniesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Company model)
         {
-            var statusMessage = await logic.AddDataModelAsync(model);
-            if(statusMessage.IsCompleted)
-            {
-                return RedirectToRoute(CompaniesRouting.Index);
-            }
-            else
-            {
-                return View("CustomError", statusMessage);
-            }
+            await logic.AddDataModelAsync(model);
+            return RedirectToRoute(CompaniesRouting.Index);
         }
 
         [HttpPost("company/edit", Name = CompaniesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Company model)
         {
-            var statusMessage = await logic.UpdateDataModelAsync(model);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
             if (statusMessage.IsCompleted)
             {
+                await logic.UpdateDataModelAsync(model);
                 return RedirectToRoute(CompaniesRouting.Index);
             }
             else
@@ -113,9 +106,10 @@ namespace Cursed.Controllers
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            var statusMessage = await logic.RemoveDataModelAsync(id);
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync(id);
             if(statusMessage.IsCompleted)
             {
+                await logic.RemoveDataModelAsync(id);
                 return RedirectToRoute(CompaniesRouting.Index);
             }
             else

@@ -21,19 +21,15 @@ namespace Cursed.Models.Logic
     public class TransactionsLogic : IReadColection<TransactionsModel>, IReadSingle<TransactionModel>, IReadUpdateForm<TransactionBatch>, ICUD<TransactionBatch>
     {
         private readonly CursedContext db;
-        private readonly IOperationValidation operationValidation;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
-        public TransactionsLogic(CursedContext db, IOperationValidation operationValidation)
+
+        public TransactionsLogic(CursedContext db)
         {
             this.db = db;
-            this.operationValidation = operationValidation;
-            errorHandlerFactory = new StatusMessageFactory();
+
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<TransactionsModel>>> GetAllDataModelAsync()
+        public async Task<IEnumerable<TransactionsModel>> GetAllDataModelAsync()
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<TransactionsModel>>("All transactions.");
-
             var transactions = await db.TransactionBatch.ToListAsync();
             var query = from t in transactions
                         join c in db.Company on t.CompanyId equals c.Id into companies
@@ -52,15 +48,12 @@ namespace Cursed.Models.Logic
                             CompanyName = comp.Name,
                             OperationsCount = o.Single().Count()
                         };
-            statusMessage.ReturnValue = query;
 
-            return statusMessage;
+            return query;
         }
 
-        public async Task<AbstractErrorHandler<TransactionModel>> GetSingleDataModelAsync(object key)
+        public async Task<TransactionModel> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<TransactionModel>("Transaction.", key);
-
             var transactions = await db.TransactionBatch.Where(i => i.Id == (int)key).ToListAsync();
             var query = from t in transactions
                         join c in db.Company on t.CompanyId equals c.Id into companies
@@ -79,40 +72,18 @@ namespace Cursed.Models.Logic
                             CompanyName = comp.Name,
                             Operations = o.Single().ToList()
                         };
-            statusMessage.ReturnValue = query.Single();
 
-            return statusMessage;
+            return query.Single();
         }
 
-        public async Task<AbstractErrorHandler<TransactionBatch>> GetSingleUpdateModelAsync(object key)
+        public async Task<TransactionBatch> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<TransactionBatch>("Transaction.", key);
-            var transaction = await db.TransactionBatch.SingleAsync(i => i.Id == (int)key);
-            statusMessage.ReturnValue = transaction;
-            return statusMessage;
+            return await db.TransactionBatch.SingleAsync(i => i.Id == (int)key); 
         }
 
-        public async Task<AbstractErrorHandler> CloseTransactionAsync(object key)
+        public async Task CloseTransactionAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
-
-            // operation validation
             var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
-            foreach (var operation in transaction.Operation)
-            {
-                var operationMessage = await operationValidation.IsValidAsync(operation);
-                if(!operationMessage.IsCompleted)
-                {
-                    foreach (var problem in operationMessage?.Problems)
-                    {
-                        statusMessage.Problems.Add(new Problem
-                        {
-                            Entity = operationMessage.Entity + problem.Entity,
-                            Message = problem.Entity
-                        });
-                    }
-                }
-            }
 
             // applying each operation to db
             foreach(var operation in transaction.Operation)
@@ -152,62 +123,29 @@ namespace Cursed.Models.Logic
 
                 db.SaveChanges();
             }
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> AddDataModelAsync(TransactionBatch model)
+        public async Task AddDataModelAsync(TransactionBatch model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.");
-
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(TransactionBatch model)
+        public async Task UpdateDataModelAsync(TransactionBatch model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", model.Id);
-
             var currentModel = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == model.Id);
-            if(!currentModel.IsOpen)
-            {
-                statusMessage.Problems.Add(new Problem
-                {
-                    Entity = "Transaction open status.",
-                    Message = "Can't update transaction, when it closed."
-                });
-            }
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
 
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
-
             int transactionId = (int)key;
-
             var entity = await db.TransactionBatch.FindAsync(transactionId);
-            if (!entity.IsOpen)
-            {
-                statusMessage.Problems.Add(new Problem
-                {
-                    Entity = "Transaction open status.",
-                    Message = "Can't delete transaction, when it closed."
-                });
-            }
-
             db.Operation.RemoveRange(db.Operation.Where(i => i.TransactionId == transactionId));
             db.TransactionBatch.Remove(entity);
-
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }

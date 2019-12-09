@@ -19,17 +19,13 @@ namespace Cursed.Models.Logic
     public class RecipesLogic : IReadColection<RecipesModel>, IReadSingle<RecipeModel>, IReadUpdateForm<Recipe>, ICUD<Recipe>
     {
         private readonly CursedContext db;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public RecipesLogic(CursedContext db)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
         }
 
-        public async Task<AbstractErrorHandler<IEnumerable<RecipesModel>>> GetAllDataModelAsync()
+        public async Task<IEnumerable<RecipesModel>> GetAllDataModelAsync()
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<IEnumerable<RecipesModel>>("Recipes.");
-
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
                      join ak in (from r in recipes
@@ -64,14 +60,10 @@ namespace Cursed.Models.Logic
                          MaterialCount = p.Select(i => i.Type).Where(i=> i == ProductCatalogTypes.Material).Count()
                      };
 
-            statusMessage.ReturnValue = query;
-
-            return statusMessage;
+            return query;
         }
-        public async Task<AbstractErrorHandler<RecipeModel>> GetSingleDataModelAsync(object key)
+        public async Task<RecipeModel> GetSingleDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<RecipeModel>("Recipe.", key);
-
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
                         where r.Id == (int)key
@@ -113,47 +105,29 @@ namespace Cursed.Models.Logic
                             RecipeProducts = p.Select(i => i.RecipeProductContainer).ToList()
                         };
 
-            statusMessage.ReturnValue = query.Single();
-
-            return statusMessage;
+            return query.Single();
         }
-        public async Task<AbstractErrorHandler<Recipe>> GetSingleUpdateModelAsync(object key)
+        public async Task<Recipe> GetSingleUpdateModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler<Recipe>("Recipe.", key);
-
-            statusMessage.ReturnValue = await db.Recipe.SingleAsync(i => i.Id == (int)key);
-
-            return statusMessage;
+            return await db.Recipe.SingleAsync(i => i.Id == (int)key);
         }
-        public async Task<AbstractErrorHandler> AddDataModelAsync(Recipe model)
+        public async Task AddDataModelAsync(Recipe model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Recipe.");
-
             model.Id = default;
             db.Add(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
-        public async Task<AbstractErrorHandler> UpdateDataModelAsync(Recipe model)
+        public async Task UpdateDataModelAsync(Recipe model)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Recipe.", model.Id);
-
             var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
-        public async Task<AbstractErrorHandler> RemoveDataModelAsync(object key)
+        public async Task RemoveDataModelAsync(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Recipe.", key);
-
             var entity = await db.Recipe.FindAsync((int)key);
             db.Recipe.Remove(entity);
             await db.SaveChangesAsync();
-
-            return statusMessage;
         }
     }
 }
