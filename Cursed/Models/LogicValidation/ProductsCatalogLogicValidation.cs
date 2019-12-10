@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -63,8 +64,10 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Recipe product changes.",
-                        EntityKey = (productId: recipeProductChanges.ProductId, recipeId: recipeProductChanges.RecipeId),
-                        Message = "Product in catalog have related recipe product changes."
+                        EntityKey = recipeProductChanges.RecipeId,
+                        Message = $"Product ID: {recipeProductChanges.ProductId} in catalog have related recipe product changes.",
+                        RedirectRoute = RecipeProductsRouting.Index,
+                        UseKeyWithRoute = false
                     });
                 }
             }
@@ -76,7 +79,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Product.",
                         EntityKey = product.Id,
-                        Message = "Product in catalog have related product in storage."
+                        Message = "Product in catalog have related product in storage.",
+                        RedirectRoute = ProductsRouting.SingleItem
                     });
                 }
             }
@@ -88,7 +92,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "License.",
                         EntityKey = license.Id,
-                        Message = "Product in catalog have related license."
+                        Message = "Product in catalog have related license.",
+                        RedirectRoute = LicensesRouting.SingleItem
                     });
                 }
             }
@@ -104,8 +109,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Products in catalog.",
-                    EntityKey = key,
-                    Message = "No products in catalog with such key found."
+                    EntityKey = (int)key,
+                    Message = "No products in catalog with such key found.",
+                    RedirectRoute = ProductsCatalogRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 

@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -63,7 +64,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Product.",
                         EntityKey = product.Id,
-                        Message = "Storage have related product in storage."
+                        Message = "Storage have related product in storage.",
+                        RedirectRoute = ProductsRouting.SingleItem
                     });
                 }
             }
@@ -75,7 +77,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Operation.",
                         EntityKey = operation.Id,
-                        Message = "Storage have related operation."
+                        Message = "Storage have related operation.",
+                        RedirectRoute = OperationsRouting.SingleItem
                     });
                 }
             }
@@ -91,8 +94,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Storage.",
-                    EntityKey = key,
-                    Message = "No storage with such key found."
+                    EntityKey = (int)key,
+                    Message = "No storage with such key found.",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 

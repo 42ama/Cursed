@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Services;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -82,12 +83,8 @@ namespace Cursed.Models.LogicValidation
                 {
                     foreach (var problem in operationMessage?.Problems)
                     {
-                        statusMessage.Problems.Add(new Problem
-                        {
-                            Entity = operationMessage.Entity + " " + problem.Entity,
-                            EntityKey = problem.EntityKey,
-                            Message = problem.Message
-                        });
+                        problem.Entity = operationMessage.Entity + " " + problem.Entity;
+                        statusMessage.Problems.Add(problem);
                     }
                 }
             }
@@ -104,8 +101,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Transaction.",
-                    EntityKey = key,
-                    Message = "No transaction with such key found."
+                    EntityKey = (int)key,
+                    Message = "No transaction with such key found.",
+                    RedirectRoute = TransactionsRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
             
@@ -122,7 +121,9 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = "Transaction open status.",
-                    Message = "Can't change transaction, when it closed."
+                    Message = "Can't change transaction, when it closed.",
+                    RedirectRoute = TransactionsRouting.SingleItem,
+                    EntityKey = (int)key
                 });
             }
 

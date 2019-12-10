@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -61,8 +62,9 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Tech process.",
-                        EntityKey = (facilityId: techProcess.FacilityId, recipeId: techProcess.RecipeId),
-                        Message = "Facility have related techprocesses."
+                        EntityKey = techProcess.FacilityId,
+                        Message = $"Facility have related techprocesses with RecipeID: {techProcess.RecipeId}.",
+                        RedirectRoute = FacilityTechProcessesRouting.Index
                     });
                 }
             }
@@ -78,8 +80,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Facility.",
-                    EntityKey = key,
-                    Message = "No facility with such key found."
+                    EntityKey = (int)key,
+                    Message = "No facility with such key found.",
+                    RedirectRoute = FacilitiesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 

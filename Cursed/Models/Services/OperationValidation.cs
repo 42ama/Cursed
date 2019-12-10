@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Cursed.Models.Entities;
 using Cursed.Models.Context;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.Services
 {
@@ -36,7 +37,9 @@ namespace Cursed.Models.Services
                 {
                     Entity = $"Product at storage from. Id: {operation.ProductId}",
                     EntityKey = operation.ProductId,
-                    Message = "Product isn't found."
+                    Message = "Product isn't found.",
+                    RedirectRoute = ProductsCatalogRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 
@@ -46,7 +49,9 @@ namespace Cursed.Models.Services
                 {
                     Entity = $"Storage from product coming. Id: {operation.StorageFromId}",
                     EntityKey = operation.StorageFromId,
-                    Message = "Storage isn't found."
+                    Message = "Storage isn't found.",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 
@@ -56,7 +61,9 @@ namespace Cursed.Models.Services
                 {
                     Entity = $"Storage to product coming. Id: {operation.StorageToId}",
                     EntityKey = operation.StorageToId,
-                    Message = "Storage isn't found."
+                    Message = "Storage isn't found.",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 
@@ -66,7 +73,9 @@ namespace Cursed.Models.Services
                 {
                     Entity = $"Transaction. Id: {operation.TransactionId}",
                     EntityKey = operation.TransactionId,
-                    Message = "Transaction isn't found."
+                    Message = "Transaction isn't found.",
+                    RedirectRoute = TransactionsRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 
@@ -79,7 +88,8 @@ namespace Cursed.Models.Services
                         Entity = "Product at storage from.",
                         EntityKey = product.Id,
                         Message = $"Quantity of product at storage from ({product.Quantity}) is lesser, then " +
-                        $"operation is trying to withdraw ({operation.Quantity})."
+                        $"operation is trying to withdraw ({operation.Quantity}).",
+                        RedirectRoute = ProductsRouting.SingleItem
                     });
                 }
             }

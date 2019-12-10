@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -53,7 +54,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Facility.",
                         EntityKey = facility.Id,
-                        Message = "Tech process have related facility."
+                        Message = "Tech process have related facility.",
+                        RedirectRoute = FacilitiesRouting.SingleItem
                     });
                 }
             }
@@ -66,7 +68,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Recipe.",
                         EntityKey = recipe.Id,
-                        Message = "Tech process have related recipe."
+                        Message = "Tech process have related recipe.",
+                        RedirectRoute = RecipesRouting.SingleItem
                     });
                 }
             }
@@ -76,15 +79,17 @@ namespace Cursed.Models.LogicValidation
         private async Task<AbstractErrorHandler> CheckExists(object key)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler("Tech process.", key);
-
-            if (await db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == ((ValueTuple<int, int>)key).Item1 &&
-            i.RecipeId == ((ValueTuple<int, int>)key).Item2) == null)
+            // facility id and recipe id
+            var tupleKey = ((ValueTuple<int, int>)key);
+            if (await db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == tupleKey.Item1 &&
+            i.RecipeId == tupleKey.Item2) == null)
             {
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Tech process.",
-                    EntityKey = key,
-                    Message = "No tech proccess with such key's found."
+                    EntityKey = tupleKey.Item1,
+                    Message = $"No tech proccess with such Recipe Id: {tupleKey.Item2} found.",
+                    RedirectRoute = FacilityTechProcessesRouting.Index
                 });
             }
 

@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -54,7 +55,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Product in catalog.",
                         EntityKey = productCatalog.Id,
-                        Message = "Recipe products changes have related product in catalog."
+                        Message = "Recipe products changes have related product in catalog.",
+                        RedirectRoute = ProductsCatalogRouting.SingleItem
                     });
                 }
             }
@@ -67,7 +69,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Recipe.",
                         EntityKey = recipe.Id,
-                        Message = "Recipe products changes have related recipe."
+                        Message = "Recipe products changes have related recipe.",
+                        RedirectRoute = RecipesRouting.SingleItem
                     });
                 }
             }
@@ -77,15 +80,16 @@ namespace Cursed.Models.LogicValidation
         private async Task<AbstractErrorHandler> CheckExists(object key)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler("Tech process.", key);
-
-            if (await db.RecipeProductChanges.FirstOrDefaultAsync(i => i.RecipeId == ((ValueTuple<int, int>)key).Item1 &&
-            i.ProductId == ((ValueTuple<int, int>)key).Item2) == null)
+            var tupleKey = (ValueTuple<int, int>)key;
+            if (await db.RecipeProductChanges.FirstOrDefaultAsync(i => i.RecipeId == tupleKey.Item1 &&
+            i.ProductId == tupleKey.Item2) == null)
             {
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Recipe products changes.",
-                    EntityKey = key,
-                    Message = "No recipe products changes with such key's found."
+                    EntityKey = tupleKey.Item1,
+                    Message = $"No recipe products changes with such key's found. Product ID: {tupleKey.Item2}",
+                    RedirectRoute = RecipeProductsRouting.Index
                 });
             }
 

@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -55,8 +56,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "License.",
-                    EntityKey = key,
-                    Message = "No license with such key found."
+                    EntityKey = (int)key,
+                    Message = "No license with such key found.",
+                    RedirectRoute = LicensesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 

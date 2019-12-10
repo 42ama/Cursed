@@ -113,8 +113,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             problem.Entity == "Product." && (int)problem.EntityKey == product.Id);
             Assert.Contains(statusMessage.Problems, problem =>
             problem.Entity == "Recipe product changes." && 
-            ((ValueTuple<int, int>)problem.EntityKey).Item1 == recipeProductChanges.ProductId &&
-            ((ValueTuple<int, int>)problem.EntityKey).Item2 == recipeProductChanges.RecipeId);
+            (int)problem.EntityKey == recipeProductChanges.RecipeId);
             Assert.Contains(statusMessage.Problems, problem =>
             problem.Entity == "License." && (int)problem.EntityKey == license.Id);
         }

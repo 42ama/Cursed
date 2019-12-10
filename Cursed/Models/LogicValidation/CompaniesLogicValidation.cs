@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Companies;
+using Cursed.Models.Routing;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
@@ -63,7 +63,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Storage.",
                         EntityKey = storage.Id,
-                        Message = "Company have related storage."
+                        Message = "Company have related storage.",
+                        RedirectRoute = StoragesRouting.SingleItem
                     });
                 }
             }
@@ -75,7 +76,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Transaction.",
                         EntityKey = transaction.Id,
-                        Message = "Company have related transaction."
+                        Message = "Company have related transaction.",
+                        RedirectRoute = TransactionsRouting.SingleItem
                     });
                 }
             }
@@ -91,8 +93,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Company.",
-                    EntityKey = key,
-                    Message = "No company with such key found."
+                    EntityKey = (int)key,
+                    Message = "No company with such key found.",
+                    RedirectRoute = CompaniesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 

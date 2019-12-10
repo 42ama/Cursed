@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -64,7 +65,8 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Recipe.",
                         EntityKey = child.ChildId,
-                        Message = "Recipe have childs."
+                        Message = "Recipe have childs.",
+                        RedirectRoute = RecipesRouting.SingleItem
                     });
                 }
             }
@@ -75,8 +77,9 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Tech process.",
-                        EntityKey = (techProcess.RecipeId, techProcess.FacilityId),
-                        Message = "Recipe have related tech process."
+                        EntityKey = techProcess.FacilityId,
+                        Message = "Recipe have related tech process.",
+                        RedirectRoute = FacilityTechProcessesRouting.Index
                     });
                 }
             }
@@ -87,8 +90,9 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Recipe product changes.",
-                        EntityKey = (productChanges.RecipeId, productChanges.ProductId),
-                        Message = "Recipe have related recipe product changes."
+                        EntityKey = productChanges.RecipeId,
+                        Message = "Recipe have related recipe product changes.",
+                        RedirectRoute = RecipeProductsRouting.Index
                     });
                 }
             }
@@ -104,8 +108,10 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Recipe.",
-                    EntityKey = key,
-                    Message = "No recipe with such key found."
+                    EntityKey = (int)key,
+                    Message = "No recipe with such key found.",
+                    RedirectRoute = RecipesRouting.Index,
+                    UseKeyWithRoute = false
                 });
             }
 
