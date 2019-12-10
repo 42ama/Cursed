@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace Cursed.Models.Data.Utility.ErrorHandling
 {
-    public struct Problem
+    public class Problem
     {
         public string Entity { get; set; }
-        public object EntityKey { get; set; }
+        public int EntityKey { get; set; }
         public string Message { get; set; }
+        public string RedirectRoute { get; set; }
+        public bool UseKeyWithRoute { get; set; } = true;
     }
 }
