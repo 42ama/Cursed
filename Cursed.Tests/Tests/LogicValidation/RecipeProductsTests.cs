@@ -79,26 +79,16 @@ namespace Cursed.Tests.Tests.LogicValidation
         }
 
         [Fact]
-        public async void CheckRemoveRecipeProduct_FromInitializedDbTableWithRelatedEntities_ErrorHandlerIsCompletedFalseHaveSpecificProblems()
+        public async void CheckRemoveRecipeProduct_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
             var recipeProductChanges = GetRecipeProductChanges();
-            var recipe = GetRecipe();
-            var productCatalog = GetProductCatalog();
-            fixture.db.Add(recipeProductChanges);
-            fixture.db.Add(recipe);
-            fixture.db.Add(productCatalog);
-            await fixture.db.SaveChangesAsync();
 
             // act
             var statusMessage = await logicValidation.CheckRemoveDataModelAsync((recipeProductChanges.RecipeId, recipeProductChanges.ProductId));
 
             // assert
             Assert.False(statusMessage.IsCompleted);
-            Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Product in catalog." && (int)problem.EntityKey == productCatalog.Id);
-            Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Recipe." && (int)problem.EntityKey == recipe.Id);
 
         }
 

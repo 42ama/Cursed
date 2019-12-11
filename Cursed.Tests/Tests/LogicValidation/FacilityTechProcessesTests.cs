@@ -79,26 +79,16 @@ namespace Cursed.Tests.Tests.LogicValidation
         }
 
         [Fact]
-        public async void CheckRemoveTechProcess_FromInitializedDbTableWithRelatedEntities_ErrorHandlerIsCompletedFalseHaveSpecificProblems()
+        public async void CheckRemoveTechProcess_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
-            var facility = GetFacility();
-            var recipe = GetRecipe();
             var techProcess = GetTechProcess();
-            fixture.db.Add(facility);
-            fixture.db.Add(recipe);
-            fixture.db.Add(techProcess);
-            await fixture.db.SaveChangesAsync();
 
             // act
             var statusMessage = await logicValidation.CheckRemoveDataModelAsync((techProcess.FacilityId, techProcess.RecipeId));
 
             // assert
             Assert.False(statusMessage.IsCompleted);
-            Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Facility." && (int)problem.EntityKey == facility.Id);
-            Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Recipe." && (int)problem.EntityKey == recipe.Id);
 
         }
 
