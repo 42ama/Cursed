@@ -12,6 +12,7 @@ using Cursed.Models.Data.FacilityTechProcesses;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -42,6 +43,7 @@ namespace Cursed.Models.Logic
                             RecipeGovApprov = rs.GovermentApproval ?? false,
                             RecipeTechApprov = rs.TechApproval ?? false
                         };
+
             return query;
         }
 
@@ -61,9 +63,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(TechProcess model)
         {
             var entity = await db.TechProcess.SingleAsync(i => i.RecipeId == model.RecipeId && i.FacilityId == model.FacilityId);
-
             db.TechProcess.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

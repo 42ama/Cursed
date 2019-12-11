@@ -13,6 +13,8 @@ using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -20,17 +22,19 @@ namespace Cursed.Controllers
     public class StoragesController : Controller, ICUD<Storage>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly StoragesLogic logic;
+        private readonly StoragesLogicValidation logicValidation;
 
-        public StoragesController(CursedContext db)
+        public StoragesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new StoragesLogic(db);
+            logicValidation = new StoragesLogicValidation(db, errorHandlerFactory);
         }
+
         [HttpGet("", Name = StoragesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
             var pagenationModel = new Pagenation<StoragesModel>(model, itemsOnPage, currentPage);
-
             return View(pagenationModel);
         }
 
@@ -38,8 +42,17 @@ namespace Cursed.Controllers
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
-            var model = await logic.GetSingleDataModelAsync(id);
-            return View(model);
+            var statusMessage = await logicValidation.CheckGetSingleDataModelAsync(id);
+            if(statusMessage.IsCompleted)
+            {
+                var model = await logic.GetSingleDataModelAsync(id);
+                return View(model);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+
         }
 
         [HttpGet("storage/edit", Name = StoragesRouting.GetEditSingleItem)]
@@ -49,8 +62,16 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = StoragesRouting.EditSingleItem;
-                var model = await logic.GetSingleUpdateModelAsync(id);
-                return View("EditSingleItem", model);
+                var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
+                if (statusMessage.IsCompleted)
+                {
+                    var model = await logic.GetSingleUpdateModelAsync(id);
+                    return View("EditSingleItem", model);
+                }
+                else
+                {
+                    return View("CustomError", statusMessage);
+                }
             }
             else
             {
@@ -69,16 +90,32 @@ namespace Cursed.Controllers
         [HttpPost("storage/edit", Name = StoragesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Storage model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(StoragesRouting.Index);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
+            if (statusMessage.IsCompleted)
+            {
+                await logic.UpdateDataModelAsync(model);
+                return RedirectToRoute(StoragesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("storage/delete", Name = StoragesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            await logic.RemoveDataModelAsync(id);
-            return RedirectToRoute(StoragesRouting.Index);
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                await logic.RemoveDataModelAsync(id);
+                return RedirectToRoute(StoragesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }

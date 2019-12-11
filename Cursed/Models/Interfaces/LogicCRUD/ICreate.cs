@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Cursed.Models.Data.Utility.ErrorHandling;
+using System.Threading.Tasks;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {

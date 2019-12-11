@@ -14,6 +14,7 @@ using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 
+
 namespace Cursed.Controllers
 {
     [Route("products")]
@@ -31,6 +32,7 @@ namespace Cursed.Controllers
             int storageId = Int32.Parse(key);
             ViewData["StorageId"] = storageId;
             var model = await logic.GetAllDataModelAsync(storageId);
+
             var pagenationModel = new Pagenation<ProductsDataModel>(model, itemsOnPage, currentPage);
             return View(pagenationModel);
         }

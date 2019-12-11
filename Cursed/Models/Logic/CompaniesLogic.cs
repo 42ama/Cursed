@@ -12,6 +12,7 @@ using Cursed.Models.Data.Companies;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -42,14 +43,14 @@ namespace Cursed.Models.Logic
                             StoragesCount = cs.Single().Count(),
                             TransactionsCount = cst.Single().Count()
                         };
+
             return query;
         }
 
         public async Task<CompanyModel> GetSingleDataModelAsync(object key)
         {
-            var companies = await db.Company.ToListAsync();
+            var companies = await db.Company.Where(i => i.Id == (int)key).ToListAsync();
             var query = from c in companies
-                        where c.Id == (int)key
                         join s in (from c in companies
                                    join s in db.Storage on c.Id equals s.CompanyId into tab
                                    group tab by c.Id) on c.Id equals s.Key into storages
@@ -65,6 +66,7 @@ namespace Cursed.Models.Logic
                             Storages = cs.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Name }).ToList(),
                             Transactions = cst.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Date.ToShortDateString() }).ToList()
                         };
+
             return query.Single();
         }
 
@@ -90,9 +92,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Company.FindAsync((int)key);
-
             db.Company.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

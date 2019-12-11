@@ -1,0 +1,43 @@
+﻿@using Cursed.Models.Data.Utility.ErrorHandling
+@using Microsoft.AspNetCore.Html;
+@model IErrorHandler
+@{
+    ViewData["Title"] = "CustomError";
+    var problemStatus = Model.ProblemStatus;
+    string problemStatusText;
+    IHtmlContent problemStatusLink;
+    if(Model.ProblemStatus.UseKeyWithRoute)
+    {
+        problemStatusText = $"{problemStatus.Entity} Id: {problemStatus.EntityKey}.";
+        problemStatusLink = Html.RouteLink(problemStatusText, problemStatus.RedirectRoute, new { key = problemStatus.EntityKey });
+    }
+    else
+    {
+        problemStatusText = $"Back to section: {problemStatus.Entity}";
+        problemStatusLink = Html.RouteLink(problemStatusText, problemStatus.RedirectRoute);
+    }
+}
+<h1>Error</h1>
+<h2>While operationg with: @problemStatusLink</h2>
+<h3>Errors:</h3>
+<table>
+    @foreach (var problem in Model.Problems)
+    {
+        string problemText;
+        IHtmlContent problemLink;
+        if (problem.UseKeyWithRoute)
+        {
+            problemText = $"{problem.Entity} Id: {problem.EntityKey}.";
+            problemLink = Html.RouteLink(problemText, problem.RedirectRoute, new { key = problem.EntityKey });
+        }
+        else
+        {
+            problemText = $"Back to section: {problem.Entity}";
+            problemLink = Html.RouteLink(problemText, problem.RedirectRoute);
+        }
+        <tr>
+            <td>@problem.Message</td>
+            <td>@problemLink</td>
+        </tr>
+    }
+</table>

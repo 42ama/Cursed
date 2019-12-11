@@ -12,6 +12,7 @@ using Cursed.Models.Data.Products;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -39,6 +40,7 @@ namespace Cursed.Models.Logic
                             QuantityUnit = p.QuantityUnit,
                             Uid = p.Uid
                         };
+
             return query;
         }
     }

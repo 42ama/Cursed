@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Cursed.Models.Entities;
 using Cursed.Models.Context;
+using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Routing;
 
 namespace Cursed.Models.Services
 {
@@ -16,19 +18,88 @@ namespace Cursed.Models.Services
             db = context;
         }
 
-        public async Task<bool> IsValidAsync(Operation operation)
+        public async Task<IErrorHandler> IsValidAsync(Operation operation)
         {
-            await db.Product.FirstAsync(i => i.Uid == operation.ProductId);
-            await db.Storage.SingleAsync(i => i.Id == operation.StorageFromId);
-            await db.Storage.SingleAsync(i => i.Id == operation.StorageToId);
-            await db.TransactionBatch.SingleAsync(i => i.Id == operation.TransactionId);
-
-            var proudctAtStorageFrom = await db.Product.SingleAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
-            if(proudctAtStorageFrom.Quantity >= operation.Quantity)
+            IErrorHandler statusMessage = new StatusMessage
             {
-                return true;
+                ProblemStatus = new Problem
+                {
+                    Entity = "Operation.",
+                    EntityKey = operation.Id,
+                    RedirectRoute = OperationsRouting.SingleItem
+                }
+            };
+            var product = await db.Product.SingleOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
+            var storageFrom = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageFromId);
+            var storageTo = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageToId);
+            var transaction = await db.TransactionBatch.SingleOrDefaultAsync(i => i.Id == operation.TransactionId);
+
+
+            if(product == null)
+            {
+                statusMessage.Problems.Add(new Problem
+                {
+                    Entity = "Product at storage from.",
+                    EntityKey = operation.ProductId,
+                    Message = "Product with this Id is not found.",
+                    RedirectRoute = ProductsCatalogRouting.Index,
+                    UseKeyWithRoute = false
+                });
             }
-            return false;
+
+            if (storageFrom == null)
+            {
+                statusMessage.Problems.Add(new Problem
+                {
+                    Entity = "Storage from product coming.",
+                    EntityKey = operation.StorageFromId,
+                    Message = "Storage with this Id is not found.",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            if (storageTo == null)
+            {
+                statusMessage.Problems.Add(new Problem
+                {
+                    Entity = "Storage to product coming.",
+                    EntityKey = operation.StorageToId,
+                    Message = "Storage with this Id is not found.",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            if (transaction == null)
+            {
+                statusMessage.Problems.Add(new Problem
+                {
+                    Entity = "Transaction.",
+                    EntityKey = operation.TransactionId,
+                    Message = "Transaction with this Id is not found.",
+                    RedirectRoute = TransactionsRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            if(product != null && storageFrom != null)
+            {
+                if (product.Quantity < operation.Quantity)
+                {
+                    statusMessage.Problems.Add(new Problem
+                    {
+                        Entity = "Product at storage from.",
+                        EntityKey = product.Id,
+                        Message = $"Quantity of product at storage from ({product.Quantity}) is lesser, then " +
+                        $"operation is trying to withdraw ({operation.Quantity}).",
+                        RedirectRoute = ProductsRouting.SingleItem
+                    });
+                }
+            }
+            
+
+            return statusMessage;
         }
     }
 }

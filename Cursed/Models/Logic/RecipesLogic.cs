@@ -12,6 +12,7 @@ using Cursed.Models.Data.Recipes;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -58,7 +59,8 @@ namespace Cursed.Models.Logic
                          ProductCount = p.Select(i => i.Type).Where(i=>i==ProductCatalogTypes.Product).Count(),
                          MaterialCount = p.Select(i => i.Type).Where(i=> i == ProductCatalogTypes.Material).Count()
                      };
-            return query.ToList();
+
+            return query;
         }
         public async Task<RecipeModel> GetSingleDataModelAsync(object key)
         {
@@ -102,6 +104,7 @@ namespace Cursed.Models.Logic
                             ChildRecipes = ci.Single().Select(i => i.ChildId).ToList(),
                             RecipeProducts = p.Select(i => i.RecipeProductContainer).ToList()
                         };
+
             return query.Single();
         }
         public async Task<Recipe> GetSingleUpdateModelAsync(object key)
@@ -123,9 +126,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Recipe.FindAsync((int)key);
-
             db.Recipe.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

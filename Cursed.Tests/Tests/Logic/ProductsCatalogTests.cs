@@ -361,15 +361,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.Name, expected.Name);
             Assert.Equal(actual.Type, expected.Type);
             Assert.Equal(actual.LicenseRequired, expected.LicenseRequired);
-            /*foreach (var expectedLicense in expected.Licenses)
-            {
-                Assert.Contains(actual.Licenses, actualLicense =>
-                    expectedLicense.Id == actualLicense.Id &&
-                    expectedLicense.Date == actualLicense.Date &&
-                    expectedLicense.GovermentNum == actualLicense.GovermentNum &&
-                    expectedLicense.ProductId == actualLicense.ProductId &&
-                    expectedLicense.IsValid == actualLicense.IsValid);
-            }*/
             foreach (var expectedStorage in expected.Storages)
             {
                 Assert.Contains(actual.Storages, actualStorage =>

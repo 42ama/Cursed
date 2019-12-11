@@ -12,6 +12,7 @@ using Cursed.Models.Data.Licenses;
 using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -19,10 +20,10 @@ namespace Cursed.Models.Logic
     {
         private readonly CursedContext db;
         private readonly IQueryable<LicensesDataModel> basicDataModelQuery;
+
         public LicensesLogic(CursedContext db)
         {
             this.db = db;
-
             // probably will remain static between calls, and not will be updated after db changes. Dig into
             // got an answer, that linq querys are delayed to each call, so it will process normaly
             basicDataModelQuery = db.License.Join
@@ -74,9 +75,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.License.FindAsync((int)key);
-
             db.License.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

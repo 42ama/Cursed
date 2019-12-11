@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cursed.Models.Services;
 using Cursed.Models.Entities;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Stubs
 {
     public class OperationValidationStub : IOperationValidation
     {
-        /// <returns>true</returns>
-        public async Task<bool> IsValidAsync(Operation operation)
+        /// <returns>valid status message</returns>
+        public async Task<IErrorHandler> IsValidAsync(Operation operation)
         {
-            return true;
+            return new StatusMessage 
+            { 
+                ProblemStatus = new Problem
+                {
+                    Entity = "Operation.",
+                    EntityKey = operation.Id
+                }
+            };
         }
     }
 }

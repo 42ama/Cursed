@@ -10,6 +10,7 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Tests.Extensions;
 using Cursed.Tests.Stubs;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -22,7 +23,7 @@ namespace Cursed.Tests.Tests.Logic
         public TransactionsTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logic = new TransactionsLogic(fixture.db, new OperationValidationStub());
+            logic = new TransactionsLogic(fixture.db);
         }
 
         public async void Dispose()
@@ -227,19 +228,6 @@ namespace Cursed.Tests.Tests.Logic
         }
 
         [Fact]
-        public async void RemoveClosedTransaction_AtInitializedDbTable_ExceptionThrown()
-        {
-            // arrange
-            var transaction = GetTransaction();
-            transaction.IsOpen = false;
-            fixture.db.Add(transaction);
-            await fixture.db.SaveChangesAsync();
-
-            // act + assert
-            await Assert.ThrowsAsync<Exception>(() => logic.RemoveDataModelAsync(transaction.Id));
-        }
-
-        [Fact]
         public async void RemoveOpenTransaction_AtInitializedWithOperationsDbTable_RemovedTransactionOrOpearationsNotFoundInDb()
         {
             // arrange
@@ -295,28 +283,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Type, actual.Type);
         }
 
-        [Fact]
-        public async void UpdateClosedTransaction_AtInitializedDbTable_ExceptionThrown()
-        {
-            // arrange
-            var transaction = GetTransaction();
-            transaction.IsOpen = false;
-            fixture.db.Add(transaction);
-            await fixture.db.SaveChangesAsync();
-
-            var expected = new TransactionBatch
-            {
-                Id = transaction.Id,
-                Date = DateTime.UtcNow,
-                CompanyId = 44440,
-                Type = TransactionTypes.Income,
-                IsOpen = false,
-                Comment = "Cause nest is on the other side."
-            };
-
-            // act + assert
-            await Assert.ThrowsAsync<Exception>(() => logic.UpdateDataModelAsync(expected));
-        }
 
         [Fact]
         public async void CloseTransaction_AtInitializedDbTable_DataAtDbEqualExpected()

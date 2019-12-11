@@ -13,6 +13,8 @@ using Cursed.Models.Logic;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
+using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -20,9 +22,11 @@ namespace Cursed.Controllers
     public class RecipesController : Controller, ICUD<Recipe>, IReadColection, IReadSingle, IReadUpdateForm
     {
         private readonly RecipesLogic logic;
-        public RecipesController(CursedContext db)
+        private readonly RecipesLogicValidation logicValidation;
+        public RecipesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new RecipesLogic(db);
+            logicValidation = new RecipesLogicValidation(db, errorHandlerFactory);
         }
 
         [HttpGet("", Name = RecipesRouting.Index)]
@@ -37,7 +41,17 @@ namespace Cursed.Controllers
         public async Task<IActionResult> SingleItem(string key)
         {
             int id = Int32.Parse(key);
-            return View(await logic.GetSingleDataModelAsync(id));
+            var statusMessage = await logicValidation.CheckGetSingleDataModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                var model = await logic.GetSingleDataModelAsync(id);
+                return View(model);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+            
         }
 
         [HttpGet("recipe/edit", Name = RecipesRouting.GetEditSingleItem)]
@@ -47,8 +61,16 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = RecipesRouting.EditSingleItem;
-                var model = await logic.GetSingleUpdateModelAsync(id);
-                return View("EditSingleItem", model);
+                var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
+                if (statusMessage.IsCompleted)
+                {
+                    var model = await logic.GetSingleUpdateModelAsync(id);
+                    return View("EditSingleItem", model);
+                }
+                else
+                {
+                    return View("CustomError", statusMessage);
+                }
             }
             else
             {
@@ -67,16 +89,32 @@ namespace Cursed.Controllers
         [HttpPost("recipe/edit", Name = RecipesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Recipe model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(RecipesRouting.Index);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
+            if (statusMessage.IsCompleted)
+            {
+                await logic.UpdateDataModelAsync(model);
+                return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("recipe/delete", Name = RecipesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {
             int id = Int32.Parse(key);
-            await logic.RemoveDataModelAsync(id);
-            return RedirectToRoute(RecipesRouting.Index);
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                await logic.RemoveDataModelAsync(id);
+                return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -49,7 +50,6 @@ namespace Cursed.Models.Logic
 
         public async Task<FacilityModel> GetSingleDataModelAsync(object key)
         {
-            
             var facilities = await db.Facility.ToListAsync();
             var licensesList = await db.License.ToListAsync();
 
@@ -141,9 +141,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Facility.FindAsync((int)key);
-
             db.Facility.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

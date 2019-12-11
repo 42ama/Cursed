@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -43,6 +44,7 @@ namespace Cursed.Models.Logic
                             Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
                             ProductsCount = t.Single().Count()
                         };
+
             return query;
         }
 
@@ -77,6 +79,7 @@ namespace Cursed.Models.Logic
                             Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
                             Products = t.ToList()
                         };
+
             return query.Single();
         }
     
@@ -103,9 +106,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Storage.FindAsync((int)key);
-
             db.Storage.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

@@ -14,6 +14,7 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Services;
 using Cursed.Models.Interfaces.LogicCRUD;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
@@ -115,14 +116,14 @@ namespace Cursed.Models.Logic
                 Recipes = recipes,
                 Storages = storages
             };
+
             return dataModel;
         }
 
         //Add to interface
         public async Task<ProductCatalog> GetSingleUpdateModelAsync(object key)
         {
-            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)key);
-            return productCatalog;
+            return await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
         public async Task AddDataModelAsync(ProductCatalog model)
@@ -142,10 +143,8 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.ProductCatalog.FindAsync((int)key);
-
             //catch execption if related entites are exist and display error message
             db.ProductCatalog.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

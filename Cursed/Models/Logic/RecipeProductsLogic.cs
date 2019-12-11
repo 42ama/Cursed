@@ -13,15 +13,18 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {
     public class RecipeProductsLogic : IReadCollectionByParam<RecipeProductsDataModel>, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
         private readonly CursedContext db;
+
         public RecipeProductsLogic(CursedContext db)
         {
             this.db = db;
+
         }
 
         public async Task<IEnumerable<RecipeProductsDataModel>> GetAllDataModelAsync(object key)
@@ -42,7 +45,8 @@ namespace Cursed.Models.Logic
                             Cas = product.Cas,
                             LicenseRequired = product.LicenseRequired                            
                         };
-            return query.ToArray();
+
+            return query;
         }
 
         // doesn't fit into interfaces
@@ -68,9 +72,7 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(RecipeProductChanges model)
         {
             var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == model.RecipeId && i.ProductId == model.ProductId);
-
             db.RecipeProductChanges.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }

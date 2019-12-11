@@ -12,6 +12,8 @@ using Cursed.Models.Logic;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
+using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -19,9 +21,11 @@ namespace Cursed.Controllers
     public class RecipeProductsController : Controller, IReadCollectionByParam, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
         private readonly RecipeProductsLogic logic;
-        public RecipeProductsController(CursedContext db)
+        private readonly RecipeProductsLogicValidation logicValidation;
+        public RecipeProductsController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new RecipeProductsLogic(db);
+            logicValidation = new RecipeProductsLogicValidation(db, errorHandlerFactory);
         }
 
         [HttpGet("", Name = RecipeProductsRouting.Index)]
@@ -50,15 +54,31 @@ namespace Cursed.Controllers
         [HttpPost("edit", Name = RecipeProductsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
         {
-            await logic.UpdateDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync((model.RecipeId, model.ProductId));
+            if (statusMessage.IsCompleted)
+            {
+                await logic.UpdateDataModelAsync(model);
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         [HttpPost("delete", Name = RecipeProductsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(RecipeProductChanges model)
         {
-            await logic.RemoveDataModelAsync(model);
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync((model.RecipeId, model.ProductId));
+            if (statusMessage.IsCompleted)
+            {
+                await logic.RemoveDataModelAsync(model);
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
     }
 }

@@ -13,18 +13,19 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.ErrorHandling;
 using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
-    public class TransactionsLogic
+    public class TransactionsLogic : IReadColection<TransactionsModel>, IReadSingle<TransactionModel>, IReadUpdateForm<TransactionBatch>, ICUD<TransactionBatch>
     {
         private readonly CursedContext db;
-        private readonly IOperationValidation operationValidation;
-        public TransactionsLogic(CursedContext db, IOperationValidation operationValidation)
+
+        public TransactionsLogic(CursedContext db)
         {
             this.db = db;
-            this.operationValidation = operationValidation;
+
         }
 
         public async Task<IEnumerable<TransactionsModel>> GetAllDataModelAsync()
@@ -53,9 +54,8 @@ namespace Cursed.Models.Logic
 
         public async Task<TransactionModel> GetSingleDataModelAsync(object key)
         {
-            var transactions = await db.TransactionBatch.ToListAsync();
+            var transactions = await db.TransactionBatch.Where(i => i.Id == (int)key).ToListAsync();
             var query = from t in transactions
-                        where t.Id == (int)key
                         join c in db.Company on t.CompanyId equals c.Id into companies
                         from comp in companies
                         join o in (from t in transactions
@@ -78,20 +78,14 @@ namespace Cursed.Models.Logic
 
         public async Task<TransactionBatch> GetSingleUpdateModelAsync(object key)
         {
-            return await db.TransactionBatch.SingleAsync(i => i.Id == (int)key);
+            return await db.TransactionBatch.SingleAsync(i => i.Id == (int)key); 
         }
 
         public async Task CloseTransactionAsync(object key)
         {
-            //operationValidation
             var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
-            foreach (var operation in transaction.Operation)
-            {
-                if(!await operationValidation.IsValidAsync(operation))
-                {
-                    throw new Exception();
-                }
-            }
+
+            // applying each operation to db
             foreach(var operation in transaction.Operation)
             {
                 var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
@@ -141,10 +135,6 @@ namespace Cursed.Models.Logic
         public async Task UpdateDataModelAsync(TransactionBatch model)
         {
             var currentModel = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == model.Id);
-            if(!currentModel.IsOpen)
-            {
-                throw new Exception();
-            }
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
@@ -153,14 +143,8 @@ namespace Cursed.Models.Logic
         {
             int transactionId = (int)key;
             var entity = await db.TransactionBatch.FindAsync(transactionId);
-            if (!entity.IsOpen)
-            {
-                throw new Exception();
-            }
-
             db.Operation.RemoveRange(db.Operation.Where(i => i.TransactionId == transactionId));
             db.TransactionBatch.Remove(entity);
-
             await db.SaveChangesAsync();
         }
     }
