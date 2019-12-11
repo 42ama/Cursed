@@ -24,10 +24,10 @@ namespace Cursed.Controllers
         private readonly FacilitiesLogic logic;
         private readonly FacilitiesLogicValidation logicValidation;
 
-        public FacilitiesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation)
+        public FacilitiesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new FacilitiesLogic(db, licenseValidation);
-            logicValidation = new FacilitiesLogicValidation(db);
+            logicValidation = new FacilitiesLogicValidation(db, errorHandlerFactory);
         }
         [HttpGet("", Name = FacilitiesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)

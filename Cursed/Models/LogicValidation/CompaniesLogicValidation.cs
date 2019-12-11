@@ -13,36 +13,37 @@ using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
     public class CompaniesLogicValidation
     {
         private readonly CursedContext db;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
+        private readonly IErrorHandlerFactory errorHandlerFactory;
 
-        public CompaniesLogicValidation(CursedContext db)
+        public CompaniesLogicValidation(CursedContext db, IErrorHandlerFactory errorHandlerFactory)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
+            this.errorHandlerFactory = errorHandlerFactory;
         }
 
-        public async Task<AbstractErrorHandler> CheckGetSingleDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckGetSingleUpdateModelAsync(object key)
+        public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckRemoveDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
 
@@ -84,9 +85,14 @@ namespace Cursed.Models.LogicValidation
 
             return statusMessage;
         }
-        private async Task<AbstractErrorHandler> CheckExists(object key)
+        private async Task<IErrorHandler> CheckExists(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Company.", key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+                {
+                    Entity = "Company.",
+                    EntityKey = (int)key,
+                    RedirectRoute = CompaniesRouting.SingleItem
+                });
 
             if (await db.Company.FirstOrDefaultAsync(i => i.Id == (int)key) == null)
             {

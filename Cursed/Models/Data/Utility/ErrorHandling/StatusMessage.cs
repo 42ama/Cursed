@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Cursed.Models.Data.Utility.ErrorHandling
 {
-    public class StatusMessage : AbstractErrorHandler
+    public class StatusMessage : IErrorHandler
     {
-        public override bool IsCompleted
+        public bool IsCompleted
         {
             get
             {
@@ -21,33 +21,11 @@ namespace Cursed.Models.Data.Utility.ErrorHandling
                 }
             }
         }
-        public override List<Problem> Problems { get; set; } = new List<Problem>();
+        public Problem ProblemStatus { get; set; }
 
-        public override void AddProblem(Problem problem)
-        {
-            Problems.Add(problem);
-        }
-    }
+        public List<Problem> Problems { get; set; } = new List<Problem>();
 
-    public class StatusMessage<T> : AbstractErrorHandler<T>
-    {
-        public override bool IsCompleted
-        {
-            get
-            {
-                if (Problems.Count() > 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
-        public override List<Problem> Problems { get; set; } = new List<Problem>();
-
-        public override void AddProblem(Problem problem)
+        public void AddProblem(Problem problem)
         {
             Problems.Add(problem);
         }

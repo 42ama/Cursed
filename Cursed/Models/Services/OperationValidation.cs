@@ -18,12 +18,16 @@ namespace Cursed.Models.Services
             db = context;
         }
 
-        public async Task<StatusMessage> IsValidAsync(Operation operation)
+        public async Task<IErrorHandler> IsValidAsync(Operation operation)
         {
-            var statusMessage = new StatusMessage
+            IErrorHandler statusMessage = new StatusMessage
             {
-                Entity = $"Operation. Id: {operation.Id}",
-                EntityKey = operation.Id
+                ProblemStatus = new Problem
+                {
+                    Entity = $"Operation.",
+                    EntityKey = operation.Id,
+                    RedirectRoute = OperationsRouting.SingleItem
+                }
             };
             var product = await db.Product.SingleOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
             var storageFrom = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageFromId);
@@ -35,7 +39,7 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Product at storage from. Id: {operation.ProductId}",
+                    Entity = $"Product at storage from.",
                     EntityKey = operation.ProductId,
                     Message = "Product isn't found.",
                     RedirectRoute = ProductsCatalogRouting.Index,
@@ -47,7 +51,7 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Storage from product coming. Id: {operation.StorageFromId}",
+                    Entity = $"Storage from product coming.",
                     EntityKey = operation.StorageFromId,
                     Message = "Storage isn't found.",
                     RedirectRoute = StoragesRouting.Index,
@@ -59,7 +63,7 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Storage to product coming. Id: {operation.StorageToId}",
+                    Entity = $"Storage to product coming.",
                     EntityKey = operation.StorageToId,
                     Message = "Storage isn't found.",
                     RedirectRoute = StoragesRouting.Index,
@@ -71,7 +75,7 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Transaction. Id: {operation.TransactionId}",
+                    Entity = $"Transaction.",
                     EntityKey = operation.TransactionId,
                     Message = "Transaction isn't found.",
                     RedirectRoute = TransactionsRouting.Index,

@@ -14,6 +14,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -22,10 +23,10 @@ namespace Cursed.Controllers
     {
         private readonly RecipesLogic logic;
         private readonly RecipesLogicValidation logicValidation;
-        public RecipesController(CursedContext db)
+        public RecipesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new RecipesLogic(db);
-            logicValidation = new RecipesLogicValidation(db);
+            logicValidation = new RecipesLogicValidation(db, errorHandlerFactory);
         }
 
         [HttpGet("", Name = RecipesRouting.Index)]

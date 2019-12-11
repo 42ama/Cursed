@@ -9,6 +9,8 @@ using Cursed.Models.Data.Facilities;
 using Cursed.Models.Data.Shared;
 using Cursed.Tests.Extensions;
 using Cursed.Tests.Stubs;
+using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.Services;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {
@@ -21,7 +23,7 @@ namespace Cursed.Tests.Tests.LogicValidation
         public FacilitiesTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logicValidation = new FacilitiesLogicValidation(fixture.db);
+            logicValidation = new FacilitiesLogicValidation(fixture.db, new StatusMessageFactory());
         }
 
         public async void Dispose()

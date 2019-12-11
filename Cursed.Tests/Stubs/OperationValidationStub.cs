@@ -10,9 +10,16 @@ namespace Cursed.Tests.Stubs
     public class OperationValidationStub : IOperationValidation
     {
         /// <returns>valid status message</returns>
-        public async Task<StatusMessage> IsValidAsync(Operation operation)
+        public async Task<IErrorHandler> IsValidAsync(Operation operation)
         {
-            return new StatusMessage { Entity = $"Operation. Id: {operation.Id}." };
+            return new StatusMessage 
+            { 
+                ProblemStatus = new Problem
+                {
+                    Entity = "Operation.",
+                    EntityKey = operation.Id
+                }
+            };
         }
     }
 }

@@ -14,6 +14,7 @@ using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -22,10 +23,10 @@ namespace Cursed.Controllers
     {
         private readonly FacilityTechProcessesLogic logic;
         private readonly FacilityTechProcessesLogicValidation logicValidation;
-        public FacilityTechProcessesController(CursedContext db)
+        public FacilityTechProcessesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new FacilityTechProcessesLogic(db);
-            logicValidation = new FacilityTechProcessesLogicValidation(db);
+            logicValidation = new FacilityTechProcessesLogicValidation(db, errorHandlerFactory);
         }
 
         [HttpGet("", Name = FacilityTechProcessesRouting.Index)]

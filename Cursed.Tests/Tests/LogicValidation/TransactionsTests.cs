@@ -8,6 +8,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Companies;
 using Cursed.Models.Data.Shared;
 using Cursed.Tests.Stubs;
+using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {
@@ -20,7 +21,7 @@ namespace Cursed.Tests.Tests.LogicValidation
         public TransactionsTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logicValidation = new TransactionsLogicValidation(fixture.db, new OperationValidationStub());
+            logicValidation = new TransactionsLogicValidation(fixture.db, new OperationValidationStub(), new StatusMessageFactory());
         }
 
         public async void Dispose()

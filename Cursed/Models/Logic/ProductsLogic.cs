@@ -19,11 +19,9 @@ namespace Cursed.Models.Logic
     public class ProductsLogic : IReadCollectionByParam<ProductsDataModel>
     {
         private readonly CursedContext db;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
         public ProductsLogic(CursedContext db)
         {
             this.db = db;
-            errorHandlerFactory = new StatusMessageFactory();
         }
 
         public async Task<IEnumerable<ProductsDataModel>> GetAllDataModelAsync(object key)

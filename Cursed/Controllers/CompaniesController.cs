@@ -14,6 +14,7 @@ using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.LogicValidation;
+using Cursed.Models.Services;
 
 namespace Cursed.Controllers
 {
@@ -22,10 +23,10 @@ namespace Cursed.Controllers
     {
         private readonly CompaniesLogic logic;
         private readonly CompaniesLogicValidation logicValidation;
-        public CompaniesController(CursedContext db)
+        public CompaniesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new CompaniesLogic(db);
-            logicValidation = new CompaniesLogicValidation(db);
+            logicValidation = new CompaniesLogicValidation(db, errorHandlerFactory);
         }
 
         [HttpGet("", Name = CompaniesRouting.Index)]

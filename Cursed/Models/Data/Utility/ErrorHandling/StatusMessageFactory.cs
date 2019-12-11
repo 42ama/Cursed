@@ -2,26 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cursed.Models.Services;
 
 namespace Cursed.Models.Data.Utility.ErrorHandling
 {
-    public class StatusMessageFactory : AbstractErrorHandlerFactory
+    public class StatusMessageFactory : IErrorHandlerFactory
     {
-        public override AbstractErrorHandler NewErrorHandler(string entity, object entityKey)
+        public IErrorHandler NewErrorHandler(Problem problemStatus)
         {
             return new StatusMessage
             {
-                Entity = entity,
-                EntityKey = entityKey
-            };
-        }
-
-        public override AbstractErrorHandler<T> NewErrorHandler<T>(string entity, object entityKey) 
-        { 
-            return new StatusMessage<T>
-            {
-                Entity = entity,
-                EntityKey = entityKey
+                ProblemStatus = problemStatus
             };
         }
     }

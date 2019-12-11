@@ -9,6 +9,6 @@ namespace Cursed.Models.Services
 {
     public interface IOperationValidation
     {
-        Task<StatusMessage> IsValidAsync(Operation operation);
+        Task<IErrorHandler> IsValidAsync(Operation operation);
     }
 }

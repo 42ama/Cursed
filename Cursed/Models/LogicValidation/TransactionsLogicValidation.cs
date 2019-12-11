@@ -14,6 +14,7 @@ using Cursed.Models.Services;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
 using Cursed.Models.Routing;
+using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -21,27 +22,27 @@ namespace Cursed.Models.LogicValidation
     {
         private readonly CursedContext db;
         private readonly IOperationValidation operationValidation;
-        private readonly AbstractErrorHandlerFactory errorHandlerFactory;
+        private readonly IErrorHandlerFactory errorHandlerFactory;
 
-        public TransactionsLogicValidation(CursedContext db, IOperationValidation operationValidation)
+        public TransactionsLogicValidation(CursedContext db, IOperationValidation operationValidation, IErrorHandlerFactory errorHandlerFactory)
         {
             this.db = db;
             this.operationValidation = operationValidation;
-            errorHandlerFactory = new StatusMessageFactory();
-            
+            this.errorHandlerFactory = errorHandlerFactory;
+
         }
 
-        public async Task<AbstractErrorHandler> CheckGetSingleDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckGetSingleUpdateModelAsync(object key)
+        public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
 
@@ -53,7 +54,7 @@ namespace Cursed.Models.LogicValidation
             return await CheckClosed(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckRemoveDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
 
@@ -65,7 +66,7 @@ namespace Cursed.Models.LogicValidation
             return await CheckClosed(key);
         }
 
-        public async Task<AbstractErrorHandler> CheckCloseTransactionAsync(object key)
+        public async Task<IErrorHandler> CheckCloseTransactionAsync(object key)
         {
             var statusMessage = await CheckExists(key);
 
@@ -83,7 +84,6 @@ namespace Cursed.Models.LogicValidation
                 {
                     foreach (var problem in operationMessage?.Problems)
                     {
-                        problem.Entity = operationMessage.Entity + " " + problem.Entity;
                         statusMessage.Problems.Add(problem);
                     }
                 }
@@ -92,9 +92,14 @@ namespace Cursed.Models.LogicValidation
             return statusMessage;
         }
 
-        private async Task<AbstractErrorHandler> CheckExists(object key)
+        private async Task<IErrorHandler> CheckExists(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Transaction.",
+                EntityKey = (int)key,
+                RedirectRoute = TransactionsRouting.SingleItem
+            });
             var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == (int)key);
             if (transaction == null)
             {
@@ -111,9 +116,14 @@ namespace Cursed.Models.LogicValidation
             return statusMessage;
         }
 
-        private async Task<AbstractErrorHandler> CheckClosed(object key)
+        private async Task<IErrorHandler> CheckClosed(object key)
         {
-            var statusMessage = errorHandlerFactory.NewErrorHandler("Transaction.", key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Transaction.",
+                EntityKey = (int)key,
+                RedirectRoute = TransactionsRouting.SingleItem
+            });
             var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == (int)key);
 
             if (!transaction.IsOpen)
