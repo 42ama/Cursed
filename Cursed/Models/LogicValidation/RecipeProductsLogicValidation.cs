@@ -36,47 +36,7 @@ namespace Cursed.Models.LogicValidation
 
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
-            var statusMessage = await CheckExists(key);
-
-            if (!statusMessage.IsCompleted)
-            {
-                return statusMessage;
-            }
-
-            // check related entities
-            var recipes = db.Recipe.Where(i => i.Id == ((ValueTuple<int, int>)key).Item1);
-            var productsCatalog = db.ProductCatalog.Where(i => i.Id == ((ValueTuple<int, int>)key).Item2);
-            
-
-            if (productsCatalog.Any())
-            {
-                foreach (var productCatalog in productsCatalog)
-                {
-                    statusMessage.Problems.Add(new Problem
-                    {
-                        Entity = "Product in catalog.",
-                        EntityKey = productCatalog.Id,
-                        Message = "Recipe products changes have related product in catalog.",
-                        RedirectRoute = ProductsCatalogRouting.SingleItem
-                    });
-                }
-            }
-
-            if (recipes.Any())
-            {
-                foreach (var recipe in recipes)
-                {
-                    statusMessage.Problems.Add(new Problem
-                    {
-                        Entity = "Recipe.",
-                        EntityKey = recipe.Id,
-                        Message = "Recipe products changes have related recipe.",
-                        RedirectRoute = RecipesRouting.SingleItem
-                    });
-                }
-            }
-
-            return statusMessage;
+            return await CheckExists(key);
         }
         private async Task<IErrorHandler> CheckExists(object key)
         {
