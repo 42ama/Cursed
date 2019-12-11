@@ -63,7 +63,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "License.",
                     EntityKey = (int)key,
-                    Message = "No license with such key found.",
+                    Message = "License with this Id is not found.",
                     RedirectRoute = LicensesRouting.Index,
                     UseKeyWithRoute = false
                 });

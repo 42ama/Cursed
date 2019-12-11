@@ -64,7 +64,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Storage.",
                         EntityKey = storage.Id,
-                        Message = "Company have related storage.",
+                        Message = "You must remove dependent Storage first.",
                         RedirectRoute = StoragesRouting.SingleItem
                     });
                 }
@@ -77,7 +77,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Transaction.",
                         EntityKey = transaction.Id,
-                        Message = "Company have related transaction.",
+                        Message = "You must remove dependent Transaction first.",
                         RedirectRoute = TransactionsRouting.SingleItem
                     });
                 }
@@ -100,7 +100,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Company.",
                     EntityKey = (int)key,
-                    Message = "No company with such key found.",
+                    Message = "Company with this Id is not found.",
                     RedirectRoute = CompaniesRouting.Index,
                     UseKeyWithRoute = false
                 });

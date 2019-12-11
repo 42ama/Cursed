@@ -93,7 +93,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             foreach (var techProcess in techProcesses)
             {
                 Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Tech process." && 
+                problem.Entity.Contains("Technological process.") && 
                 (int)problem.EntityKey == techProcess.FacilityId);
             }
         }

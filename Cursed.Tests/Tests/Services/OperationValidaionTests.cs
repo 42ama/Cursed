@@ -203,8 +203,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Product at storage from.",
-                EntityKey = expected.ProductId,
-                Message = "Product isn't found."
+                EntityKey = expected.ProductId
             };
 
             // act 
@@ -213,7 +212,6 @@ namespace Cursed.Tests.Tests.Services
             // assert
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem => 
-                actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity &&
                 (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
@@ -237,8 +235,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Transaction.",
-                EntityKey = expected.TransactionId,
-                Message = "Transaction isn't found."
+                EntityKey = expected.TransactionId
             };
 
             // act 
@@ -247,7 +244,6 @@ namespace Cursed.Tests.Tests.Services
             // assert
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
-                actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity &&
                 actualProblem.EntityKey == expectedProblem.EntityKey);
         }
@@ -271,8 +267,7 @@ namespace Cursed.Tests.Tests.Services
             var expectedProblem = new Problem
             {
                 Entity = $"Storage to product coming.",
-                EntityKey = expected.StorageToId,
-                Message = "Storage isn't found."
+                EntityKey = expected.StorageToId
             };
 
             // act 
@@ -281,7 +276,6 @@ namespace Cursed.Tests.Tests.Services
             // assert
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
-                actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity &&
                 (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }
@@ -304,9 +298,8 @@ namespace Cursed.Tests.Tests.Services
             expected.StorageFromId = 0;
             var expectedProblem = new Problem
             {
-                Entity = $"Storage from product coming.",
-                EntityKey = expected.StorageFromId,
-                Message = "Storage isn't found."
+                Entity = "Storage from product coming.",
+                EntityKey = expected.StorageFromId
             };
 
             // act 
@@ -315,7 +308,6 @@ namespace Cursed.Tests.Tests.Services
             // assert
             Assert.False(actual.IsCompleted);
             Assert.Contains(actual.Problems, actualProblem =>
-                actualProblem.Message == expectedProblem.Message &&
                 actualProblem.Entity == expectedProblem.Entity &&
                 (int)actualProblem.EntityKey == (int)expectedProblem.EntityKey);
         }

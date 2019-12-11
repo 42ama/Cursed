@@ -54,9 +54,9 @@ namespace Cursed.Models.LogicValidation
             {
                 statusMessage.AddProblem(new Problem
                 {
-                    Entity = "Recipe products changes.",
+                    Entity = $"Recipe products changes. Proudct Id: {tupleKey.Item2}.",
                     EntityKey = tupleKey.Item1,
-                    Message = $"No recipe products changes with such key's found. Product ID: {tupleKey.Item2}",
+                    Message = "Product Changes process with this Id's is not found.",
                     RedirectRoute = RecipeProductsRouting.Index
                 });
             }

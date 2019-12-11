@@ -66,7 +66,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Recipe.",
                         EntityKey = child.ChildId,
-                        Message = "Recipe have childs.",
+                        Message = "You must remove dependent Recipe Childs first.",
                         RedirectRoute = RecipesRouting.SingleItem
                     });
                 }
@@ -77,9 +77,9 @@ namespace Cursed.Models.LogicValidation
                 {
                     statusMessage.Problems.Add(new Problem
                     {
-                        Entity = "Tech process.",
+                        Entity = "Technological process.",
                         EntityKey = techProcess.FacilityId,
-                        Message = "Recipe have related tech process.",
+                        Message = "You must remove dependent Technological Process first.",
                         RedirectRoute = FacilityTechProcessesRouting.Index
                     });
                 }
@@ -90,9 +90,9 @@ namespace Cursed.Models.LogicValidation
                 {
                     statusMessage.Problems.Add(new Problem
                     {
-                        Entity = "Recipe product changes.",
+                        Entity = $"Product changes. Product Id: {productChanges.ProductId}.",
                         EntityKey = productChanges.RecipeId,
-                        Message = "Recipe have related recipe product changes.",
+                        Message = "You must remove dependent Product Changes in Recipe first.",
                         RedirectRoute = RecipeProductsRouting.Index
                     });
                 }
@@ -115,7 +115,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Recipe.",
                     EntityKey = (int)key,
-                    Message = "No recipe with such key found.",
+                    Message = "Recipe with this Id is not found.",
                     RedirectRoute = RecipesRouting.Index,
                     UseKeyWithRoute = false
                 });

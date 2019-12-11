@@ -62,9 +62,9 @@ namespace Cursed.Models.LogicValidation
                 {
                     statusMessage.Problems.Add(new Problem
                     {
-                        Entity = "Tech process.",
+                        Entity = $"Technological process. Recipe Id: {techProcess.RecipeId}.",
                         EntityKey = techProcess.FacilityId,
-                        Message = $"Facility have related techprocesses with RecipeID: {techProcess.RecipeId}.",
+                        Message = "You must remove dependent Technological Process first.",
                         RedirectRoute = FacilityTechProcessesRouting.Index
                     });
                 }
@@ -87,7 +87,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Facility.",
                     EntityKey = (int)key,
-                    Message = "No facility with such key found.",
+                    Message = "Facility with this Id is not found.",
                     RedirectRoute = FacilitiesRouting.Index,
                     UseKeyWithRoute = false
                 });

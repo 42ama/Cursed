@@ -107,10 +107,10 @@ namespace Cursed.Tests.Tests.LogicValidation
             Assert.Contains(statusMessage.Problems, problem =>
                 problem.Entity == "Recipe." && (int)problem.EntityKey == recipeInheritance.ChildId);
             Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Tech process." && 
+                problem.Entity.Contains("Technological process.") && 
                 (int)problem.EntityKey == techProcess.FacilityId);
             Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Recipe product changes." &&
+                problem.Entity.Contains("Product changes.") &&
                 (int)problem.EntityKey == productChanges.RecipeId);
         }
 

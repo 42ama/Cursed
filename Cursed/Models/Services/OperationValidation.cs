@@ -24,7 +24,7 @@ namespace Cursed.Models.Services
             {
                 ProblemStatus = new Problem
                 {
-                    Entity = $"Operation.",
+                    Entity = "Operation.",
                     EntityKey = operation.Id,
                     RedirectRoute = OperationsRouting.SingleItem
                 }
@@ -39,9 +39,9 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Product at storage from.",
+                    Entity = "Product at storage from.",
                     EntityKey = operation.ProductId,
-                    Message = "Product isn't found.",
+                    Message = "Product with this Id is not found.",
                     RedirectRoute = ProductsCatalogRouting.Index,
                     UseKeyWithRoute = false
                 });
@@ -51,9 +51,9 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Storage from product coming.",
+                    Entity = "Storage from product coming.",
                     EntityKey = operation.StorageFromId,
-                    Message = "Storage isn't found.",
+                    Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });
@@ -63,9 +63,9 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Storage to product coming.",
+                    Entity = "Storage to product coming.",
                     EntityKey = operation.StorageToId,
-                    Message = "Storage isn't found.",
+                    Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });
@@ -75,9 +75,9 @@ namespace Cursed.Models.Services
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = $"Transaction.",
+                    Entity = "Transaction.",
                     EntityKey = operation.TransactionId,
-                    Message = "Transaction isn't found.",
+                    Message = "Transaction with this Id is not found.",
                     RedirectRoute = TransactionsRouting.Index,
                     UseKeyWithRoute = false
                 });

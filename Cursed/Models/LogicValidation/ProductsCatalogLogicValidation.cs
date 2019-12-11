@@ -64,11 +64,10 @@ namespace Cursed.Models.LogicValidation
                 {
                     statusMessage.Problems.Add(new Problem
                     {
-                        Entity = "Recipe product changes.",
+                        Entity = $"Product changes. Recipe Id: {recipeProductChanges.RecipeId}.",
                         EntityKey = recipeProductChanges.RecipeId,
-                        Message = $"Product ID: {recipeProductChanges.ProductId} in catalog have related recipe product changes.",
-                        RedirectRoute = RecipeProductsRouting.Index,
-                        UseKeyWithRoute = false
+                        Message = "You must remove dependent Product Changes in Recipe first.",
+                        RedirectRoute = RecipeProductsRouting.Index
                     });
                 }
             }
@@ -80,7 +79,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Product.",
                         EntityKey = product.Id,
-                        Message = "Product in catalog have related product in storage.",
+                        Message = "You must remove dependent Product in Storage first.",
                         RedirectRoute = ProductsRouting.SingleItem
                     });
                 }
@@ -93,7 +92,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "License.",
                         EntityKey = license.Id,
-                        Message = "Product in catalog have related license.",
+                        Message = "You must remove dependent License first.",
                         RedirectRoute = LicensesRouting.SingleItem
                     });
                 }
@@ -116,7 +115,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Products in catalog.",
                     EntityKey = (int)key,
-                    Message = "No products in catalog with such key found.",
+                    Message = "Products in catalog with this Id is not found.",
                     RedirectRoute = ProductsCatalogRouting.Index,
                     UseKeyWithRoute = false
                 });

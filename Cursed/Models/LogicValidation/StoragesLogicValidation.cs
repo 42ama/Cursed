@@ -65,7 +65,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Product.",
                         EntityKey = product.Id,
-                        Message = "Storage have related product in storage.",
+                        Message = "You must remove dependent Product in Storage first.",
                         RedirectRoute = ProductsRouting.SingleItem
                     });
                 }
@@ -78,7 +78,7 @@ namespace Cursed.Models.LogicValidation
                     {
                         Entity = "Operation.",
                         EntityKey = operation.Id,
-                        Message = "Storage have related operation.",
+                        Message = "You must remove dependent Operation first.",
                         RedirectRoute = OperationsRouting.SingleItem
                     });
                 }
@@ -101,7 +101,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Storage.",
                     EntityKey = (int)key,
-                    Message = "No storage with such key found.",
+                    Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });

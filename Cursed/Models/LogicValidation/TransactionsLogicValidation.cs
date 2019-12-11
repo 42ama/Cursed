@@ -107,7 +107,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Transaction.",
                     EntityKey = (int)key,
-                    Message = "No transaction with such key found.",
+                    Message = "Transaction with this Id is not found.",
                     RedirectRoute = TransactionsRouting.Index,
                     UseKeyWithRoute = false
                 });
