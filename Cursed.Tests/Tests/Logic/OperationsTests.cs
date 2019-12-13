@@ -69,7 +69,7 @@ namespace Cursed.Tests.Tests.Logic
             await fixture.db.SaveChangesAsync();
 
             // act
-            await logic.RemoveDataModelAsync(operation.Id);
+            await logic.RemoveDataModelAsync(operation);
 
             // assert
             var actual = await fixture.db.Operation.FirstOrDefaultAsync(i => i.Id == operation.Id);
