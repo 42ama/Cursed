@@ -10,10 +10,10 @@ using Cursed.Models.Routing;
 
 namespace Cursed.Models.Services
 {
-    public class OperationValidation : IOperationValidation
+    public class OperationDataValidation : IOperationDataValidation
     {
         private readonly CursedContext db;
-        public OperationValidation(CursedContext context)
+        public OperationDataValidation(CursedContext context)
         {
             db = context;
         }

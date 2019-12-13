@@ -31,7 +31,7 @@ namespace Cursed
             services.AddDbContext<CursedContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
-            services.AddScoped<IOperationValidation, OperationValidation>();
+            services.AddScoped<IOperationDataValidation, OperationDataValidation>();
             
         }
 

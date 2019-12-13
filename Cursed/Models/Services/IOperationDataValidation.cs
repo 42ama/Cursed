@@ -7,7 +7,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Models.Services
 {
-    public interface IOperationValidation
+    public interface IOperationDataValidation
     {
         Task<IErrorHandler> IsValidAsync(Operation operation);
     }

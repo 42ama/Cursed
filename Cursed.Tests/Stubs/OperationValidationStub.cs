@@ -7,7 +7,7 @@ using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Stubs
 {
-    public class OperationValidationStub : IOperationValidation
+    public class OperationValidationStub : IOperationDataValidation
     {
         /// <returns>valid status message</returns>
         public async Task<IErrorHandler> IsValidAsync(Operation operation)

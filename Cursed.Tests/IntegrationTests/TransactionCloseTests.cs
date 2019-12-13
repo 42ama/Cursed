@@ -18,12 +18,12 @@ namespace Cursed.Tests.IntegrationTests
     {
         private readonly TestsFixture fixture;
         private readonly TransactionsLogicValidation logicValidation;
-        private readonly OperationValidation operationValidation;
+        private readonly OperationDataValidation operationValidation;
 
         public TransactionCloseTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            operationValidation = new OperationValidation(fixture.db);
+            operationValidation = new OperationDataValidation(fixture.db);
             logicValidation = new TransactionsLogicValidation(fixture.db, operationValidation, new StatusMessageFactory());
         }
 

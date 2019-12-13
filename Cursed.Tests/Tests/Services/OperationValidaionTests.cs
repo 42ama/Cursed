@@ -13,12 +13,12 @@ namespace Cursed.Tests.Tests.Services
     public class OperationValidaionTests : IDisposable
     {
         private readonly TestsFixture fixture;
-        private readonly OperationValidation validation;
+        private readonly OperationDataValidation validation;
 
         public OperationValidaionTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            validation = new OperationValidation(fixture.db);
+            validation = new OperationDataValidation(fixture.db);
         }
 
         public async void Dispose()
