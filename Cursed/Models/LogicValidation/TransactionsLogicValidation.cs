@@ -21,10 +21,10 @@ namespace Cursed.Models.LogicValidation
     public class TransactionsLogicValidation
     {
         private readonly CursedContext db;
-        private readonly IOperationValidation operationValidation;
+        private readonly IOperationDataValidation operationValidation;
         private readonly IErrorHandlerFactory errorHandlerFactory;
 
-        public TransactionsLogicValidation(CursedContext db, IOperationValidation operationValidation, IErrorHandlerFactory errorHandlerFactory)
+        public TransactionsLogicValidation(CursedContext db, IOperationDataValidation operationValidation, IErrorHandlerFactory errorHandlerFactory)
         {
             this.db = db;
             this.operationValidation = operationValidation;
@@ -52,6 +52,30 @@ namespace Cursed.Models.LogicValidation
             }
 
             return await CheckClosed(key);
+        }
+
+        public async Task<IErrorHandler> CheckOpenTransactionAsync(object key)
+        {
+            var statusMessage = await CheckExists(key);
+
+            if (!statusMessage.IsCompleted)
+            {
+                return statusMessage;
+            }
+
+            var lastTransaction = await db.TransactionBatch.OrderByDescending(i => i.Date).FirstAsync();
+            if (lastTransaction.Id != (int)key)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Go to last transaction.",
+                    EntityKey = lastTransaction.Id,
+                    Message = "Only last transaction can be open.",
+                    RedirectRoute = TransactionsRouting.SingleItem
+                });
+            }
+
+            return statusMessage;
         }
 
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)

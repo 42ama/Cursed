@@ -76,6 +76,7 @@ namespace Cursed.Models.Logic
             return query.Single();
         }
 
+
         public async Task<TransactionBatch> GetSingleUpdateModelAsync(object key)
         {
             return await db.TransactionBatch.SingleAsync(i => i.Id == (int)key); 
@@ -91,37 +92,23 @@ namespace Cursed.Models.Logic
                 var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
                 var productTo = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
 
-                if (productTo == null)
-                {
-                    db.Add(new Product
-                    {
-                        Uid = operation.ProductId,
-                        Quantity = operation.Quantity,
-                        QuantityUnit = "mg.",
-                        Price = operation.Price,
-                        StorageId = operation.StorageToId
-                    });
-                }
-                else
-                {
-                    var updatedProductTo = productTo;
-                    updatedProductTo.Quantity += operation.Quantity;
-                    updatedProductTo.Price = ((productTo.Quantity * productTo.Price) + (operation.Quantity * operation.Price)) / 2;
-                    db.Entry(productTo).CurrentValues.SetValues(updatedProductTo);
-                }
+                await IncreaseOrAddProduct(productTo, operation, operation.StorageToId);
+                await DecreaseOrRemoveProduct(productFrom, operation); 
+            }
+        }
 
-                if(productFrom.Quantity == operation.Quantity)
-                {
-                    db.Remove(productFrom);
-                }
-                else
-                {
-                    var updatedProductFrom = productFrom;
-                    updatedProductFrom.Quantity -= operation.Quantity;
-                    db.Entry(productFrom).CurrentValues.SetValues(updatedProductFrom);
-                }
+        public async Task OpenTransactionAsync(object key)
+        {
+            var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
 
-                db.SaveChanges();
+            // applying each operation to db
+            foreach (var operation in transaction.Operation)
+            {
+                var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
+                var productTo = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
+
+                await IncreaseOrAddProduct(productFrom, operation, operation.StorageFromId);
+                await DecreaseOrRemoveProduct(productTo, operation);
             }
         }
 
@@ -145,6 +132,57 @@ namespace Cursed.Models.Logic
             var entity = await db.TransactionBatch.FindAsync(transactionId);
             db.Operation.RemoveRange(db.Operation.Where(i => i.TransactionId == transactionId));
             db.TransactionBatch.Remove(entity);
+            await db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Add product to db or increase it's quantity
+        /// </summary>
+        /// <param name="product">Product to be added</param>
+        /// <param name="operation">Operation in which product is added</param>
+        /// <param name="storageId">Storage Id at which product is stored</param>
+        private async Task IncreaseOrAddProduct(Product product, Operation operation, int storageId)
+        {
+            if (product == null)
+            {
+                db.Add(new Product
+                {
+                    Uid = operation.ProductId,
+                    Quantity = operation.Quantity,
+                    QuantityUnit = "mg.",
+                    Price = operation.Price,
+                    StorageId = storageId
+                });
+            }
+            else
+            {
+                var updatedProductTo = product;
+                updatedProductTo.Quantity += operation.Quantity;
+                updatedProductTo.Price = ((product.Quantity * product.Price) + (operation.Quantity * operation.Price)) / 2;
+                db.Entry(product).CurrentValues.SetValues(updatedProductTo);
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Remove product from db or decrease it's quantity
+        /// </summary>
+        /// <param name="product">Product to be removed</param>
+        /// <param name="operation">Operation in which product is removed</param>
+        private async Task DecreaseOrRemoveProduct(Product product, Operation operation)
+        {
+            if (product.Quantity == operation.Quantity)
+            {
+                db.Remove(product);
+            }
+            else
+            {
+                var updatedProduct = product;
+                updatedProduct.Quantity -= operation.Quantity;
+                db.Entry(product).CurrentValues.SetValues(updatedProduct);
+            }
+
             await db.SaveChangesAsync();
         }
     }
