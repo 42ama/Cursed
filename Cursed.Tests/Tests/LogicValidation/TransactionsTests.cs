@@ -42,6 +42,31 @@ namespace Cursed.Tests.Tests.LogicValidation
             };
         }
 
+        private TransactionBatch[] GetTransactions()
+        {
+            return new TransactionBatch[]
+            {
+                new TransactionBatch
+                {
+                    Id = 44440,
+                    Date = DateTime.UtcNow,
+                    CompanyId = 44440,
+                    Type = TransactionTypes.Income,
+                    IsOpen = false,
+                    Comment = "Why chicken cross the road?"
+                },
+                new TransactionBatch
+                {
+                    Id = 44441,
+                    Date = DateTime.UtcNow.AddMonths(-1),
+                    CompanyId = 44440,
+                    Type = TransactionTypes.Income,
+                    IsOpen = false,
+                    Comment = "To get to the OTHER SIDE!"
+                }
+            };
+        }
+
         [Fact]
         public async void CheckRemoveTransaction_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
         {
@@ -182,6 +207,53 @@ namespace Cursed.Tests.Tests.LogicValidation
 
             // act
             var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(transaction.Id);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckOpenTransaction_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var transaction = GetTransaction();
+
+            // act
+            var statusMessage = await logicValidation.CheckOpenTransactionAsync(transaction.Id);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckOpenTransaction_FromInitializedDbTableTrasnactionIsNotLastClosed_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var transactions = GetTransactions();
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var transactionToCheckId = 44441;
+
+            // act
+            var statusMessage = await logicValidation.CheckOpenTransactionAsync(transactionToCheckId);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckOpenTransaction_FromInitializedDbTableTrasnactionIsLastClosed_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var transactions = GetTransactions();
+            fixture.db.AddRange(transactions);
+            await fixture.db.SaveChangesAsync();
+
+            var transactionToCheckId = 44440;
+
+            // act
+            var statusMessage = await logicValidation.CheckOpenTransactionAsync(transactionToCheckId);
 
             // assert
             Assert.True(statusMessage.IsCompleted);

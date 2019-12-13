@@ -123,7 +123,32 @@ namespace Cursed.Tests.Tests.Logic
             };
         }
 
-        private IEnumerable<Product> GetProducts()
+        private IEnumerable<Product> GetProductsForOpen()
+        {
+            return new Product[]
+            {
+                new Product
+                {
+                    Id = 44440,
+                    Uid = 44440,
+                    StorageId = 44440,
+                    Price = 15,
+                    Quantity = 40,
+                    QuantityUnit = "mg."
+                },
+                new Product
+                {
+                    Id = 44441,
+                    Uid = 44440,
+                    StorageId = 44442,
+                    Price = 17,
+                    Quantity = 1,
+                    QuantityUnit = "mg."
+                }
+            };
+        }
+
+        private IEnumerable<Product> GetProductsForClose()
         {
             return new Product[]
             {
@@ -291,7 +316,7 @@ namespace Cursed.Tests.Tests.Logic
             var transaction = GetTransaction();
             var operations = GetOperations();
             var productsCatalog = GetProductCatalog();
-            var products = GetProducts();
+            var products = GetProductsForClose();
             var storages = GetStorages();
             fixture.db.Add(transaction);
             fixture.db.AddRange(productsCatalog);
@@ -317,6 +342,54 @@ namespace Cursed.Tests.Tests.Logic
             var actual = await fixture.db.Product.FirstOrDefaultAsync(i => i.Uid == expected.Uid && i.StorageId == expected.StorageId);
             Assert.NotNull(actual);
             Assert.Equal(expected.Quantity, actual.Quantity);
+        }
+
+        [Fact]
+        public async void OpenTransaction_AtInitializedDbTable_DataAtDbEqualExpected()
+        {
+            // arrange
+            var transaction = GetTransaction();
+            var operations = GetOperations();
+            var productsCatalog = GetProductCatalog();
+            var products = GetProductsForOpen();
+            var storages = GetStorages();
+            fixture.db.Add(transaction);
+            fixture.db.AddRange(productsCatalog);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(operations);
+            await fixture.db.SaveChangesAsync();
+
+            var expectedA = new Product
+            {
+                Id = 0,
+                Uid = 44440,
+                StorageId = 44441,
+                Price = 0,
+                Quantity = 22,
+                QuantityUnit = "mg."
+            };
+
+            var expectedB = new Product
+            {
+                Id = 0,
+                Uid = 44440,
+                StorageId = 44442,
+                Price = 0,
+                Quantity = 9,
+                QuantityUnit = "mg."
+            };
+
+            // act
+            await logic.OpenTransactionAsync(transaction.Id);
+
+            // assert
+            var actualA = await fixture.db.Product.FirstOrDefaultAsync(i => i.Uid == expectedA.Uid && i.StorageId == expectedA.StorageId);
+            var actualB = await fixture.db.Product.FirstOrDefaultAsync(i => i.Uid == expectedB.Uid && i.StorageId == expectedB.StorageId);
+            Assert.NotNull(actualA);
+            Assert.NotNull(actualB);
+            Assert.Equal(expectedA.Quantity, actualA.Quantity);
+            Assert.Equal(expectedB.Quantity, actualB.Quantity);
         }
 
         [Fact]
