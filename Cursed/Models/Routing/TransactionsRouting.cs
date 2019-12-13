@@ -13,5 +13,8 @@ namespace Cursed.Models.Routing
         public const string AddSingleItem = "AddTransaction";
         public const string EditSingleItem = "EditTransaction";
         public const string DeleteSingleItem = "DeleteTransaction";
+
+        public const string CloseTransaction = "CloseTransaction";
+        public const string OpenTransaction = "OpenTransaction";
     }
 }
