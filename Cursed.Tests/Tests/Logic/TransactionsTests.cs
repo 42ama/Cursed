@@ -8,7 +8,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Transactions;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
+using Cursed.Models.Extensions;
 using Cursed.Tests.Stubs;
 using Cursed.Models.Data.Utility.ErrorHandling;
 
@@ -51,7 +51,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionBatch
                 {
                     Id = 44440,
-                    Date = DateTime.UtcNow,
+                    Date = DateTime.UtcNow.TrimUpToDays(),
                     CompanyId = 44440,
                     Type = TransactionTypes.Income,
                     IsOpen = true,
@@ -60,7 +60,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionBatch
                 {
                     Id = 44441,
-                    Date = DateTime.UtcNow,
+                    Date = DateTime.UtcNow.TrimUpToDays(),
                     CompanyId = 44441,
                     Type = TransactionTypes.Income,
                     IsOpen = false,
@@ -409,7 +409,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionsModel
                 {
                     Id = 44440,
-                    Date = DateTime.UtcNow,
+                    Date = DateTime.UtcNow.TrimUpToDays(),
                     CompanyId = 44440,
                     Type = TransactionTypes.Income,
                     IsOpen = true,
@@ -420,7 +420,7 @@ namespace Cursed.Tests.Tests.Logic
                 new TransactionsModel
                 {
                     Id = 44441,
-                    Date = DateTime.UtcNow,
+                    Date = DateTime.UtcNow.TrimUpToDays(),
                     CompanyId = 44441,
                     Type = TransactionTypes.Income,
                     IsOpen = false,
@@ -463,7 +463,7 @@ namespace Cursed.Tests.Tests.Logic
             var expected = new TransactionModel
             {
                 Id = 44440,
-                Date = DateTime.UtcNow,
+                Date = DateTime.UtcNow.TrimUpToDays(),
                 CompanyId = 44440,
                 Type = TransactionTypes.Income,
                 IsOpen = true,

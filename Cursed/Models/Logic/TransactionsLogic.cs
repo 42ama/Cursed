@@ -95,6 +95,10 @@ namespace Cursed.Models.Logic
                 await IncreaseOrAddProduct(productTo, operation, operation.StorageToId);
                 await DecreaseOrRemoveProduct(productFrom, operation); 
             }
+
+            // update transaction close date to current moment
+            transaction.Date = DateTime.UtcNow;
+            await UpdateDataModelAsync(transaction);
         }
 
         public async Task OpenTransactionAsync(object key)
