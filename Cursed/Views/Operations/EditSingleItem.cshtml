@@ -1,0 +1,53 @@
+﻿@using Cursed.Models.Entities
+@model Operation
+@{
+    ViewData["Title"] = "EditSingleItem";
+    string saveRoute = (string)ViewData["SaveRoute"];
+}
+
+<h1>EditSingleItem</h1>
+
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model.Id">
+    </div>
+    <div>
+        <input hidden asp-for="TransactionId" type="number" name="TransactionId" value="@Model.TransactionId">
+    </div>
+    <div>
+        <input hidden asp-for="ProductId" type="number" name="ProductId" value="@Model.ProductId">
+    </div>
+    <div class="form-group">
+        <label for="Quantity">Quantity:*</label>
+        <div>
+            <input required asp-for="Quantity" type="number" name="Quantity" value="@Model.Quantity">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Price">Price:*</label>
+        <div>
+            <input required asp-for="Price" type="number" name="Price" value="@Model.Price">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="StorageFromId">Storage from Id*:</label>
+        <div>
+            <input required asp-for="StorageFromId" type="number" name="StorageFromId" value="@Model.StorageFromId">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="StorageToId">Storage to Id*:</label>
+        <div>
+            <input required asp-for="StorageToId" type="number" name="StorageToId" value="@Model.StorageToId">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>
+<!--Add license managment(create new in ajax)-->
+<!--Fix ajax method posting-->
