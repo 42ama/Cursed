@@ -14,7 +14,6 @@ using Cursed.Models.Services;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Data.Utility.ErrorHandling;
 using Cursed.Models.Routing;
-using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -70,12 +69,12 @@ namespace Cursed.Models.LogicValidation
                 return statusMessage;
             }
 
-            var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == (int)key);
+            var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == opertaion.TransactionId);
             if (!transaction.IsOpen)
             {
                 statusMessage.Problems.Add(new Problem
                 {
-                    Entity = "Transaction open status.",
+                    Entity = "Transaction close status.",
                     Message = "Can't change operation when related transaction is closed.",
                     RedirectRoute = TransactionsRouting.SingleItem,
                     EntityKey = transaction.Id
