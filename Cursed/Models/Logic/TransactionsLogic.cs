@@ -54,13 +54,32 @@ namespace Cursed.Models.Logic
 
         public async Task<TransactionModel> GetSingleDataModelAsync(object key)
         {
-            var transactions = await db.TransactionBatch.Where(i => i.Id == (int)key).ToListAsync();
-            var query = from t in transactions
+            var operationsQuery = from o in db.Operation
+                                  where o.TransactionId == (int)key
+                                  join pc in db.ProductCatalog on o.ProductId equals pc.Id into productsCatalog
+                                  from prodsCat in productsCatalog
+                                  join s in db.Storage on o.StorageFromId equals s.Id into storagesFrom
+                                  from storsF in storagesFrom
+                                  join s in db.Storage on o.StorageToId equals s.Id into storagesTo
+                                  from storsT in storagesTo
+                                  select new OperationModel
+                                  {
+                                      Id = o.Id,
+                                      Price = o.Price,
+                                      ProductId = o.ProductId,
+                                      Quantity = o.Quantity,
+                                      StorageFromId = o.StorageFromId,
+                                      StorageToId = o.StorageToId,
+                                      TransactionId = o.TransactionId,
+                                      CAS = prodsCat.Cas,
+                                      ProductName = prodsCat.Name,
+                                      StorageFromName = storsF.Name,
+                                      StorageToName = storsT.Name
+                                  };
+            var query = from t in db.TransactionBatch
+                        where t.Id == (int)key
                         join c in db.Company on t.CompanyId equals c.Id into companies
                         from comp in companies
-                        join o in (from t in transactions
-                                   join o in db.Operation on t.Id equals o.TransactionId into operations
-                                   group operations by t.Id) on t.Id equals o.Key
                         select new TransactionModel
                         {
                             Id = t.Id,
@@ -70,7 +89,7 @@ namespace Cursed.Models.Logic
                             IsOpen = t.IsOpen,
                             CompanyId = t.CompanyId,
                             CompanyName = comp.Name,
-                            Operations = o.Single().ToList()
+                            Operations = operationsQuery.ToList()
                         };
 
             return query.Single();
@@ -84,36 +103,49 @@ namespace Cursed.Models.Logic
 
         public async Task CloseTransactionAsync(object key)
         {
-            var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
-
-            // applying each operation to db
-            foreach(var operation in transaction.Operation)
-            {
-                var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
-                var productTo = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
-
-                await IncreaseOrAddProduct(productTo, operation, operation.StorageToId);
-                await DecreaseOrRemoveProduct(productFrom, operation); 
-            }
-
-            // update transaction close date to current moment
-            transaction.Date = DateTime.UtcNow;
-            await UpdateDataModelAsync(transaction);
+            await ChangeTransactionOpenStateAsync((int)key);
         }
 
         public async Task OpenTransactionAsync(object key)
         {
-            var transaction = db.TransactionBatch.Single(i => i.Id == (int)key);
+            await ChangeTransactionOpenStateAsync((int)key);
+        }
 
-            // applying each operation to db
-            foreach (var operation in transaction.Operation)
+        private async Task ChangeTransactionOpenStateAsync(int id)
+        {
+            var transaction = db.TransactionBatch.Single(i => i.Id == id);
+
+            foreach (var operation in db.Operation.Where(i => i.TransactionId == id))
             {
-                var productFrom = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
-                var productTo = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
+                Product productInc;
+                Product productDec;
+                int storageIdForInc;
+                if (transaction.IsOpen)
+                {
+                    productDec = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
+                    productInc = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
 
-                await IncreaseOrAddProduct(productFrom, operation, operation.StorageFromId);
-                await DecreaseOrRemoveProduct(productTo, operation);
+                    storageIdForInc = operation.StorageToId;
+                }
+                else
+                {
+                    productInc = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
+                    productDec = await db.Product.FirstOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageToId);
+
+                    storageIdForInc = operation.StorageFromId;
+                }
+                
+
+                IncreaseOrAddProduct(productInc, operation, storageIdForInc);
+                DecreaseOrRemoveProduct(productDec, operation);
+
+                await db.SaveChangesAsync();
             }
+
+            transaction.Date = DateTime.UtcNow;
+            transaction.IsOpen = !transaction.IsOpen;
+
+            await UpdateDataModelAsync(transaction);
         }
 
         public async Task AddDataModelAsync(TransactionBatch model)
@@ -145,7 +177,7 @@ namespace Cursed.Models.Logic
         /// <param name="product">Product to be added</param>
         /// <param name="operation">Operation in which product is added</param>
         /// <param name="storageId">Storage Id at which product is stored</param>
-        private async Task IncreaseOrAddProduct(Product product, Operation operation, int storageId)
+        private void IncreaseOrAddProduct(Product product, Operation operation, int storageId)
         {
             if (product == null)
             {
@@ -162,11 +194,11 @@ namespace Cursed.Models.Logic
             {
                 var updatedProductTo = product;
                 updatedProductTo.Quantity += operation.Quantity;
-                updatedProductTo.Price = ((product.Quantity * product.Price) + (operation.Quantity * operation.Price)) / 2;
+                var originalProductQuantityPercent = operation.Quantity / (operation.Quantity + updatedProductTo.Quantity);
+                var updatedProductQuantityPercent = updatedProductTo.Quantity / (operation.Quantity + updatedProductTo.Quantity);
+                updatedProductTo.Price = (updatedProductQuantityPercent * product.Price) + (originalProductQuantityPercent * operation.Price);
                 db.Entry(product).CurrentValues.SetValues(updatedProductTo);
             }
-
-            await db.SaveChangesAsync();
         }
 
         /// <summary>
@@ -174,7 +206,7 @@ namespace Cursed.Models.Logic
         /// </summary>
         /// <param name="product">Product to be removed</param>
         /// <param name="operation">Operation in which product is removed</param>
-        private async Task DecreaseOrRemoveProduct(Product product, Operation operation)
+        private void DecreaseOrRemoveProduct(Product product, Operation operation)
         {
             if (product.Quantity == operation.Quantity)
             {
@@ -186,8 +218,6 @@ namespace Cursed.Models.Logic
                 updatedProduct.Quantity -= operation.Quantity;
                 db.Entry(product).CurrentValues.SetValues(updatedProduct);
             }
-
-            await db.SaveChangesAsync();
         }
     }
 }

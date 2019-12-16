@@ -353,6 +353,9 @@ namespace Cursed.Tests.Tests.Logic
             var productsCatalog = GetProductCatalog();
             var products = GetProductsForOpen();
             var storages = GetStorages();
+
+            transaction.IsOpen = false;
+
             fixture.db.Add(transaction);
             fixture.db.AddRange(productsCatalog);
             fixture.db.AddRange(products);
@@ -447,18 +450,55 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.OperationsCount == actualItem.OperationsCount);
             }
         }
-
+        
         [Fact]
-        public async void GetTransactionModel_FromInitializedDbTables_LogicTransactionModelEqualExpectedTransactionModel()
+        public async void GetTransactionModelNewOperations_FromInitializedDbTables_LogicTransactionModelEqualExpectedTransactionModel()
         {
             // arrange
             var transactions = GetTransactions();
             var companies = GetCompanies();
             var operations = GetOperations();
+            var products = GetProductsForClose();
+            var storages = GetStorages();
+            var productCatalog = GetProductCatalog();
+                
             fixture.db.AddRange(transactions);
             fixture.db.AddRange(companies);
             fixture.db.AddRange(operations);
+            fixture.db.AddRange(products);
+            fixture.db.AddRange(storages);
+            fixture.db.AddRange(productCatalog);
             await fixture.db.SaveChangesAsync();
+
+            var expectedOperations = new List<OperationModel>
+            {
+                new OperationModel
+                {
+                    TransactionId = 44440,
+                    Id = 44440,
+                    ProductName = "Testotin",
+                    ProductId = 44440,
+                    StorageToName = "Test storage #1",
+                    StorageToId = 44440,
+                    StorageFromName = "Test storage #2",
+                    StorageFromId = 44441,
+                    Price = 15,
+                    Quantity = 22
+                },
+                new OperationModel
+                {
+                    TransactionId = 44440,
+                    Id = 44441,
+                    ProductName = "Testotin",
+                    ProductId = 44440,
+                    StorageToName = "Test storage #1",
+                    StorageToId = 44440,
+                    StorageFromName = "Test storage #3",
+                    StorageFromId = 44442,
+                    Price = 17,
+                    Quantity = 8
+                },
+            };
 
             var expected = new TransactionModel
             {
@@ -469,12 +509,8 @@ namespace Cursed.Tests.Tests.Logic
                 IsOpen = true,
                 Comment = "Why chicken cross the road?",
                 CompanyName = "Com-pun-y #1",
-                Operations = new List<Operation>()
+                Operations = expectedOperations
             };
-            foreach (var operation in operations.Where(i => i.TransactionId == expected.Id))
-            {
-                expected.Operations.Add(operation);
-            }
 
             // act
             var actual = await logic.GetSingleDataModelAsync(expected.Id);
@@ -498,9 +534,13 @@ namespace Cursed.Tests.Tests.Logic
                     expectedOperation.StorageToId == actualOperation.StorageToId &&
                     expectedOperation.StorageFromId == actualOperation.StorageFromId &&
                     expectedOperation.Price == actualOperation.Price &&
-                    expectedOperation.Quantity == actualOperation.Quantity);
+                    expectedOperation.Quantity == actualOperation.Quantity &&
+                    expectedOperation.ProductName == actualOperation.ProductName &&
+                    expectedOperation.StorageFromName == actualOperation.StorageFromName &&
+                    expectedOperation.StorageToName == actualOperation.StorageToName);
             }
         }
+
 
         [Fact]
         public async void GetTransactionBatch_FromInitializedDbTable_LogicTransactionBatchEqualExpectedTransactionBatch()
