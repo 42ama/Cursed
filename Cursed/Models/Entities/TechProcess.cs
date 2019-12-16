@@ -7,7 +7,7 @@ namespace Cursed.Models.Entities
     {
         public int FacilityId { get; set; }
         public int RecipeId { get; set; }
-        public decimal DayEffiency { get; set; }
+        public decimal DayEfficiency { get; set; }
 
         public virtual Facility Facility { get; set; }
         public virtual Recipe Recipe { get; set; }

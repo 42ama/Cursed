@@ -69,19 +69,19 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     FacilityId = 44440,
                     RecipeId = 44440,
-                    DayEffiency = (decimal)12.3456
+                    DayEfficiency = (decimal)12.3456
                 },
                 new TechProcess
                 {
                     FacilityId = 44440,
                     RecipeId = 44441,
-                    DayEffiency = (decimal)12.3456
+                    DayEfficiency = (decimal)12.3456
                 },
                 new TechProcess
                 {
                     FacilityId = 44441,
                     RecipeId = 44442,
-                    DayEffiency = (decimal)78.9012
+                    DayEfficiency = (decimal)78.9012
                 }
             };
         }
@@ -341,7 +341,7 @@ namespace Cursed.Tests.Tests.Logic
                     Assert.Contains(actualTechProcesses, actualTechProcess =>
                         actualTechProcess.FacilityId == techProcess.FacilityId &&
                         actualTechProcess.RecipeId == techProcess.RecipeId &&
-                        actualTechProcess.DayEffiency == techProcess.DayEffiency);
+                        actualTechProcess.DayEfficiency == techProcess.DayEfficiency);
                 }
             }
         }
@@ -386,7 +386,7 @@ namespace Cursed.Tests.Tests.Logic
                         RecipeId = recipe.Id,
                         RecipeGovApprov = recipe.GovermentApproval ?? false,
                         RecipeTechnoApprov = recipe.TechApproval ?? false,
-                        RecipeEfficiency = techProcesses.Single(i => i.FacilityId == 44440 && i.RecipeId == recipe.Id).DayEffiency,
+                        RecipeEfficiency = techProcesses.Single(i => i.FacilityId == 44440 && i.RecipeId == recipe.Id).DayEfficiency,
                         ProductId = rpc.ProductId,
                         ProductName = product.Name,
                         ProductType = product.Type,

@@ -49,13 +49,13 @@ namespace Cursed.Tests.Tests.LogicValidation
                 {
                     FacilityId = 44440,
                     RecipeId = 44440,
-                    DayEffiency = (decimal)12.3456
+                    DayEfficiency = (decimal)12.3456
                 },
                 new TechProcess
                 {
                     FacilityId = 44440,
                     RecipeId = 44441,
-                    DayEffiency = (decimal)12.3456
+                    DayEfficiency = (decimal)12.3456
                 }
             };
         }

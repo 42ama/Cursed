@@ -240,7 +240,7 @@ namespace Cursed.Models.Context
                 entity.HasKey(e => new { e.FacilityId, e.RecipeId })
                      .HasName("CK_TechProcess_FacilityId_RecipeId");
 
-                entity.Property(e => e.DayEffiency).HasColumnType("decimal(9, 2)");
+                entity.Property(e => e.DayEfficiency).HasColumnType("decimal(9, 2)");
 
                 entity.HasOne(d => d.Facility)
                     .WithMany(p => p.TechProcess)

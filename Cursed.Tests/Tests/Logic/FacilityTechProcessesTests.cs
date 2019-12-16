@@ -32,7 +32,7 @@ namespace Cursed.Tests.Tests.Logic
             {
                 FacilityId = 44440,
                 RecipeId = 44440,
-                DayEffiency = (decimal)12.3456
+                DayEfficiency = (decimal)12.3456
             };
         }
 
@@ -84,19 +84,19 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     FacilityId = 44440,
                     RecipeId = 44440,
-                    DayEffiency = 41
+                    DayEfficiency = 41
                 },
                 new TechProcess
                 {
                     FacilityId = 44440,
                     RecipeId = 44441,
-                    DayEffiency = 42
+                    DayEfficiency = 42
                 },
                 new TechProcess
                 {
                     FacilityId = 44440,
                     RecipeId = 44442,
-                    DayEffiency = 43
+                    DayEfficiency = 43
                 }
             };
         }
@@ -114,7 +114,7 @@ namespace Cursed.Tests.Tests.Logic
             var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == expected.FacilityId && i.RecipeId == expected.RecipeId);
             Assert.Equal(expected.FacilityId, actual.FacilityId);
             Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
+            Assert.Equal(expected.DayEfficiency, actual.DayEfficiency);
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace Cursed.Tests.Tests.Logic
             {
                 FacilityId = techProcess.FacilityId,
                 RecipeId = techProcess.RecipeId,
-                DayEffiency = (decimal)78.9012
+                DayEfficiency = (decimal)78.9012
             };
 
             // act
@@ -155,7 +155,7 @@ namespace Cursed.Tests.Tests.Logic
             var actual = await fixture.db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == techProcess.FacilityId && i.RecipeId == techProcess.RecipeId);
             Assert.Equal(expected.FacilityId, actual.FacilityId);
             Assert.Equal(expected.RecipeId, actual.RecipeId);
-            Assert.Equal(expected.DayEffiency, actual.DayEffiency);
+            Assert.Equal(expected.DayEfficiency, actual.DayEfficiency);
         }
 
         [Fact]

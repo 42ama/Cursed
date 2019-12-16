@@ -37,7 +37,7 @@ namespace Cursed.Models.Logic
                         {
                             FacilityId = f.FacilityId,
                             FacilityName = facs.Name,
-                            DayEffiency = f.DayEffiency,
+                            DayEffiency = f.DayEfficiency,
                             RecipeId = f.RecipeId,
                             RecipeContent = rs.Content,
                             RecipeGovApprov = rs.GovermentApproval ?? false,
