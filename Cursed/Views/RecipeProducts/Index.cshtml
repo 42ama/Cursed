@@ -75,14 +75,9 @@
         {
             <tr>
                 <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
-                @if (item.Cas.HasValue)
-                {
-                    <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
-                }
-                else
-                {
-                    <td>None</td>
-                }
+
+                <td>@Html.RouteLink(item.Cas.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
+
                 <td>
                     <select required name="type" asp-items="selectType"></select>
                 </td>

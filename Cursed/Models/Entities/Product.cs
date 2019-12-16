@@ -5,11 +5,6 @@ namespace Cursed.Models.Entities
 {
     public partial class Product
     {
-        public Product()
-        {
-            Operation = new HashSet<Operation>();
-        }
-
         public int Id { get; set; }
         public int Uid { get; set; }
         public decimal Quantity { get; set; }
@@ -19,6 +14,5 @@ namespace Cursed.Models.Entities
 
         public virtual Storage Storage { get; set; }
         public virtual ProductCatalog U { get; set; }
-        public virtual ICollection<Operation> Operation { get; set; }
     }
 }

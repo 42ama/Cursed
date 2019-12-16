@@ -27,9 +27,9 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="Cas">CAS:</label>
+        <label for="Cas">CAS*:</label>
         <div>
-            <input asp-for="Cas" type="number" name="Cas" value="@Model?.Cas">
+            <input required asp-for="Cas" type="number" name="Cas" value="@Model?.Cas">
         </div>
     </div>
     <p>License required:</p> @Html.EditorFor(model => model.LicenseRequired)

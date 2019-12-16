@@ -13,7 +13,7 @@ namespace Cursed.Models.Entities
         public int StorageFromId { get; set; }
         public int StorageToId { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual ProductCatalog Product { get; set; }
         public virtual Storage StorageFrom { get; set; }
         public virtual Storage StorageTo { get; set; }
         public virtual TransactionBatch Transaction { get; set; }

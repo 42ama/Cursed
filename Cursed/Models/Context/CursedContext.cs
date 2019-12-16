@@ -130,7 +130,9 @@ namespace Cursed.Models.Context
 
             modelBuilder.Entity<ProductCatalog>(entity =>
             {
-                entity.Property(e => e.Cas).HasColumnName("CAS");
+                entity.Property(e => e.Cas)
+                    .HasColumnName("CAS")
+                    .IsRequired();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
