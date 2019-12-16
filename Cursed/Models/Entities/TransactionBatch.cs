@@ -17,7 +17,7 @@ namespace Cursed.Models.Entities
         public int CompanyId { get; set; }
         public DateTime Date { get { return _date; } set { _date = value.TrimUpToDays(); } }
         public string Type { get; set; }
-        public bool IsOpen { get; set; }
+        public bool IsOpen { get; set; } = true;
         public string Comment { get; set; }
 
         public virtual Company Company { get; set; }
