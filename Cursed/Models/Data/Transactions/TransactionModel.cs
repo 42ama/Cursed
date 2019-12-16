@@ -8,6 +8,6 @@ namespace Cursed.Models.Data.Transactions
 {
     public class TransactionModel : TransactionsAbstractModel
     {
-        public List<Operation> Operations { get; set; }
+        public List<OperationModel> Operations { get; set; }
     }
 }
