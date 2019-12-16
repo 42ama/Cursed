@@ -31,7 +31,7 @@ namespace Cursed.Models.Data.Utility
             }
             else
             {
-                throw new ArgumentOutOfRangeException("currentPage", "Index of page must be in range between 0 and total count of pages");
+                PagenatedCollection = new List<T>();
             }
         }
     }
