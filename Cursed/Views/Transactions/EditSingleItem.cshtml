@@ -1,0 +1,41 @@
+﻿@using Cursed.Models.Entities
+@using Cursed.Models.Data.Shared
+@model TransactionBatch
+@{
+    ViewData["Title"] = "EditSingleItem";
+    SelectList selectType = new SelectList(new List<string> { TransactionTypes.Income, TransactionTypes.Outcome }, Model?.Type);
+    string saveRoute = (string)ViewData["SaveRoute"];
+}
+
+<h1>EditSingleItem</h1>
+
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
+    </div>
+    <div class="form-group">
+        <label for="Type">Type:*</label>
+        <div>
+            <select required asp-for="Type" name="Type" asp-items="selectType"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="CompanyId">Company Id:*</label>
+        <div>
+            <input required asp-for="CompanyId" type="number" name="CompanyId" value="@Model?.CompanyId">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Comment">Comment:</label>
+        <div>
+            <input asp-for="Comment" type="text" name="Comment" value="@Model?.Comment">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>

@@ -1,0 +1,96 @@
+﻿@using Cursed.Models.Data.Transactions
+@model TransactionModel
+@{
+    ViewData["Title"] = "SingleItem";
+
+}
+<h1>Transaction: @Model.Id</h1>
+<p>@Html.RouteLink("Edit", TransactionsRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@TransactionsRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<!--transaction information-->
+<table>
+    <tr>
+        <td>Company:</td>
+        <td>@Html.RouteLink(Model.CompanyName, CompaniesRouting.SingleItem, new { key = Model.CompanyId })</td>
+    </tr>
+    <tr>
+        <td>Type:</td>
+        <td>@Model.Type</td>
+    </tr>
+    <tr>
+        <td>Status:</td>
+        @if (Model.IsOpen)
+        {
+            <td>Open</td>
+        }
+        else
+        {
+            <td>Closed at: @Model.Date.ToString()</td>
+        }
+    </tr>
+</table>
+<h3>Operations:</h3>
+<table>
+    <thead>
+        <tr>
+            <td>Operation Id</td>
+            <td>Product</td>
+            <td>CAS</td>
+            <td>Quantity</td>
+            <td>Price</td>
+            <td>Storage From</td>
+            <td>Storage To</td>
+            <td><!--buttons--></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var operation in Model.Operations)
+        {
+            <tr>
+                <td>@operation.Id</td>
+                <td>@Html.RouteLink(operation.ProductName, ProductsCatalogRouting.SingleItem, new { key = operation.ProductId })</td>
+                <td>@Html.RouteLink(operation.CAS.ToString(), ProductsCatalogRouting.SingleItem, new { key = operation.ProductId })</td>
+                <td>@operation.Quantity</td>
+                <td>@operation.Price</td>
+                <td>@Html.RouteLink(operation.StorageFromName, StoragesRouting.SingleItem, new { key = operation.StorageFromId })</td>
+                <td>@Html.RouteLink(operation.StorageToName, StoragesRouting.SingleItem, new { key = operation.StorageToId })</td>
+                <td>
+                    <p>@Html.RouteLink("Edit", OperationsRouting.GetEditSingleItem, new { key = operation.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@OperationsRouting.DeleteSingleItem">
+                        <input hidden type="number" name="Id" value="@operation.Id" />
+                        <input hidden type="number" name="TransactionId" value="@operation.TransactionId" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-antiforgery="true" method="post" asp-route="@OperationsRouting.AddSingleItem">
+    <input hidden name="TransactionId" type="number" value="@Model.Id" />
+    <input required name="ProductId" type="number" placeholder="Product Id" />
+    <input required name="Quantity" type="number" placeholder="Quantity" />
+    <input required name="Price" type="number" placeholder="Price" />
+    <input required name="StorageFromId" type="number" placeholder="Storage from Id" />
+    <input required name="StorageToId" type="number" placeholder="Storage to Id" />
+    <input type="submit" class="btn btn-default" value="Add" />
+</form>
+
+@if (Model.IsOpen)
+{
+    <form asp-antiforgery="true" method="post" asp-route="@TransactionsRouting.CloseTransaction">
+        <input hidden name="key" type="number" value="@Model.Id" />
+        <input type="submit" class="btn btn-default" value="Close" />
+    </form>
+}
+else
+{
+    <form asp-antiforgery="true" method="post" asp-route="@TransactionsRouting.OpenTransaction">
+        <input hidden name="key" type="number" value="@Model.Id" />
+        <input type="submit" class="btn btn-default" value="Open" />
+    </form>
+}
