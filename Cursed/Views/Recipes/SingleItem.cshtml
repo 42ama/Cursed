@@ -7,7 +7,7 @@
 }
 <h1>RecipeId: @Model.Id</h1>
 <p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = Model.Id })</p>
-<p>@Html.RouteLink("Change products", RecipeProductsRouting.Index, new { key = Model.Id })</p>
+<p>@Html.RouteLink("Show consumed and produced Products", RecipeProductsRouting.Index, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />
     <input type="submit" class="btn btn-dark" value="Delete" />
