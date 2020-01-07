@@ -33,6 +33,9 @@ namespace Cursed.Models.Context
         {
             modelBuilder.Entity<Role>(entity =>
             {
+                entity.HasKey(e => e.Name)
+                    .HasName("PK_Role_Name_Clustered");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -69,7 +72,7 @@ namespace Cursed.Models.Context
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.UserData)
-                    .HasForeignKey(d => d.RoleId)
+                    .HasForeignKey(d => d.RoleName)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
