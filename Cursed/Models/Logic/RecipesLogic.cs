@@ -18,8 +18,8 @@ namespace Cursed.Models.Logic
 {
     public class RecipesLogic : IReadColection<RecipesModel>, IReadSingle<RecipeModel>, IReadUpdateForm<Recipe>, ICUD<Recipe>
     {
-        private readonly CursedContext db;
-        public RecipesLogic(CursedContext db)
+        private readonly CursedDataContext db;
+        public RecipesLogic(CursedDataContext db)
         {
             this.db = db;
         }

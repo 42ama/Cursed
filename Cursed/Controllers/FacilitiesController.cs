@@ -24,7 +24,7 @@ namespace Cursed.Controllers
         private readonly FacilitiesLogic logic;
         private readonly FacilitiesLogicValidation logicValidation;
 
-        public FacilitiesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public FacilitiesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new FacilitiesLogic(db, licenseValidation);
             logicValidation = new FacilitiesLogicValidation(db, errorHandlerFactory);

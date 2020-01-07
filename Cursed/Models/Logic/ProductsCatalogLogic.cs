@@ -20,9 +20,9 @@ namespace Cursed.Models.Logic
 {
     public class ProductsCatalogLogic : IReadColection<ProductsCatalogModel>, IReadSingle<ProductCatalogModel>, IReadUpdateForm<ProductCatalog>, ICUD<ProductCatalog>
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
         private readonly ILicenseValidation licenseValidation;
-        public ProductsCatalogLogic(CursedContext db, ILicenseValidation licenseValidation)
+        public ProductsCatalogLogic(CursedDataContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
             this.licenseValidation = licenseValidation;

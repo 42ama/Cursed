@@ -10,16 +10,16 @@ namespace Cursed.Tests
 {
     public class TestsFixture : IDisposable
     {
-        public readonly CursedContext db;
+        public readonly CursedDataContext db;
 
         public TestsFixture()
         {
             
-            var options = new DbContextOptionsBuilder<CursedContext>()
+            var options = new DbContextOptionsBuilder<CursedDataContext>()
                 .UseInMemoryDatabase(databaseName: "CursedTestingDB")
                 .Options;
 
-            db = new CursedContext(options);
+            db = new CursedDataContext(options);
         }
 
         public async void Dispose()
@@ -27,7 +27,7 @@ namespace Cursed.Tests
             db.Database.EnsureDeleted();
         }
 
-        public static async Task ClearDatabase(CursedContext context)
+        public static async Task ClearDatabase(CursedDataContext context)
         {
             await context.RecipeInheritance.ClearIfAny();
             await context.RecipeProductChanges.ClearIfAny();

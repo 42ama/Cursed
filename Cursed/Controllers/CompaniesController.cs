@@ -23,7 +23,7 @@ namespace Cursed.Controllers
     {
         private readonly CompaniesLogic logic;
         private readonly CompaniesLogicValidation logicValidation;
-        public CompaniesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public CompaniesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new CompaniesLogic(db);
             logicValidation = new CompaniesLogicValidation(db, errorHandlerFactory);

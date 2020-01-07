@@ -23,7 +23,7 @@ namespace Cursed.Controllers
     {
         private readonly RecipesLogic logic;
         private readonly RecipesLogicValidation logicValidation;
-        public RecipesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public RecipesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new RecipesLogic(db);
             logicValidation = new RecipesLogicValidation(db, errorHandlerFactory);

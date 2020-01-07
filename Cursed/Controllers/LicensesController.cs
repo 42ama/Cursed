@@ -24,7 +24,7 @@ namespace Cursed.Controllers
         private readonly LicensesLogic logic;
         private readonly LicensesLogicValidation logicValidation;
         private readonly ILicenseValidation licenseValidation;
-        public LicensesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public LicensesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new LicensesLogic(db);
             logicValidation = new LicensesLogicValidation(db, errorHandlerFactory);

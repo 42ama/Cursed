@@ -23,7 +23,7 @@ namespace Cursed.Controllers
     {
         private readonly OperationsLogic logic;
         private readonly OperationsLogicValidation logicValidation;
-        public OperationsController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public OperationsController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new OperationsLogic(db);
             logicValidation = new OperationsLogicValidation(db, errorHandlerFactory);

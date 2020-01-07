@@ -5,13 +5,13 @@ using Cursed.Models.Entities;
 
 namespace Cursed.Models.Context
 {
-    public partial class CursedContext : DbContext
+    public partial class CursedDataContext : DbContext
     {
-        public CursedContext()
+        public CursedDataContext()
         {
         }
 
-        public CursedContext(DbContextOptions<CursedContext> options)
+        public CursedDataContext(DbContextOptions<CursedDataContext> options)
             : base(options)
         {
         }

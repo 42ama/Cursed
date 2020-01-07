@@ -24,7 +24,7 @@ namespace Cursed.Controllers
         private readonly StoragesLogic logic;
         private readonly StoragesLogicValidation logicValidation;
 
-        public StoragesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public StoragesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new StoragesLogic(db);
             logicValidation = new StoragesLogicValidation(db, errorHandlerFactory);

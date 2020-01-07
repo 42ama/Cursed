@@ -23,7 +23,7 @@ namespace Cursed.Controllers
         private readonly ProductsCatalogLogic logic;
         private readonly ProductsCatalogLogicValidation logicValidation;
 
-        public ProductsCatalogController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public ProductsCatalogController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new ProductsCatalogLogic(db, licenseValidation);
             logicValidation = new ProductsCatalogLogicValidation(db, errorHandlerFactory);

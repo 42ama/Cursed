@@ -20,9 +20,9 @@ namespace Cursed.Models.Logic
 {
     public class TransactionsLogic : IReadColection<TransactionsModel>, IReadSingle<TransactionModel>, IReadUpdateForm<TransactionBatch>, ICUD<TransactionBatch>
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
 
-        public TransactionsLogic(CursedContext db)
+        public TransactionsLogic(CursedDataContext db)
         {
             this.db = db;
 

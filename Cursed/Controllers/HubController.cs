@@ -8,7 +8,7 @@ namespace Cursed.Controllers
 {
     public class HubController : Controller
     {
-        [Route("hub/index")]
+        [Route("hub/index", Name = Models.Routing.HubRouting.Index)]
         [Route("")]
         public IActionResult Index()
         {

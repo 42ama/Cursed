@@ -23,7 +23,7 @@ namespace Cursed.Controllers
     {
         private readonly FacilityTechProcessesLogic logic;
         private readonly FacilityTechProcessesLogicValidation logicValidation;
-        public FacilityTechProcessesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public FacilityTechProcessesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new FacilityTechProcessesLogic(db);
             logicValidation = new FacilityTechProcessesLogicValidation(db, errorHandlerFactory);

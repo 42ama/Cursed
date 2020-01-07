@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Services;
 using Cursed.Models.Context;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Cursed
 {
@@ -28,11 +30,10 @@ namespace Cursed
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<CursedContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CursedDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataDatabaseConnection")));
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
             services.AddScoped<IOperationDataValidation, OperationDataValidation>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +54,7 @@ namespace Cursed
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

@@ -21,7 +21,7 @@ namespace Cursed.Controllers
     public class ProductsController : Controller, IReadCollectionByParam
     {
         private readonly ProductsLogic logic;
-        public ProductsController(CursedContext db)
+        public ProductsController(CursedDataContext db)
         {
             logic = new ProductsLogic(db);
         }

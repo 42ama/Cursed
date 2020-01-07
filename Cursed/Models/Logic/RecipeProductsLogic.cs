@@ -19,9 +19,9 @@ namespace Cursed.Models.Logic
 {
     public class RecipeProductsLogic : IReadCollectionByParam<RecipeProductsDataModel>, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
 
-        public RecipeProductsLogic(CursedContext db)
+        public RecipeProductsLogic(CursedDataContext db)
         {
             this.db = db;
 

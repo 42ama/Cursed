@@ -20,10 +20,10 @@ namespace Cursed.Models.LogicValidation
 {
     public class RecipeProductsLogicValidation
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
         private readonly IErrorHandlerFactory errorHandlerFactory;
 
-        public RecipeProductsLogicValidation(CursedContext db, IErrorHandlerFactory errorHandlerFactory)
+        public RecipeProductsLogicValidation(CursedDataContext db, IErrorHandlerFactory errorHandlerFactory)
         {
             this.db = db;
             this.errorHandlerFactory = errorHandlerFactory;
