@@ -16,9 +16,7 @@ namespace Cursed.Models.Context
         {
         }
 
-        public virtual DbSet<Policy> Policy { get; set; }
         public virtual DbSet<Role> Role { get; set; }
-        public virtual DbSet<RoleHavePolicy> RoleHavePolicy { get; set; }
         public virtual DbSet<UserAuth> UserAuth { get; set; }
         public virtual DbSet<UserData> UserData { get; set; }
 
@@ -33,35 +31,11 @@ namespace Cursed.Models.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Policy>(entity =>
-            {
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<RoleHavePolicy>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.HasOne(d => d.Policy)
-                    .WithMany(p => p.RoleHavePolicy)
-                    .HasForeignKey(d => d.PolicyId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RoleHavePolicy_Policy_Id");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.RoleHavePolicy)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_RoleHavePolicy_Role_Id");
             });
 
             modelBuilder.Entity<UserAuth>(entity =>
