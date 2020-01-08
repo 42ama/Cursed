@@ -36,10 +36,8 @@ namespace Cursed.Tests
         {
             await context.RecipeInheritance.ClearIfAny();
             await context.RecipeProductChanges.ClearIfAny();
-            await context.RoleHavePolicy.ClearIfAny();
             await context.Operation.ClearIfAny();
             await context.License.ClearIfAny();
-            await context.Policy.ClearIfAny();
             await context.TransactionBatch.ClearIfAny();
             await context.Company.ClearIfAny();
             await context.TechProcess.ClearIfAny();
@@ -47,10 +45,7 @@ namespace Cursed.Tests
             await context.Product.ClearIfAny();
             await context.Recipe.ClearIfAny();
             await context.ProductCatalog.ClearIfAny();
-            await context.UserData.ClearIfAny();
-            await context.Role.ClearIfAny();
             await context.Storage.ClearIfAny();
-            await context.UserAuth.ClearIfAny();
             await context.SaveChangesAsync();
         }
 
