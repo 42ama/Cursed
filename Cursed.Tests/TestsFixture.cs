@@ -11,6 +11,7 @@ namespace Cursed.Tests
     public class TestsFixture : IDisposable
     {
         public readonly CursedDataContext db;
+        public readonly CursedAuthenticationContext dbAuth;
 
         public TestsFixture()
         {
@@ -20,11 +21,15 @@ namespace Cursed.Tests
                 .Options;
 
             db = new CursedDataContext(options);
+            dbAuth = new CursedAuthenticationContext(new DbContextOptionsBuilder<CursedAuthenticationContext>()
+                .UseInMemoryDatabase(databaseName: "CursedAuthTestingDB")
+                .Options);
         }
 
         public async void Dispose()
         {
-            db.Database.EnsureDeleted();
+            await db.Database.EnsureDeletedAsync();
+            await dbAuth.Database.EnsureDeletedAsync();
         }
 
         public static async Task ClearDatabase(CursedDataContext context)
@@ -45,6 +50,14 @@ namespace Cursed.Tests
             await context.UserData.ClearIfAny();
             await context.Role.ClearIfAny();
             await context.Storage.ClearIfAny();
+            await context.UserAuth.ClearIfAny();
+            await context.SaveChangesAsync();
+        }
+
+        public static async Task ClearDatabase(CursedAuthenticationContext context)
+        {
+            await context.UserData.ClearIfAny();
+            await context.Role.ClearIfAny();
             await context.UserAuth.ClearIfAny();
             await context.SaveChangesAsync();
         }
