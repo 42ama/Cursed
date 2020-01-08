@@ -15,6 +15,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -29,6 +30,7 @@ namespace Cursed.Controllers
             logicValidation = new CompaniesLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = CompaniesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -40,6 +42,7 @@ namespace Cursed.Controllers
 
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("company", Name = CompaniesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -56,6 +59,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("company/edit", Name = CompaniesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -81,6 +85,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/add", Name = CompaniesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Company model)
         {
@@ -88,6 +93,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(CompaniesRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/edit", Name = CompaniesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Company model)
         {
@@ -103,6 +109,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/delete", Name = CompaniesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

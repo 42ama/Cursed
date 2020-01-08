@@ -15,6 +15,7 @@ using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -29,6 +30,7 @@ namespace Cursed.Controllers
             logicValidation = new RecipesLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("", Name = RecipesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -37,6 +39,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("recipe", Name = RecipesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -54,6 +57,7 @@ namespace Cursed.Controllers
             
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("recipe/edit", Name = RecipesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -79,6 +83,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("recipe/add", Name = RecipesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Recipe model)
         {
@@ -86,6 +91,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(RecipesRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("recipe/edit", Name = RecipesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Recipe model)
         {
@@ -101,6 +107,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("recipe/delete", Name = RecipesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

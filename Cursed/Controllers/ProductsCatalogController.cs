@@ -14,6 +14,8 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
+using Microsoft.AspNetCore.Authorization;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -29,6 +31,7 @@ namespace Cursed.Controllers
             logicValidation = new ProductsCatalogLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("", Name = ProductsCatalogRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -38,6 +41,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("product", Name = ProductsCatalogRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -54,7 +58,7 @@ namespace Cursed.Controllers
             }
         }
 
-        // get for add/edit form
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("product/edit", Name = ProductsCatalogRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -81,7 +85,7 @@ namespace Cursed.Controllers
             
         }
 
-        //post item
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/add", Name = ProductsCatalogRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(ProductCatalog model)
         {
@@ -89,7 +93,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(ProductsCatalogRouting.Index);
         }
 
-        //put item
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/edit", Name = ProductsCatalogRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(ProductCatalog model)
         {
@@ -105,7 +109,7 @@ namespace Cursed.Controllers
             }
         }
 
-        //delete item
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/delete", Name = ProductsCatalogRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

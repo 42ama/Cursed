@@ -15,6 +15,7 @@ using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -29,6 +30,7 @@ namespace Cursed.Controllers
             logicValidation = new TransactionsLogicValidation(db, operationValidation, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = TransactionsRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -37,6 +39,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("transaction", Name = TransactionsRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -54,6 +57,7 @@ namespace Cursed.Controllers
 
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("transaction/edit", Name = TransactionsRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -79,6 +83,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/close", Name = TransactionsRouting.CloseTransaction)]
         public async Task<IActionResult> CloseTransaction(string key)
         {
@@ -95,6 +100,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/open", Name = TransactionsRouting.OpenTransaction)]
         public async Task<IActionResult> OpenTransaction(string key)
         {
@@ -111,6 +117,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/add", Name = TransactionsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TransactionBatch model)
         {
@@ -118,6 +125,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(TransactionsRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/edit", Name = TransactionsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TransactionBatch model)
         {
@@ -133,6 +141,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/delete", Name = TransactionsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

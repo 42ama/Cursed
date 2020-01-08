@@ -15,6 +15,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -29,6 +30,7 @@ namespace Cursed.Controllers
             logicValidation = new FacilityTechProcessesLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = FacilityTechProcessesRouting.Index)]
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
         {
@@ -40,6 +42,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("add", Name = FacilityTechProcessesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TechProcess model)
         {
@@ -47,6 +50,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("edit", Name = FacilityTechProcessesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TechProcess model)
         {
@@ -62,6 +66,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("delete", Name = FacilityTechProcessesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(TechProcess model)
         {

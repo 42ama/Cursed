@@ -15,6 +15,7 @@ using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -28,7 +29,8 @@ namespace Cursed.Controllers
             logic = new OperationsLogic(db);
             logicValidation = new OperationsLogicValidation(db, errorHandlerFactory);
         }
-        
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("operation/edit", Name = OperationsRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -47,6 +49,7 @@ namespace Cursed.Controllers
             return View("CustomError", statusMessage);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/add", Name = OperationsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Operation model)
         {
@@ -54,6 +57,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/edit", Name = OperationsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Operation model)
         {
@@ -69,6 +73,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/delete", Name = OperationsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(Operation model)
         {

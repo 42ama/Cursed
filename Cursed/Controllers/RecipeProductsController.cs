@@ -14,6 +14,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -28,6 +29,7 @@ namespace Cursed.Controllers
             logicValidation = new RecipeProductsLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = RecipeProductsRouting.Index)]
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
         {
@@ -44,6 +46,7 @@ namespace Cursed.Controllers
             return View(model);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("add", Name = RecipeProductsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
         {
@@ -51,6 +54,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("edit", Name = RecipeProductsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
         {
@@ -66,6 +70,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("delete", Name = RecipeProductsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(RecipeProductChanges model)
         {

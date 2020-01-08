@@ -13,7 +13,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
-
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -26,6 +26,7 @@ namespace Cursed.Controllers
             logic = new ProductsLogic(db);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = ProductsRouting.Index)]
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
         {
