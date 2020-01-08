@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cursed", "Cursed\Cursed.csproj", "{0A53F578-6CF5-4E41-BC58-B3FC0F9493C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cursed.Tests", "Cursed.Tests\Cursed.Tests.csproj", "{7060A66C-03DE-430E-9913-7654E9016980}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cursed.Tests", "Cursed.Tests\Cursed.Tests.csproj", "{7060A66C-03DE-430E-9913-7654E9016980}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -34,6 +34,7 @@ namespace Cursed
             services.AddDbContext<CursedAuthenticationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDatabaseConnection")));
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
+            services.AddSingleton<IGenPasswordHash, PasswordHash>();
             services.AddScoped<IOperationDataValidation, OperationDataValidation>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -70,6 +71,7 @@ namespace Cursed
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
