@@ -19,9 +19,9 @@ namespace Cursed.Models.Logic
 {
     public class FacilitiesLogic : IReadColection<FacilitiesModel>, IReadSingle<FacilityModel>, IReadUpdateForm<Facility>, ICUD<Facility>
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
         private readonly ILicenseValidation licenseValidation;
-        public FacilitiesLogic(CursedContext db, ILicenseValidation licenseValidation)
+        public FacilitiesLogic(CursedDataContext db, ILicenseValidation licenseValidation)
         {
             this.db = db;
             this.licenseValidation = licenseValidation;

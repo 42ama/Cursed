@@ -20,9 +20,9 @@ namespace Cursed.Models.Logic
 {
     public class OperationsLogic : IReadUpdateForm<Operation>, ICreate<Operation>, IUpdate<Operation>, IDeleteByModel<Operation>
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
 
-        public OperationsLogic(CursedContext db)
+        public OperationsLogic(CursedDataContext db)
         {
             this.db = db;
         }

@@ -15,6 +15,7 @@ using Cursed.Models.Data.Utility;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -24,13 +25,14 @@ namespace Cursed.Controllers
         private readonly LicensesLogic logic;
         private readonly LicensesLogicValidation logicValidation;
         private readonly ILicenseValidation licenseValidation;
-        public LicensesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public LicensesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new LicensesLogic(db);
             logicValidation = new LicensesLogicValidation(db, errorHandlerFactory);
             this.licenseValidation = licenseValidation;
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("", Name = LicensesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -55,6 +57,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("license", Name = LicensesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -81,6 +84,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpGet("license/edit", Name = LicensesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -106,6 +110,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
         {
@@ -113,6 +118,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(LicensesRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/edit", Name = LicensesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(License model)
         {
@@ -128,6 +134,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/delete", Name = LicensesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

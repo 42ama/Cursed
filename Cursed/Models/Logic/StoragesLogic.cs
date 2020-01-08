@@ -19,8 +19,8 @@ namespace Cursed.Models.Logic
 {
     public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
-        private readonly CursedContext db;
-        public StoragesLogic(CursedContext db)
+        private readonly CursedDataContext db;
+        public StoragesLogic(CursedDataContext db)
         {
             this.db = db;
         }

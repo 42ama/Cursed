@@ -18,8 +18,8 @@ namespace Cursed.Models.Logic
 {
     public class CompaniesLogic : IReadColection<CompaniesModel>, IReadSingle<CompanyModel>, IReadUpdateForm<Company>, ICUD<Company>
     {
-        private readonly CursedContext db;
-        public CompaniesLogic(CursedContext db)
+        private readonly CursedDataContext db;
+        public CompaniesLogic(CursedDataContext db)
         {
             this.db = db;
         }

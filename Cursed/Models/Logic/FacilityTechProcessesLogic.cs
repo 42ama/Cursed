@@ -18,8 +18,8 @@ namespace Cursed.Models.Logic
 {
     public class FacilityTechProcessesLogic : IReadCollectionByParam<FacilityTechProcessesDataModel>, ICreate<TechProcess>, IUpdate<TechProcess>, IDeleteByModel<TechProcess>
     {
-        private readonly CursedContext db;
-        public FacilityTechProcessesLogic(CursedContext db)
+        private readonly CursedDataContext db;
+        public FacilityTechProcessesLogic(CursedDataContext db)
         {
             this.db = db;
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cursed.Models.Entities
+namespace Cursed.Models.Entities.Authentication
 {
     public partial class UserAuth
     {

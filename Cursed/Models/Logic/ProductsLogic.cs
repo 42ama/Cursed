@@ -18,8 +18,8 @@ namespace Cursed.Models.Logic
 {
     public class ProductsLogic : IReadCollectionByParam<ProductsDataModel>
     {
-        private readonly CursedContext db;
-        public ProductsLogic(CursedContext db)
+        private readonly CursedDataContext db;
+        public ProductsLogic(CursedDataContext db)
         {
             this.db = db;
         }

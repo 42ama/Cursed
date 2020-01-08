@@ -15,6 +15,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -24,12 +25,13 @@ namespace Cursed.Controllers
         private readonly StoragesLogic logic;
         private readonly StoragesLogicValidation logicValidation;
 
-        public StoragesController(CursedContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public StoragesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new StoragesLogic(db);
             logicValidation = new StoragesLogicValidation(db, errorHandlerFactory);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = StoragesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -38,6 +40,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("storage", Name = StoragesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -55,6 +58,7 @@ namespace Cursed.Controllers
 
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("storage/edit", Name = StoragesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -80,6 +84,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/add", Name = StoragesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Storage model)
         {
@@ -87,6 +92,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(StoragesRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/edit", Name = StoragesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Storage model)
         {
@@ -102,6 +108,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/delete", Name = StoragesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

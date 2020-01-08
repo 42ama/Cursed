@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Services;
 using Cursed.Models.Context;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Cursed
 {
@@ -28,11 +30,26 @@ namespace Cursed
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<CursedContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CursedDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataDatabaseConnection")));
+            services.AddDbContext<CursedAuthenticationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDatabaseConnection")));
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
+            services.AddSingleton<IGenPasswordHash, PasswordHash>();
             services.AddScoped<IOperationDataValidation, OperationDataValidation>();
-            
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/login");
+                    options.AccessDeniedPath = new PathString("/access-denied");
+                    options.LogoutPath = new PathString("/login");
+                    options.ExpireTimeSpan = TimeSpan.FromDays(10);
+                });
+
+            services.AddAuthorization(opts =>
+            {
+                //opts.AddPolicy("MinimumTier10", policy => policy.Requirements.Add(new TierEqualOrHigher(10)));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +70,7 @@ namespace Cursed
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

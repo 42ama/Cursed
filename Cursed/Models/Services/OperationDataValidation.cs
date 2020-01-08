@@ -12,8 +12,8 @@ namespace Cursed.Models.Services
 {
     public class OperationDataValidation : IOperationDataValidation
     {
-        private readonly CursedContext db;
-        public OperationDataValidation(CursedContext context)
+        private readonly CursedDataContext db;
+        public OperationDataValidation(CursedDataContext context)
         {
             db = context;
         }

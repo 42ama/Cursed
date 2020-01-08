@@ -15,6 +15,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
+using Cursed.Models.Data.Utility.Authorization;
 
 namespace Cursed.Controllers
 {
@@ -24,11 +25,13 @@ namespace Cursed.Controllers
         private readonly FacilitiesLogic logic;
         private readonly FacilitiesLogicValidation logicValidation;
 
-        public FacilitiesController(CursedContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public FacilitiesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
         {
             logic = new FacilitiesLogic(db, licenseValidation);
             logicValidation = new FacilitiesLogicValidation(db, errorHandlerFactory);
         }
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = FacilitiesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
@@ -39,6 +42,7 @@ namespace Cursed.Controllers
             return View(pagenationModel);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("facility", Name = FacilitiesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
         {
@@ -55,6 +59,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("facility/edit", Name = FacilitiesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
@@ -80,6 +85,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("facility/add", Name = FacilitiesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Facility model)
         {
@@ -87,6 +93,7 @@ namespace Cursed.Controllers
             return RedirectToRoute(FacilitiesRouting.Index);
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("facility/edit", Name = FacilitiesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Facility model)
         {
@@ -102,6 +109,7 @@ namespace Cursed.Controllers
             }
         }
 
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("facility/delete", Name = FacilitiesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
         {

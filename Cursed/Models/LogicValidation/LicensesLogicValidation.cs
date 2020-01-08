@@ -20,10 +20,10 @@ namespace Cursed.Models.LogicValidation
 {
     public class LicensesLogicValidation
     {
-        private readonly CursedContext db;
+        private readonly CursedDataContext db;
         private readonly IErrorHandlerFactory errorHandlerFactory;
 
-        public LicensesLogicValidation(CursedContext db, IErrorHandlerFactory errorHandlerFactory)
+        public LicensesLogicValidation(CursedDataContext db, IErrorHandlerFactory errorHandlerFactory)
         {
             this.db = db;
             this.errorHandlerFactory = errorHandlerFactory;
