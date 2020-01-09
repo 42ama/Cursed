@@ -11,7 +11,10 @@ namespace Cursed.Models.Routing
         public const string SingleItem = "GetRecipe";
         public const string GetEditSingleItem = "GetRecipeForEdit";
         public const string AddSingleItem = "AddRecipe";
+        public const string AddChildSingleItem = "AddChildRecipe";
         public const string EditSingleItem = "EditRecipe";
         public const string DeleteSingleItem = "DeleteRecipe";
+        public const string InverseTechnologistApproval = "InverseTechnologistApproval";
+        public const string InverseGovermentApproval = "InverseGovermentApproval";
     }
 }

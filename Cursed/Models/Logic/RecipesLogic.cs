@@ -13,6 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility.ErrorHandling;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Cursed.Models.Logic
 {
@@ -39,7 +40,7 @@ namespace Cursed.Models.Logic
                      join ck in (from rr in (from r in recipes
                                              join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
                                              from t2 in t
-                                             join pc in db.ProductCatalog on t2.ProductId equals pc.Id into t3
+                                             join pc in db.ProductCatalog on t2?.ProductId equals pc.Id into t3
                                              from t4 in t3
                                              select new
                                              {
@@ -47,7 +48,7 @@ namespace Cursed.Models.Logic
                                                  Type = t2.Type
                                              })
                                  group rr by rr.RecipeId) on r.Id equals ck.Key into products
-                     from p in products
+                     from p in products.DefaultIfEmpty()
                      select new RecipesModel
                      {
                          Id = r.Id,
@@ -56,8 +57,8 @@ namespace Cursed.Models.Logic
                          GovApproved = r.GovermentApproval,
                          ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
                          ChildRecipesCount = ci.Single().Select(i => i.ChildId).Count(),
-                         ProductCount = p.Select(i => i.Type).Where(i=>i==ProductCatalogTypes.Product).Count(),
-                         MaterialCount = p.Select(i => i.Type).Where(i=> i == ProductCatalogTypes.Material).Count()
+                         ProductCount = p?.Select(i => i.Type).Where(i=>i==ProductCatalogTypes.Product).Count() ?? 0,
+                         MaterialCount = p?.Select(i => i.Type).Where(i=> i == ProductCatalogTypes.Material).Count() ?? 0
                      };
 
             return query;
@@ -93,7 +94,7 @@ namespace Cursed.Models.Logic
                                                     }
                                                 })
                                     group rr by rr.RecipeId) on r.Id equals ck.Key into products
-                        from p in products
+                        from p in products.DefaultIfEmpty()
                         select new RecipeModel
                         {
                             Id = r.Id,
@@ -102,7 +103,7 @@ namespace Cursed.Models.Logic
                             GovApproved = r.GovermentApproval,
                             ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
                             ChildRecipes = ci.Single().Select(i => i.ChildId).ToList(),
-                            RecipeProducts = p.Select(i => i.RecipeProductContainer).ToList()
+                            RecipeProducts = p?.Select(i => i.RecipeProductContainer).ToList() ?? new List<RecipeProductContainer>()
                         };
 
             return query.Single();
@@ -117,6 +118,56 @@ namespace Cursed.Models.Logic
             db.Add(model);
             await db.SaveChangesAsync();
         }
+        public async Task InverseTechnologistApprovalAsync(object key)
+        {
+            var model = await db.Recipe.FirstOrDefaultAsync(i => i.Id == (int)key);
+            if(model.TechApproval == null)
+            {
+                model.TechApproval = true;
+            }
+            else
+            {
+                model.TechApproval = !model.TechApproval;
+            }
+            await UpdateDataModelAsync(model);
+        }
+        public async Task InverseGovermentApprovalAsync(object key)
+        {
+            var model = await db.Recipe.FirstOrDefaultAsync(i => i.Id == (int)key);
+            if (model.GovermentApproval == null)
+            {
+                model.GovermentApproval = true;
+            }
+            else
+            {
+                model.GovermentApproval = !model.GovermentApproval;
+            }
+            await UpdateDataModelAsync(model);
+        }
+        public async Task AddChildDataModelAsync(Recipe model, int parentId)
+        {
+            model.Id = default;
+            var entity = db.Add(model);
+            await db.SaveChangesAsync();
+
+            // copy all products to new recipe for later manual change
+            var recipeProductChanges = db.RecipeProductChanges.Where(i => i.RecipeId == parentId).Select(i => new RecipeProductChanges 
+            { 
+                RecipeId = entity.Entity.Id,
+                ProductId = i.ProductId,
+                Quantity = i.Quantity,
+                Type = i.Type
+            });
+            db.Add(new RecipeInheritance
+            {
+                ChildId = entity.Entity.Id,
+                ParentId = parentId
+            });
+            db.RecipeProductChanges.AddRange(recipeProductChanges);
+            
+            await db.SaveChangesAsync();
+            
+        }
         public async Task UpdateDataModelAsync(Recipe model)
         {
             var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == model.Id);
@@ -126,6 +177,8 @@ namespace Cursed.Models.Logic
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Recipe.FindAsync((int)key);
+            var parentsInheritance = db.RecipeInheritance.Where(i => i.ChildId == (int)key);
+            db.RecipeInheritance.RemoveRange(parentsInheritance);
             db.Recipe.Remove(entity);
             await db.SaveChangesAsync();
         }

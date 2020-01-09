@@ -65,16 +65,7 @@ namespace Cursed.Controllers
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = RecipesRouting.EditSingleItem;
-                var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
-                if (statusMessage.IsCompleted)
-                {
-                    var model = await logic.GetSingleUpdateModelAsync(id);
-                    return View("EditSingleItem", model);
-                }
-                else
-                {
-                    return View("CustomError", statusMessage);
-                }
+                return await CheckSingleUpdateModelAndGetView(id);
             }
             else
             {
@@ -88,6 +79,42 @@ namespace Cursed.Controllers
         public async Task<IActionResult> AddSingleItem(Recipe model)
         {
             await logic.AddDataModelAsync(model);
+            return RedirectToRoute(RecipesRouting.Index);
+        }
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
+        [HttpGet("recipe/add-child", Name = RecipesRouting.AddChildSingleItem)]
+        public async Task<IActionResult> GetChildSingleItem(string key)
+        {
+            int id = Int32.Parse(key);
+            ViewData["SaveRoute"] = RecipesRouting.AddChildSingleItem;
+            ViewData["parentId"] = id;
+            return await CheckSingleUpdateModelAndGetView(id);
+        }
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.SeniorTechnologist)]
+        [HttpPost("recipe/technologist-approval", Name = RecipesRouting.InverseTechnologistApproval)]
+        public async Task<IActionResult> InverseTechnologistApproval(string key)
+        {
+            int recipeId = Int32.Parse(key);
+            await logic.InverseTechnologistApprovalAsync(recipeId);
+            return RedirectToRoute(RecipesRouting.SingleItem, new { key = key });
+        }
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
+        [HttpPost("recipe/goverment-approval", Name = RecipesRouting.InverseGovermentApproval)]
+        public async Task<IActionResult> InverseGovermentApproval(string key)
+        {
+            int recipeId = Int32.Parse(key);
+            await logic.InverseGovermentApprovalAsync(recipeId);
+            return RedirectToRoute(RecipesRouting.SingleItem, new { key = key });
+        }
+
+        [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
+        [HttpPost("recipe/add-child", Name = RecipesRouting.AddChildSingleItem)]
+        public async Task<IActionResult> AddChildSingleItem(Recipe model, int parentId)
+        {
+            await logic.AddChildDataModelAsync(model, parentId);
             return RedirectToRoute(RecipesRouting.Index);
         }
 
@@ -117,6 +144,20 @@ namespace Cursed.Controllers
             {
                 await logic.RemoveDataModelAsync(id);
                 return RedirectToRoute(RecipesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
+        }
+
+        private async Task<ViewResult> CheckSingleUpdateModelAndGetView(int id)
+        {
+            var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(id);
+            if (statusMessage.IsCompleted)
+            {
+                var model = await logic.GetSingleUpdateModelAsync(id);
+                return View("EditSingleItem", model);
             }
             else
             {

@@ -4,8 +4,11 @@
 @model RecipeModel
 @{
     ViewData["Title"] = "SingleItem";
+    string govApprov = Model.GovApproved == true ? "Approved" : "Not approved";
+    string techApprov = Model.TechApproved == true ? "Approved" : "Not approved" ; 
 }
 <h1>RecipeId: @Model.Id</h1>
+<p>@Html.RouteLink("Add child", RecipesRouting.AddChildSingleItem, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Show consumed and produced Products", RecipeProductsRouting.Index, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.DeleteSingleItem">
@@ -23,11 +26,37 @@
     </tr>
     <tr>
         <td>Technical Approval:</td>
-        <td>@Model.TechApproved</td>
+        @if (Model.TechApproved == true)
+        {
+            <td bgcolor="green">@techApprov</td>
+        }
+        else
+        {
+            <td bgcolor="red">@techApprov</td>
+        }
+        <td>
+            <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.InverseTechnologistApproval">
+                <input hidden type="number" name="key" value="@Model.Id" />
+                <input type="submit" class="btn btn-dark" value="Change state" />
+            </form>
+        </td>
     </tr>
     <tr>
         <td>Goverment Approval:</td>
-        <td>@Model.GovApproved</td>
+        @if (Model.GovApproved == true)
+        {
+            <td bgcolor="green">@govApprov</td>
+        }
+        else
+        {
+            <td bgcolor="red">@govApprov</td>
+        }
+        <td>
+            <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.InverseGovermentApproval">
+                <input hidden type="number" name="key" value="@Model.Id" />
+                <input type="submit" class="btn btn-dark" value="Change state" />
+            </form>
+        </td>
     </tr>
     <tr>
         <td>Materials:</td>

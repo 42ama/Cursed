@@ -38,7 +38,7 @@ namespace Cursed.Tests.Tests.Logic
             };
         }
 
-        private IEnumerable<Recipe> GetRecipes()
+        private IList<Recipe> GetRecipes()
         {
             return new Recipe[]
             {
@@ -177,6 +177,33 @@ namespace Cursed.Tests.Tests.Logic
         }
 
         [Fact]
+        public async void AddChildRecipe_ToInitializedDbTable_AddedRecipeEqualExpectedRecipe()
+        {
+            // arrange
+            var recipes = GetRecipes();
+            fixture.db.Add(recipes[0]);
+            await fixture.db.SaveChangesAsync();
+
+            int parentId = recipes[0].Id;
+            var expected = recipes[1];
+
+            // act
+            await logic.AddChildDataModelAsync(expected, parentId);
+
+            // assert
+            var actualRecipe = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == expected.Id);
+            var actualInheritance = await fixture.db.RecipeInheritance.FirstOrDefaultAsync(i => i.ParentId == parentId);
+
+            Assert.Equal(expected.Id, actualRecipe.Id);
+            Assert.Equal(expected.Content, actualRecipe.Content);
+            Assert.Equal(expected.GovermentApproval, actualRecipe.GovermentApproval);
+            Assert.Equal(expected.TechApproval, actualRecipe.TechApproval);
+
+            Assert.Equal(expected.Id, actualInheritance.ChildId);
+            Assert.Equal(parentId, actualInheritance.ParentId);
+        }
+
+        [Fact]
         public async void RemoveRecipe_FromInitializedDbTable_RemovedRecipeNotFoundInDb()
         {
             // arrange
@@ -190,6 +217,72 @@ namespace Cursed.Tests.Tests.Logic
             // assert
             var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
             Assert.Null(actual);
+        }
+
+        [Fact]
+        public async void InverseTechnologistApprovalFromFalseToTrue_FromInitializedDbTable_TechnoApprovalTrue()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.InverseTechnologistApprovalAsync(recipe.Id);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
+            Assert.True(actual.TechApproval);
+        }
+
+        [Fact]
+        public async void InverseTechnologistApprovalFromNullToTrue_FromInitializedDbTable_TechnoApprovalTrue()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            recipe.TechApproval = null;
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.InverseTechnologistApprovalAsync(recipe.Id);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
+            Assert.True(actual.TechApproval);
+        }
+
+        [Fact]
+        public async void InverseGovermentApprovalFromTrueToFalse_FromInitializedDbTable_GovermentApprovalFalse()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.InverseGovermentApprovalAsync(recipe.Id);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
+            Assert.False(actual.GovermentApproval);
+        }
+
+        [Fact]
+        public async void InverseGovermentApprovalFromNullToTrue_FromInitializedDbTable_GovermentApprovalTrue()
+        {
+            // arrange
+            var recipe = GetRecipe();
+            recipe.GovermentApproval = null;
+            fixture.db.Add(recipe);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            await logic.InverseGovermentApprovalAsync(recipe.Id);
+
+            // assert
+            var actual = await fixture.db.Recipe.FirstOrDefaultAsync(i => i.Id == recipe.Id);
+            Assert.True(actual.GovermentApproval);
         }
 
         [Fact]
@@ -348,6 +441,42 @@ namespace Cursed.Tests.Tests.Logic
                 expectedItem.Quantity == actualItem.Quantity &&
                 expectedItem.Type == actualItem.Type);
             }
+        }
+
+
+        [Fact]
+        public async void GetRecipeModel_FromInitializedDbTablesWithoutProducts_LogicRecipeModelEqualExpectedRecipeModel()
+        {
+            // arrange
+            var recipe = GetRecipes();
+            var recipeInheritance = GetRecipeInheritances();
+            var productsCatalog = GetProductsCatalog();
+
+            fixture.db.Recipe.AddRange(recipe);
+            fixture.db.RecipeInheritance.AddRange(recipeInheritance);
+            fixture.db.ProductCatalog.AddRange(productsCatalog);
+            await fixture.db.SaveChangesAsync();
+            var expected = new RecipeModel
+            {
+                Id = 44440,
+                Content = "I am recipe #1",
+                GovApproved = true,
+                TechApproved = true,
+                ParentRecipe = null,
+                ChildRecipes = new List<int> { 44441 },
+                RecipeProducts = new List<RecipeProductContainer>()
+            };
+
+            // act
+            var actual = await logic.GetSingleDataModelAsync(expected.Id);
+
+            // assert
+            Assert.Equal(expected.Id, actual.Id);
+            Assert.Equal(expected.Content, actual.Content);
+            Assert.Equal(expected.GovApproved, actual.GovApproved);
+            Assert.Equal(expected.TechApproved, actual.TechApproved);
+            Assert.Equal(expected.ParentRecipe, actual.ParentRecipe);
+            Assert.Equal(expected.ChildRecipes.Single(), actual.ChildRecipes.Single());
         }
 
         [Fact]
