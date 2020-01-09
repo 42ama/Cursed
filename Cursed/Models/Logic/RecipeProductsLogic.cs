@@ -71,7 +71,7 @@ namespace Cursed.Models.Logic
 
         public async Task RemoveDataModelAsync(RecipeProductChanges model)
         {
-            var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == model.RecipeId && i.ProductId == model.ProductId);
+            var entity = await db.RecipeProductChanges.SingleAsync(i => i.RecipeId == model.RecipeId && i.ProductId == model.ProductId && i.Type == model.Type);
             db.RecipeProductChanges.Remove(entity);
             await db.SaveChangesAsync();
         }
