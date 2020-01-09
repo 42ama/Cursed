@@ -83,19 +83,31 @@ namespace Cursed.Models.Logic
         {
             int Uid = (int)key;
 
-            var productCatalog = await db.ProductCatalog.SingleOrDefaultAsync(i => i.Id == Uid);
+            var productCatalogs = await db.ProductCatalog.ToListAsync();
             var licenses = await db.License.Where(i => i.ProductId == Uid).ToListAsync();
-            var recipes = await db.RecipeProductChanges
-                .Where(i => i.ProductId == Uid)
-                .Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content.Substring(0,45) + "..." }).ToListAsync();
-            var storages = await db.Product
-                .Where(i => i.Uid == Uid)
-                .Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToListAsync();
-            bool licenseRequired = productCatalog.LicenseRequired ?? false;
+
+            var dataModel = (from pc in productCatalogs
+                     where pc.Id == Uid
+                     join gA in db.RecipeProductChanges on pc.Id equals gA.ProductId into groupA
+                     from A in groupA
+                     join gB in db.Product on pc.Id equals gB.Uid into groubB
+                     from B in groubB
+                     select new ProductCatalogModel
+                     {
+                         ProductId = Uid,
+                         CAS = pc.Cas,
+                         Name = pc.Name,
+                         Type = pc.Type,
+                         LicenseRequired = pc.LicenseRequired ?? false,
+                         Recipes = groupA.Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content }).ToList(),
+                         Storages = groubB.Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToList()
+                     }).First();
+            
+
             var validLicenses = new List<(License license, bool isValid)>();
             foreach (var license in licenses)
             {
-                if (!licenseRequired)
+                if (!dataModel.LicenseRequired)
                 {
                     validLicenses.Add((license, true));
                 }
@@ -105,17 +117,15 @@ namespace Cursed.Models.Logic
                 }
             }
 
-            var dataModel = new ProductCatalogModel
+            foreach (var recipe in dataModel.Recipes)
             {
-                ProductId = Uid,
-                CAS = productCatalog.Cas,
-                Name = productCatalog.Name,
-                Type = productCatalog.Type,
-                LicenseRequired = licenseRequired,
-                Licenses = validLicenses,
-                Recipes = recipes,
-                Storages = storages
-            };
+                if(recipe.Title.Length > 45)
+                {
+                    recipe.Title = recipe.Title.Substring(0, 45) + "...";
+                }
+            }
+
+            dataModel.Licenses = validLicenses;
 
             return dataModel;
         }
