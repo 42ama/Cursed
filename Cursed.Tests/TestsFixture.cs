@@ -51,8 +51,8 @@ namespace Cursed.Tests
 
         public static async Task ClearDatabase(CursedAuthenticationContext context)
         {
-            await context.UserData.ClearIfAny();
             await context.Role.ClearIfAny();
+            await context.UserData.ClearIfAny();
             await context.UserAuth.ClearIfAny();
             await context.SaveChangesAsync();
         }
