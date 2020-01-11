@@ -88,10 +88,18 @@ namespace Cursed.Models.Logic
 
             var dataModel = (from pc in productCatalogs
                      where pc.Id == Uid
-                     join gA in db.RecipeProductChanges on pc.Id equals gA.ProductId into groupA
-                     from A in groupA
-                     join gB in db.Product on pc.Id equals gB.Uid into groubB
-                     from B in groubB
+                     join gA in (from rpc in db.RecipeProductChanges
+                                 where rpc.ProductId == Uid
+                                 join r in db.Recipe on rpc.RecipeId equals r.Id
+                                 select Tuple.Create(Uid, rpc.RecipeId, r.Content)
+                                ) on pc.Id equals gA.Item1 into groupA
+                     from A in groupA.DefaultIfEmpty()
+                     join gB in (from p in db.Product
+                                 where p.Uid == Uid
+                                 join s in db.Storage on p.StorageId equals s.Id
+                                 select Tuple.Create(Uid, p.StorageId, s.Name)
+                                ) on pc.Id equals gB.Item1 into groupB
+                     from B in groupB.DefaultIfEmpty()
                      select new ProductCatalogModel
                      {
                          ProductId = Uid,
@@ -99,10 +107,11 @@ namespace Cursed.Models.Logic
                          Name = pc.Name,
                          Type = pc.Type,
                          LicenseRequired = pc.LicenseRequired ?? false,
-                         Recipes = groupA.Select(x => new TitleIdContainer { Id = x.RecipeId, Title = x.Recipe.Content }).ToList(),
-                         Storages = groubB.Select(x => new TitleIdContainer { Id = x.StorageId, Title = x.Storage.Name }).ToList()
+                         Recipes = groupA?.Select(x => new TitleIdContainer { Id = x.Item2, Title = x.Item3 }).ToList() ?? new List<TitleIdContainer>(),
+                         Storages = groupB?.Select(x => new TitleIdContainer { Id = x.Item2, Title = x.Item3 }).ToList() ?? new List<TitleIdContainer>()
                      }).First();
-            
+            //used first instead of single, cause query results contains several
+            //identical entities by number of 1 + Recipes.Count + Storages.Count
 
             var validLicenses = new List<(License license, bool isValid)>();
             foreach (var license in licenses)
