@@ -7,7 +7,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities.Authentication;
 using Cursed.Models.Data.Companies;
 using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
+using Cursed.Tests.Stubs;
 using Cursed.Models.Data.Authentication;
 
 namespace Cursed.Tests.Tests.Logic
@@ -21,7 +21,7 @@ namespace Cursed.Tests.Tests.Logic
         public UserManagmentTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logic = new UserManagmentLogic(fixture.dbAuth);
+            logic = new UserManagmentLogic(fixture.dbAuth, new PasswordHashStub());
         }
 
         public async void Dispose()
