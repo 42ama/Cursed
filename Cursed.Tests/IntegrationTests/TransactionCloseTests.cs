@@ -178,7 +178,7 @@ namespace Cursed.Tests.IntegrationTests
             // assert
             Assert.False(statusMessage.IsCompleted);
             Assert.Contains(statusMessage.Problems, problem =>
-            (int)problem.EntityKey == 44440);
+            problem.EntityKey == "44440");
         }
     }
 }

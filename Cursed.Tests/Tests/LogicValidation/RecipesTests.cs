@@ -105,13 +105,13 @@ namespace Cursed.Tests.Tests.LogicValidation
             // assert
             Assert.False(statusMessage.IsCompleted);
             Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Recipe." && (int)problem.EntityKey == recipeInheritance.ChildId);
+                problem.Entity == "Recipe." && Int32.Parse(problem.EntityKey) == recipeInheritance.ChildId);
             Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity.Contains("Technological process.") && 
-                (int)problem.EntityKey == techProcess.FacilityId);
+                problem.Entity.Contains("Technological process.") &&
+                Int32.Parse(problem.EntityKey) == techProcess.FacilityId);
             Assert.Contains(statusMessage.Problems, problem =>
                 problem.Entity.Contains("Product changes.") &&
-                (int)problem.EntityKey == productChanges.RecipeId);
+                Int32.Parse(problem.EntityKey) == productChanges.RecipeId);
         }
 
         [Fact]

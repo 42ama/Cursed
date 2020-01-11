@@ -49,7 +49,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Operation.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = TransactionsRouting.Index,
                 UseKeyWithRoute = false
             });
@@ -60,7 +60,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Operation.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "Operation with this Id is not found.",
                     RedirectRoute = TransactionsRouting.Index,
                     UseKeyWithRoute = false
@@ -77,7 +77,7 @@ namespace Cursed.Models.LogicValidation
                     Entity = "Transaction close status.",
                     Message = "Can't change operation when related transaction is closed.",
                     RedirectRoute = TransactionsRouting.SingleItem,
-                    EntityKey = transaction.Id
+                    EntityKey = transaction.Id.ToString()
                 });
             }
 

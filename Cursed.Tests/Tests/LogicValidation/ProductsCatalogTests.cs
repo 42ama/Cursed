@@ -111,12 +111,12 @@ namespace Cursed.Tests.Tests.LogicValidation
             // assert
             Assert.False(statusMessage.IsCompleted);
             Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Product." && (int)problem.EntityKey == product.Id);
+            problem.Entity == "Product." && Int32.Parse(problem.EntityKey) == product.Id);
             Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity.Contains("Product changes.") && 
-            (int)problem.EntityKey == recipeProductChanges.RecipeId);
+            problem.Entity.Contains("Product changes.") &&
+            Int32.Parse(problem.EntityKey) == recipeProductChanges.RecipeId);
             Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "License." && (int)problem.EntityKey == license.Id);
+            problem.Entity == "License." && Int32.Parse(problem.EntityKey) == license.Id);
         }
 
         [Fact]

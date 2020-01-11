@@ -53,7 +53,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "License.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = LicensesRouting.SingleItem
             });
 
@@ -62,7 +62,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "License.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "License with this Id is not found.",
                     RedirectRoute = LicensesRouting.Index,
                     UseKeyWithRoute = false

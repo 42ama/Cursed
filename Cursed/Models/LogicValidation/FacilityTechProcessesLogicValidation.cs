@@ -46,7 +46,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = $"Technological process. Recipe Id: {tupleKey.Item2}.",
-                EntityKey = tupleKey.Item1,
+                EntityKey = tupleKey.Item1.ToString(),
                 RedirectRoute = FacilityTechProcessesRouting.Index
             });
             
@@ -57,7 +57,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = $"Technological process. Recipe Id: {tupleKey.Item2}.",
-                    EntityKey = tupleKey.Item1,
+                    EntityKey = tupleKey.Item1.ToString(),
                     Message = "Technological process with this Id's is not found.",
                     RedirectRoute = FacilityTechProcessesRouting.Index
                 });

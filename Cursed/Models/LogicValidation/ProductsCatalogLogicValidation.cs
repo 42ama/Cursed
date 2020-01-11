@@ -65,7 +65,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = $"Product changes. Recipe Id: {recipeProductChanges.RecipeId}.",
-                        EntityKey = recipeProductChanges.RecipeId,
+                        EntityKey = recipeProductChanges.RecipeId.ToString(),
                         Message = "You must remove dependent Product Changes in Recipe first.",
                         RedirectRoute = RecipeProductsRouting.Index
                     });
@@ -78,7 +78,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Product.",
-                        EntityKey = product.Id,
+                        EntityKey = product.Id.ToString(),
                         Message = "You must remove dependent Product in Storage first.",
                         RedirectRoute = ProductsRouting.SingleItem
                     });
@@ -91,7 +91,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "License.",
-                        EntityKey = license.Id,
+                        EntityKey = license.Id.ToString(),
                         Message = "You must remove dependent License first.",
                         RedirectRoute = LicensesRouting.SingleItem
                     });
@@ -105,7 +105,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Products in catalog.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = ProductsCatalogRouting.SingleItem
             });
 
@@ -114,7 +114,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Products in catalog.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "Products in catalog with this Id is not found.",
                     RedirectRoute = ProductsCatalogRouting.Index,
                     UseKeyWithRoute = false

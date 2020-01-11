@@ -64,7 +64,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Product.",
-                        EntityKey = product.Id,
+                        EntityKey = product.Id.ToString(),
                         Message = "You must remove dependent Product in Storage first.",
                         RedirectRoute = ProductsRouting.SingleItem
                     });
@@ -77,7 +77,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Operation.",
-                        EntityKey = operation.Id,
+                        EntityKey = operation.Id.ToString(),
                         Message = "You must remove dependent Operation first.",
                         RedirectRoute = OperationsRouting.SingleItem
                     });
@@ -91,7 +91,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Storage.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = StoragesRouting.SingleItem
             });
 
@@ -100,7 +100,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Storage.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false

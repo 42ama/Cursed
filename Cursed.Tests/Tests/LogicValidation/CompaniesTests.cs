@@ -104,10 +104,10 @@ namespace Cursed.Tests.Tests.LogicValidation
             foreach (var storage in storages)
             {
                 Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Storage." && (int)problem.EntityKey == storage.Id);
+                problem.Entity == "Storage." && Int32.Parse(problem.EntityKey) == storage.Id);
             }
             Assert.Contains(statusMessage.Problems, problem =>
-            problem.Entity == "Transaction." && (int)problem.EntityKey == transaction.Id);
+            problem.Entity == "Transaction." && Int32.Parse(problem.EntityKey) == transaction.Id);
         }
 
         [Fact]

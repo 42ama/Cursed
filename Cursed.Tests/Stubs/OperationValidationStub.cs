@@ -17,7 +17,7 @@ namespace Cursed.Tests.Stubs
                 ProblemStatus = new Problem
                 {
                     Entity = "Operation.",
-                    EntityKey = operation.Id
+                    EntityKey = operation.Id.ToString()
                 }
             };
         }

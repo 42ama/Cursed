@@ -94,7 +94,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             {
                 Assert.Contains(statusMessage.Problems, problem =>
                 problem.Entity.Contains("Technological process.") && 
-                (int)problem.EntityKey == techProcess.FacilityId);
+                Int32.Parse(problem.EntityKey) == techProcess.FacilityId);
             }
         }
 

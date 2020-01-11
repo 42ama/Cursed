@@ -65,7 +65,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Recipe.",
-                        EntityKey = child.ChildId,
+                        EntityKey = child.ChildId.ToString(),
                         Message = "You must remove dependent Recipe Childs first.",
                         RedirectRoute = RecipesRouting.SingleItem
                     });
@@ -78,7 +78,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Technological process.",
-                        EntityKey = techProcess.FacilityId,
+                        EntityKey = techProcess.FacilityId.ToString(),
                         Message = "You must remove dependent Technological Process first.",
                         RedirectRoute = FacilityTechProcessesRouting.Index
                     });
@@ -91,7 +91,7 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = $"Product changes. Product Id: {productChanges.ProductId}.",
-                        EntityKey = productChanges.RecipeId,
+                        EntityKey = productChanges.RecipeId.ToString(),
                         Message = "You must remove dependent Product Changes in Recipe first.",
                         RedirectRoute = RecipeProductsRouting.Index
                     });
@@ -105,7 +105,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Recipe.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = RecipesRouting.SingleItem
             });
 
@@ -114,7 +114,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Recipe.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "Recipe with this Id is not found.",
                     RedirectRoute = RecipesRouting.Index,
                     UseKeyWithRoute = false

@@ -25,7 +25,7 @@ namespace Cursed.Models.Services
                 ProblemStatus = new Problem
                 {
                     Entity = "Operation.",
-                    EntityKey = operation.Id,
+                    EntityKey = operation.Id.ToString(),
                     RedirectRoute = OperationsRouting.SingleItem
                 }
             };
@@ -40,7 +40,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = "Product at storage from.",
-                    EntityKey = operation.ProductId,
+                    EntityKey = operation.ProductId.ToString(),
                     Message = "Product with this Id is not found.",
                     RedirectRoute = ProductsCatalogRouting.Index,
                     UseKeyWithRoute = false
@@ -52,7 +52,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = "Storage from product coming.",
-                    EntityKey = operation.StorageFromId,
+                    EntityKey = operation.StorageFromId.ToString(),
                     Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
@@ -64,7 +64,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = "Storage to product coming.",
-                    EntityKey = operation.StorageToId,
+                    EntityKey = operation.StorageToId.ToString(),
                     Message = "Storage with this Id is not found.",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
@@ -76,7 +76,7 @@ namespace Cursed.Models.Services
                 statusMessage.Problems.Add(new Problem
                 {
                     Entity = "Transaction.",
-                    EntityKey = operation.TransactionId,
+                    EntityKey = operation.TransactionId.ToString(),
                     Message = "Transaction with this Id is not found.",
                     RedirectRoute = TransactionsRouting.Index,
                     UseKeyWithRoute = false
@@ -90,7 +90,7 @@ namespace Cursed.Models.Services
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Product at storage from.",
-                        EntityKey = product.Id,
+                        EntityKey = product.Id.ToString(),
                         Message = $"Quantity of product at storage from ({product.Quantity}) is lesser, then " +
                         $"operation is trying to withdraw ({operation.Quantity}).",
                         RedirectRoute = ProductsRouting.SingleItem

@@ -69,7 +69,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Go to last transaction.",
-                    EntityKey = lastTransaction.Id,
+                    EntityKey = lastTransaction.Id.ToString(),
                     Message = "Only last transaction can be open.",
                     RedirectRoute = TransactionsRouting.SingleItem
                 });
@@ -121,7 +121,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Transaction.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = TransactionsRouting.SingleItem
             });
             var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == (int)key);
@@ -130,7 +130,7 @@ namespace Cursed.Models.LogicValidation
                 statusMessage.AddProblem(new Problem
                 {
                     Entity = "Transaction.",
-                    EntityKey = (int)key,
+                    EntityKey = ((int)key).ToString(),
                     Message = "Transaction with this Id is not found.",
                     RedirectRoute = TransactionsRouting.Index,
                     UseKeyWithRoute = false
@@ -145,7 +145,7 @@ namespace Cursed.Models.LogicValidation
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
             {
                 Entity = "Transaction.",
-                EntityKey = (int)key,
+                EntityKey = ((int)key).ToString(),
                 RedirectRoute = TransactionsRouting.SingleItem
             });
             var transaction = await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == (int)key);
@@ -157,7 +157,7 @@ namespace Cursed.Models.LogicValidation
                     Entity = "Transaction open status.",
                     Message = "Can't change transaction, when it closed.",
                     RedirectRoute = TransactionsRouting.SingleItem,
-                    EntityKey = (int)key
+                    EntityKey = ((int)key).ToString()
                 });
             }
 

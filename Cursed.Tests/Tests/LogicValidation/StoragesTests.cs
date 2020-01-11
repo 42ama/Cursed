@@ -114,11 +114,11 @@ namespace Cursed.Tests.Tests.LogicValidation
             // assert
             Assert.False(statusMessage.IsCompleted);
             Assert.Contains(statusMessage.Problems, problem =>
-                problem.Entity == "Product." && (int)problem.EntityKey == product.Id);
+                problem.Entity == "Product." && Int32.Parse(problem.EntityKey) == product.Id);
             foreach (var operation in operations)
             {
                 Assert.Contains(statusMessage.Problems, problem =>
-                    problem.Entity == "Operation." && (int)problem.EntityKey == operation.Id);
+                    problem.Entity == "Operation." && Int32.Parse(problem.EntityKey) == operation.Id);
             }
         }
 
