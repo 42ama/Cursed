@@ -153,8 +153,8 @@ namespace Cursed.Tests.Tests.Logic
             var userAuthUpdateModel = new UserAuthUpdateModel
             {
                 Login = "admin",
-                Password = "tetriandoh",
-                PasswordConfirm = "tetriandoh"
+                PasswordNew = "tetriandoh",
+                PasswordNewConfirm = "tetriandoh"
             };
 
             var expected = new UserAuth

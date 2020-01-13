@@ -11,13 +11,17 @@ namespace Cursed.Models.Data.Authentication
         [Required(ErrorMessage = "Login required")]
         public string Login { get; set; }
 
-        [Required(ErrorMessage = "Password required")]
+        [Required(ErrorMessage = "Old password required")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string PasswordOld { get; set; }
+
+        [Required(ErrorMessage = "new password required")]
+        [DataType(DataType.Password)]
+        public string PasswordNew { get; set; }
 
         [Required(ErrorMessage = "Password conformation required")]
         [DataType(DataType.Password)]
-        [Compare("Password")]
-        public string PasswordConfirm { get; set; }
+        [Compare("PasswordNew")]
+        public string PasswordNewConfirm { get; set; }
     }
 }

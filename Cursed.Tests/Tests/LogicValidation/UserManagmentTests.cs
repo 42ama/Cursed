@@ -11,6 +11,8 @@ using Cursed.Tests.Extensions;
 using Cursed.Models.Data.Utility.ErrorHandling;
 using Cursed.Models.Services;
 using Cursed.Models.Entities.Authentication;
+using Cursed.Tests.Stubs;
+using Microsoft.AspNetCore.Http;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {
@@ -19,11 +21,13 @@ namespace Cursed.Tests.Tests.LogicValidation
     {
         private readonly TestsFixture fixture;
         private readonly UserManagmentLogicValidation logicValidation;
+        private readonly HttpContextAccessorStub contextAccessor;
 
         public UserManagmentTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logicValidation = new UserManagmentLogicValidation(fixture.dbAuth, new StatusMessageFactory());
+            contextAccessor = new HttpContextAccessorStub();
+            logicValidation = new UserManagmentLogicValidation(fixture.dbAuth, new StatusMessageFactory(), contextAccessor, new PasswordHashStub());
         }
 
         public async void Dispose()
@@ -37,6 +41,14 @@ namespace Cursed.Tests.Tests.LogicValidation
             {
                 Login = "admin",
                 RoleName = "admin"
+            };
+        }
+
+        private Role GetRole()
+        {
+            return new Role
+            {
+                Name = "admin"
             };
         }
 
@@ -64,6 +76,27 @@ namespace Cursed.Tests.Tests.LogicValidation
 
             // assert
             Assert.True(statusMessage.IsCompleted);
+        }
+
+        [Fact(Skip = "Context accessor SignIn method return ArgumentNull exception instead of signing in user into current user in context state.")]
+        public async void CheckRemoveCurrentUser_FromInitializedDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var userData = GetUserData();
+            var userAuth = GetUserAuth();
+            fixture.dbAuth.Add(userData);
+            fixture.dbAuth.Add(userAuth);
+            await fixture.dbAuth.SaveChangesAsync();
+            await contextAccessor.SignIn("admin", "admin");
+
+            // act
+            var statusMessage = await logicValidation.CheckRemoveDataModelAsync(userData.Login);
+
+            // teardown
+            await contextAccessor.SignOut();
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]
@@ -97,20 +130,20 @@ namespace Cursed.Tests.Tests.LogicValidation
         }
 
         [Fact]
-        public async void CheckGetUserDataForUpdate_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        public async void CheckGetUserForUpdate_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
             var userLogin = "admin";
 
             // act
-            var statusMessage = await logicValidation.CheckGetSingleUserDataUpdateModelAsync(userLogin);
+            var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(userLogin);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckGetUserDataForUpdate_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        public async void CheckGetUserForUpdate_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
         {
             // arrange
             var userData = GetUserData();
@@ -120,27 +153,40 @@ namespace Cursed.Tests.Tests.LogicValidation
             await fixture.dbAuth.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckGetSingleUserDataUpdateModelAsync(userData.Login);
+            var statusMessage = await logicValidation.CheckGetSingleUpdateModelAsync(userData.Login);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckGetUserAuthForUpdate_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        public async void CheckUpdateUserAuth_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
             var userLogin = "admin";
 
             // act
-            var statusMessage = await logicValidation.CheckGetSingleUserAuthUpdateModelAsync(userLogin);
+            var statusMessage = await logicValidation.CheckUpdateUserAuthUpdateModelAsync(userLogin, "");
 
             // assert
             Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckGetUserAuthForUpdate_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        public async void CheckUpdateUserData_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var userLogin = "admin";
+
+            // act
+            var statusMessage = await logicValidation.CheckUpdateUserDataUpdateModelAsync(userLogin, "");
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckUpdateUserAuthWithIncorrectPassword_FromInitializedDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
             var userData = GetUserData();
@@ -150,37 +196,62 @@ namespace Cursed.Tests.Tests.LogicValidation
             await fixture.dbAuth.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckGetSingleUserAuthUpdateModelAsync(userData.Login);
+            var statusMessage = await logicValidation.CheckUpdateUserAuthUpdateModelAsync(userAuth.Login, "teriantroh");
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckUpdateUserAuth_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var userData = GetUserData();
+            var userAuth = GetUserAuth();
+            fixture.dbAuth.Add(userData);
+            fixture.dbAuth.Add(userAuth);
+            await fixture.dbAuth.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckUpdateUserAuthUpdateModelAsync(userAuth.Login, "tetriandoh");
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckUpdateUser_FromEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        public async void CheckUpdateUserDataIncorrectRoleName_FromInitializedDbTable_ErrorHandlerIsCompletedFalse()
         {
             // arrange
-            var userLogin = "admin";
+            var userData = GetUserData();
+            var userAuth = GetUserAuth();
+            var role = GetRole();
+            fixture.dbAuth.Add(userData);
+            fixture.dbAuth.Add(userAuth);
+            fixture.dbAuth.Add(role);
+            await fixture.dbAuth.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(userLogin);
+            var statusMessage = await logicValidation.CheckUpdateUserDataUpdateModelAsync(userData.Login, "not a role model");
 
             // assert
             Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckUpdateUser_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        public async void CheckUpdateUserData_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
         {
             // arrange
             var userData = GetUserData();
             var userAuth = GetUserAuth();
+            var role = GetRole();
             fixture.dbAuth.Add(userData);
             fixture.dbAuth.Add(userAuth);
+            fixture.dbAuth.Add(role);
             await fixture.dbAuth.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(userData.Login);
+            var statusMessage = await logicValidation.CheckUpdateUserDataUpdateModelAsync(userData.Login, userData.RoleName);
 
             // assert
             Assert.True(statusMessage.IsCompleted);

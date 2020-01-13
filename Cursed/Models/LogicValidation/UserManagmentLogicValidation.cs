@@ -23,36 +23,70 @@ namespace Cursed.Models.LogicValidation
     {
         private readonly CursedAuthenticationContext db;
         private readonly IErrorHandlerFactory errorHandlerFactory;
-
-        public UserManagmentLogicValidation(CursedAuthenticationContext db, IErrorHandlerFactory errorHandlerFactory)
+        private readonly IHttpContextAccessor contextAccessor;
+        private readonly IGenPasswordHash genPasswordHash;
+        public UserManagmentLogicValidation(CursedAuthenticationContext db, IErrorHandlerFactory errorHandlerFactory, IHttpContextAccessor contextAccessor, IGenPasswordHash genPasswordHash)
         {
             this.db = db;
             this.errorHandlerFactory = errorHandlerFactory;
+            this.contextAccessor = contextAccessor;
+            this.genPasswordHash = genPasswordHash;
         }
-        // add checks for user auth
+        
         public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckUserExists(key);
         }
 
-        public async Task<IErrorHandler> CheckGetSingleUserDataUpdateModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateUserDataUpdateModelAsync(object key, string roleName)
         {
-            return await CheckUserExists(key);
+            var statusMessage = await CheckUserExists(key);
+            return await CheckRoleExists(statusMessage, roleName);
         }
 
-        public async Task<IErrorHandler> CheckGetSingleUserAuthUpdateModelAsync(object key)
+        public async Task<IErrorHandler> CheckAddSingleDataModelAsync(object key, string roleName)
         {
-            return await CheckUserExists(key);
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "User.",
+                EntityKey = (string)key,
+                RedirectRoute = UserManagmentRouting.SingleItem
+            });
+            return await CheckRoleExists(statusMessage, roleName);
         }
 
-        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateUserAuthUpdateModelAsync(object key, string passwordOld)
+        {
+            var statusMessage = await CheckUserExists(key);
+            if(statusMessage.IsCompleted)
+            {
+                var userAuth = await db.UserAuth.SingleAsync(i => i.Login == (string)key);
+                if(!genPasswordHash.IsPasswordMathcingHash(passwordOld, userAuth.PasswordHash))
+                {
+                    statusMessage.AddProblem(new Problem
+                    {
+                        Entity = "User.",
+                        EntityKey = statusMessage.ProblemStatus.EntityKey,
+                        Message = "Old password incorrect.",
+                        RedirectRoute = UserManagmentRouting.Index,
+                        UseKeyWithRoute = false
+                    });
+                }
+            }
+            
+            return statusMessage;
+        }
+
+        public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckUserExists(key);
         }
 
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
-            return await CheckUserExists(key);
+            var statusMessage = await CheckUserExists(key);
+            
+            return CheckIfUserCurrentUser(statusMessage, key);
         }
         private async Task<IErrorHandler> CheckUserExists(object key)
         {
@@ -81,12 +115,46 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "User (auth).",
                     EntityKey = (string)key,
-                    Message = "User (auth) with this is not found. Probably somewhere error occused, check DB for reference.",
+                    Message = "User (auth) with this is not found. Probably somewhere error occured, check DB for reference.",
                     RedirectRoute = UserManagmentRouting.Index,
                     UseKeyWithRoute = false
                 });
             }
 
+            return statusMessage;
+        }
+
+        private IErrorHandler CheckIfUserCurrentUser(IErrorHandler statusMessage, object key)
+        {
+            if(contextAccessor.HttpContext.User.FindFirst(System.Security.Claims.ClaimsIdentity.DefaultNameClaimType)?.Value == (string)key)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "User.",
+                    EntityKey = (string)key,
+                    Message = "You cannot do this type of actions to your account while still been log in into it.",
+                    RedirectRoute = UserManagmentRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+            return statusMessage;
+        }
+
+        private async Task<IErrorHandler> CheckRoleExists(IErrorHandler statusMessage, object key)
+        {
+            string roleName = (string)key;
+            var dbRole = await db.Role.FirstOrDefaultAsync(i => i.Name == roleName);
+            if (dbRole == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "User.",
+                    EntityKey = statusMessage.ProblemStatus.EntityKey,
+                    Message = $"Such role: {roleName}, don't exist in DataBase.",
+                    RedirectRoute = UserManagmentRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
             return statusMessage;
         }
     }

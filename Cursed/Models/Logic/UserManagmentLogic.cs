@@ -75,7 +75,7 @@ namespace Cursed.Models.Logic
             var userAuth = new UserAuth
             {
                 Login = model.Login,
-                PasswordHash = genPasswordHash.GenerateHash(model.Password)
+                PasswordHash = genPasswordHash.GenerateHash(model.PasswordNew)
             };
             db.Entry(currentModel).CurrentValues.SetValues(userAuth);
             await db.SaveChangesAsync();
