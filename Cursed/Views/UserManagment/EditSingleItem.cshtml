@@ -1,0 +1,62 @@
+﻿@using Cursed.Models.Data.Authentication;
+@model UserDataUpdateModel
+@{
+    ViewData["Title"] = "EditSingleItem";
+}
+<h1>Edit User</h1>
+<p>@Html.RouteLink("Back to user", UserManagmentRouting.SingleItem, new { key = Model.Login })</p>
+
+<form asp-antiforgery="true" method="post" role="form" asp-route="@UserManagmentRouting.EditUserData">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden asp-for="Login" type="text" name="Login" value="@Model.Login">
+    </div>
+    <div class="form-group">
+        <label for="RoleName">Role name:</label>
+        <div>
+            <input required asp-for="RoleName" type="text" name="RoleName" value="@Model.RoleName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Password">Confirm with password:</label>
+        <div>
+            <input required asp-for="Password" type="password" name="Password">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route="@UserManagmentRouting.EditUserData" type="submit" class="btn btn-default" value="Update" />
+        </div>
+    </div>
+</form>
+<form asp-antiforgery="true" method="post" asp-route="@UserManagmentRouting.EditUserAuth">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <input hidden type="text" name="Login" value="@Model.Login">
+    </div>
+    <div class="form-group">
+        <label for="PasswordOld">Old password:</label>
+        <div>
+            <input required type="password" name="PasswordOld">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="PasswordNew">New password:</label>
+        <div>
+            <input required type="password" name="PasswordNew">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="PasswordNewConfirm">Confirm new password:</label>
+        <div>
+            <input required type="password" name="PasswordNewConfirm">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route="@UserManagmentRouting.EditUserAuth" type="submit" class="btn btn-default" value="Update password" />
+        </div>
+    </div>
+</form>

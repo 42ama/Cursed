@@ -32,6 +32,7 @@ namespace Cursed
             services.AddControllersWithViews();
             services.AddDbContext<CursedDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataDatabaseConnection")));
             services.AddDbContext<CursedAuthenticationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDatabaseConnection")));
+            services.AddHttpContextAccessor();
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
             services.AddSingleton<IGenPasswordHash, PasswordHash>();

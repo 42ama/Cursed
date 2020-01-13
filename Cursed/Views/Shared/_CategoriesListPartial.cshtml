@@ -44,5 +44,11 @@
             <a class="nav-link text-dark" asp-route="@TransactionsRouting.Index">Transactions</a>
         </li>
     }
+    @if (Model.userRole == AuthorizeRoles.Administrator)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-route="@UserManagmentRouting.Index">Users</a>
+        </li>
+    }
 
 </ul>

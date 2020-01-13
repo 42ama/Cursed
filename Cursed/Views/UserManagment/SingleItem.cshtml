@@ -1,0 +1,23 @@
+﻿@using System.Text;
+@using Cursed.Models.Entities.Authentication;
+@using Cursed.Models.Data.Shared;
+@model UserData
+@{
+    ViewData["Title"] = "SingleItem";
+}
+<h1>User: @Model.Login</h1>
+<p>@Html.RouteLink("Edit", UserManagmentRouting.GetEditSingleItem, new { key = Model.Login })</p>
+<form asp-antiforgery="true" method="post" asp-route="@UserManagmentRouting.DeleteSingleItem">
+    <input hidden type="text" name="key" value="@Model.Login" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Login:</td>
+        <td>@Model.Login</td>
+    </tr>
+    <tr>
+        <td>Role:</td>
+        <td>@Model.RoleName</td>
+    </tr>
+</table>
