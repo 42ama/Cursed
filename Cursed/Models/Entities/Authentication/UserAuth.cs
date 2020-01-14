@@ -9,5 +9,6 @@ namespace Cursed.Models.Entities.Authentication
         public string PasswordHash { get; set; }
 
         public virtual UserData UserData { get; set; }
+        public virtual LogRecord LogRecord { get; set; }
     }
 }

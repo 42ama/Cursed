@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Cursed.Models.Entities.Authentication;
+using System.Configuration;
 
 namespace Cursed.Models.Context
 {
@@ -19,13 +20,13 @@ namespace Cursed.Models.Context
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<UserAuth> UserAuth { get; set; }
         public virtual DbSet<UserData> UserData { get; set; }
+        public virtual DbSet<LogRecord> LogRecord { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=pharmaceuticsAuth;Trusted_Connection=True;MultipleActiveResultSets=true;");
+                optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["AuthenticationDatabaseConnection"].ConnectionString);
             }
         }
 
@@ -54,6 +55,31 @@ namespace Cursed.Models.Context
                     .IsRequired()
                     .HasMaxLength(48)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<LogRecord>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_LogRecord_Id_Clustered");
+
+                entity.Property(e => e.Date)
+                    .IsRequired()
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UserLogin)
+                    .IsRequired()
+                    .HasMaxLength(39)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserIP)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.UserAuth)
+                    .WithOne(p => p.LogRecord)
+                    .HasForeignKey<LogRecord>(d => d.UserLogin)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<UserData>(entity =>
