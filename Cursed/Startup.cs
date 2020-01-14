@@ -37,6 +37,7 @@ namespace Cursed
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
             services.AddSingleton<IGenPasswordHash, PasswordHash>();
             services.AddScoped<IOperationDataValidation, OperationDataValidation>();
+            services.AddTransient<ILogProvider<CursedAuthenticationContext>, LogProvider>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
