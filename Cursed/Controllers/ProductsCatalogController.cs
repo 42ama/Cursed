@@ -24,11 +24,16 @@ namespace Cursed.Controllers
     {
         private readonly ProductsCatalogLogic logic;
         private readonly ProductsCatalogLogicValidation logicValidation;
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
 
-        public ProductsCatalogController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public ProductsCatalogController(CursedDataContext db, 
+            [FromServices] ILicenseValidation licenseValidation, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new ProductsCatalogLogic(db, licenseValidation);
             logicValidation = new ProductsCatalogLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
@@ -89,7 +94,8 @@ namespace Cursed.Controllers
         [HttpPost("product/add", Name = ProductsCatalogRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(ProductCatalog model)
         {
-            await logic.AddDataModelAsync(model);
+            var product = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new product into catalog (Id: {product.Id}).");
             return RedirectToRoute(ProductsCatalogRouting.Index);
         }
 
@@ -101,6 +107,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated product in catalog information (Id: {model.Id}).");
                 return RedirectToRoute(ProductsCatalogRouting.Index);
             }
             else
@@ -118,6 +125,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed product from catalog (Id: {key}).");
                 return RedirectToRoute(ProductsCatalogRouting.Index);
             }
             else

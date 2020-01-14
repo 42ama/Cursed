@@ -24,10 +24,14 @@ namespace Cursed.Controllers
     {
         private readonly CompaniesLogic logic;
         private readonly CompaniesLogicValidation logicValidation;
-        public CompaniesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public CompaniesController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new CompaniesLogic(db);
             logicValidation = new CompaniesLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -89,7 +93,8 @@ namespace Cursed.Controllers
         [HttpPost("company/add", Name = CompaniesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Company model)
         {
-            await logic.AddDataModelAsync(model);
+            var company = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new company (Id: {company.Id}).");
             return RedirectToRoute(CompaniesRouting.Index);
         }
 
@@ -101,6 +106,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated company information (Id: {model.Id}).");
                 return RedirectToRoute(CompaniesRouting.Index);
             }
             else
@@ -118,6 +124,7 @@ namespace Cursed.Controllers
             if(statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed company (Id: {key}).");
                 return RedirectToRoute(CompaniesRouting.Index);
             }
             else

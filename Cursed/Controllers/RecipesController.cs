@@ -24,10 +24,14 @@ namespace Cursed.Controllers
     {
         private readonly RecipesLogic logic;
         private readonly RecipesLogicValidation logicValidation;
-        public RecipesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public RecipesController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new RecipesLogic(db);
             logicValidation = new RecipesLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
@@ -78,7 +82,8 @@ namespace Cursed.Controllers
         [HttpPost("recipe/add", Name = RecipesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Recipe model)
         {
-            await logic.AddDataModelAsync(model);
+            var recipe = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new recipe (Id: {recipe.Id}).");
             return RedirectToRoute(RecipesRouting.Index);
         }
 
@@ -98,6 +103,7 @@ namespace Cursed.Controllers
         {
             int recipeId = Int32.Parse(key);
             await logic.InverseTechnologistApprovalAsync(recipeId);
+            await logProvider.AddToLogAsync($"Recipe (Id: {recipeId}) changed technological approval state.");
             return RedirectToRoute(RecipesRouting.SingleItem, new { key = key });
         }
 
@@ -107,6 +113,7 @@ namespace Cursed.Controllers
         {
             int recipeId = Int32.Parse(key);
             await logic.InverseGovermentApprovalAsync(recipeId);
+            await logProvider.AddToLogAsync($"Recipe (Id: {recipeId}) changed goverment approval state.");
             return RedirectToRoute(RecipesRouting.SingleItem, new { key = key });
         }
 
@@ -114,7 +121,8 @@ namespace Cursed.Controllers
         [HttpPost("recipe/add-child", Name = RecipesRouting.AddChildSingleItem)]
         public async Task<IActionResult> AddChildSingleItem(Recipe model, int parentId)
         {
-            await logic.AddChildDataModelAsync(model, parentId);
+            var recipe = await logic.AddChildDataModelAsync(model, parentId);
+            await logProvider.AddToLogAsync($"Added new recipe (Id: {recipe.Id}), which is child to recipe (Id: {parentId}).");
             return RedirectToRoute(RecipesRouting.Index);
         }
 
@@ -126,6 +134,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated recipe information (Id: {model.Id}).");
                 return RedirectToRoute(RecipesRouting.Index);
             }
             else
@@ -143,6 +152,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed recipe (Id: {key}).");
                 return RedirectToRoute(RecipesRouting.Index);
             }
             else

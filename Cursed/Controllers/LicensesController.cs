@@ -25,11 +25,16 @@ namespace Cursed.Controllers
         private readonly LicensesLogic logic;
         private readonly LicensesLogicValidation logicValidation;
         private readonly ILicenseValidation licenseValidation;
-        public LicensesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public LicensesController(CursedDataContext db, 
+            [FromServices] ILicenseValidation licenseValidation, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new LicensesLogic(db);
             logicValidation = new LicensesLogicValidation(db, errorHandlerFactory);
             this.licenseValidation = licenseValidation;
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
@@ -114,7 +119,8 @@ namespace Cursed.Controllers
         [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
         {
-            await logic.AddDataModelAsync(model);
+            var license = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new license (Id: {license.Id}).");
             return RedirectToRoute(LicensesRouting.Index);
         }
 
@@ -126,6 +132,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated license information (Id: {model.Id}).");
                 return RedirectToRoute(LicensesRouting.Index);
             }
             else
@@ -143,6 +150,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed license (Id: {key}).");
                 return RedirectToRoute(LicensesRouting.Index);
             }
             else

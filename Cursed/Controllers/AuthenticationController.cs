@@ -19,14 +19,17 @@ namespace Cursed.Controllers
     {
         private readonly AuthenticationLogic logic;
         private readonly AuthenticationLogicValidation logicValidation;
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
 
         public AuthenticationController(
             CursedAuthenticationContext db, 
             [FromServices] IErrorHandlerFactory errorHandlerFactory, 
-            [FromServices] IGenPasswordHash genPassHash)
+            [FromServices] IGenPasswordHash genPassHash,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new AuthenticationLogic(db);
             logicValidation = new AuthenticationLogicValidation(db, errorHandlerFactory, genPassHash);
+            this.logProvider = logProvider;
         }
 
         /// <summary>
@@ -55,6 +58,7 @@ namespace Cursed.Controllers
             {
                 var userData = await logic.GetUserData(loginModel.Login);
                 await Authenticate(userData.Login, userData.RoleName);
+                await logProvider.AddToLogAsync("User logged in.", loginModel.Login);
                 return RedirectToRoute(HubRouting.Index);
             }
             else
@@ -79,6 +83,7 @@ namespace Cursed.Controllers
         [HttpGet("logout", Name = AuthenticationRouting.Logout)]
         public async Task<IActionResult> Logout()
         {
+            await logProvider.AddToLogAsync("User logged out.");
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToRoute(HubRouting.Index);
         }

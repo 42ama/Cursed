@@ -24,10 +24,14 @@ namespace Cursed.Controllers
     {
         private readonly OperationsLogic logic;
         private readonly OperationsLogicValidation logicValidation;
-        public OperationsController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public OperationsController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new OperationsLogic(db);
             logicValidation = new OperationsLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
@@ -53,7 +57,8 @@ namespace Cursed.Controllers
         [HttpPost("operation/add", Name = OperationsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Operation model)
         {
-            await logic.AddDataModelAsync(model);
+            var operation = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new operation (Id: {operation.Id}).");
             return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
         }
 
@@ -65,6 +70,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated operation information (Id: {model.Id}).");
                 return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
             }
             else
@@ -81,6 +87,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Removed operation (Id: {model.Id}).");
                 return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
             }
             else

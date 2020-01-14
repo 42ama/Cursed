@@ -23,10 +23,14 @@ namespace Cursed.Controllers
     {
         private readonly RecipeProductsLogic logic;
         private readonly RecipeProductsLogicValidation logicValidation;
-        public RecipeProductsController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public RecipeProductsController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new RecipeProductsLogic(db);
             logicValidation = new RecipeProductsLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -50,7 +54,8 @@ namespace Cursed.Controllers
         [HttpPost("add", Name = RecipeProductsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
         {
-            await logic.AddDataModelAsync(model);
+            var recipeProductChanges = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new recipe product relations (Recipe Id: {recipeProductChanges.RecipeId}; Product Id: {recipeProductChanges.ProductId}).");
             return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
 
@@ -62,6 +67,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated recipe product relation information (Recipe Id: {model.RecipeId}; Product Id: {model.ProductId}).");
                 return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
             }
             else
@@ -78,6 +84,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Removed recipe product relation (Recipe Id: {model.RecipeId}; Product Id: {model.ProductId}).");
                 return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
             }
             else

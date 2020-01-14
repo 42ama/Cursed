@@ -27,11 +27,17 @@ namespace Cursed.Controllers
     {
         private readonly UserManagmentLogic logic;
         private readonly UserManagmentLogicValidation logicValidation;
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
 
-        public UserManagmentController(CursedAuthenticationContext db, [FromServices] IGenPasswordHash genPasswordHash, [FromServices] IErrorHandlerFactory errorHandlerFactory, [FromServices] IHttpContextAccessor contextAccessor)
+        public UserManagmentController(CursedAuthenticationContext db, 
+            [FromServices] IGenPasswordHash genPasswordHash, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory, 
+            [FromServices] IHttpContextAccessor contextAccessor,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new UserManagmentLogic(db, genPasswordHash);
             logicValidation = new UserManagmentLogicValidation(db, errorHandlerFactory, contextAccessor, genPasswordHash);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
@@ -92,7 +98,8 @@ namespace Cursed.Controllers
             var statusMessage = await logicValidation.CheckAddSingleDataModelAsync(model.Login, model.RoleName);
             if (statusMessage.IsCompleted)
             {
-                await logic.AddDataModelAsync(model);
+                var user = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new user (Login: {user.Login}).");
                 return RedirectToRoute(UserManagmentRouting.Index);
             }
             else
@@ -109,6 +116,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated user information (Id: {model.Login}).");
                 return RedirectToRoute(UserManagmentRouting.Index);
             }
             else
@@ -125,6 +133,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated user security information (Id: {model.Login}).");
                 return RedirectToRoute(UserManagmentRouting.Index);
             }
             else
@@ -141,6 +150,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(key);
+                await logProvider.AddToLogAsync($"Removed user (Login: {key}).");
                 return RedirectToRoute(UserManagmentRouting.Index);
             }
             else

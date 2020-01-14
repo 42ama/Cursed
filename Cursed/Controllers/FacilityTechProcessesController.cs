@@ -24,10 +24,14 @@ namespace Cursed.Controllers
     {
         private readonly FacilityTechProcessesLogic logic;
         private readonly FacilityTechProcessesLogicValidation logicValidation;
-        public FacilityTechProcessesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public FacilityTechProcessesController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new FacilityTechProcessesLogic(db);
             logicValidation = new FacilityTechProcessesLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -46,7 +50,8 @@ namespace Cursed.Controllers
         [HttpPost("add", Name = FacilityTechProcessesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TechProcess model)
         {
-            await logic.AddDataModelAsync(model);
+            var techProcess = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new technological process (Facility Id: {techProcess.FacilityId}; Recipe Id: {techProcess.RecipeId}).");
             return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
         }
 
@@ -58,6 +63,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated technological process information (Facility Id: {model.FacilityId}; Recipe Id: {model.RecipeId}).");
                 return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
             }
             else
@@ -74,6 +80,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Removed technological process (Facility Id: {model.FacilityId}; Recipe Id: {model.RecipeId}).");
                 return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
             }
             else

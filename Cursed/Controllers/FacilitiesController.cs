@@ -24,11 +24,16 @@ namespace Cursed.Controllers
     {
         private readonly FacilitiesLogic logic;
         private readonly FacilitiesLogicValidation logicValidation;
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
 
-        public FacilitiesController(CursedDataContext db, [FromServices] ILicenseValidation licenseValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public FacilitiesController(CursedDataContext db, 
+            [FromServices] ILicenseValidation licenseValidation, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new FacilitiesLogic(db, licenseValidation);
             logicValidation = new FacilitiesLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -89,7 +94,8 @@ namespace Cursed.Controllers
         [HttpPost("facility/add", Name = FacilitiesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Facility model)
         {
-            await logic.AddDataModelAsync(model);
+            var facility = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new facility (Id: {facility.Id}).");
             return RedirectToRoute(FacilitiesRouting.Index);
         }
 
@@ -101,6 +107,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated facility information (Id: {model.Id}).");
                 return RedirectToRoute(FacilitiesRouting.Index);
             }
             else
@@ -118,6 +125,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed facility (Id: {key}).");
                 return RedirectToRoute(FacilitiesRouting.Index);
             }
             else

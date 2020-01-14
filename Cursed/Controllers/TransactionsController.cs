@@ -24,10 +24,15 @@ namespace Cursed.Controllers
     {
         private readonly TransactionsLogic logic;
         private readonly TransactionsLogicValidation logicValidation;
-        public TransactionsController(CursedDataContext db, [FromServices] IOperationDataValidation operationValidation, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
+        public TransactionsController(CursedDataContext db, 
+            [FromServices] IOperationDataValidation operationValidation, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new TransactionsLogic(db);
             logicValidation = new TransactionsLogicValidation(db, operationValidation, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -92,6 +97,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.CloseTransactionAsync(id);
+                await logProvider.AddToLogAsync($"Closed transaction (Id: {key}).");
                 return RedirectToRoute(TransactionsRouting.SingleItem, new { key });
             }
             else
@@ -109,6 +115,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.OpenTransactionAsync(id);
+                await logProvider.AddToLogAsync($"Opened transaction (Id: {key}).");
                 return RedirectToRoute(TransactionsRouting.SingleItem, new { key });
             }
             else
@@ -121,7 +128,8 @@ namespace Cursed.Controllers
         [HttpPost("transaction/add", Name = TransactionsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TransactionBatch model)
         {
-            await logic.AddDataModelAsync(model);
+            var transaction = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new transaction (Id: {transaction.Id}).");
             return RedirectToRoute(TransactionsRouting.Index);
         }
 
@@ -133,6 +141,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated transaction information (Id: {model.Id}).");
                 return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.Id });
             }
             else
@@ -150,6 +159,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed transaction (Id: {key}).");
                 return RedirectToRoute(TransactionsRouting.Index);
             }
             else

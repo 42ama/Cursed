@@ -24,11 +24,15 @@ namespace Cursed.Controllers
     {
         private readonly StoragesLogic logic;
         private readonly StoragesLogicValidation logicValidation;
+        private readonly ILogProvider<CursedAuthenticationContext> logProvider;
 
-        public StoragesController(CursedDataContext db, [FromServices] IErrorHandlerFactory errorHandlerFactory)
+        public StoragesController(CursedDataContext db, 
+            [FromServices] IErrorHandlerFactory errorHandlerFactory,
+            [FromServices] ILogProvider<CursedAuthenticationContext> logProvider)
         {
             logic = new StoragesLogic(db);
             logicValidation = new StoragesLogicValidation(db, errorHandlerFactory);
+            this.logProvider = logProvider;
         }
 
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
@@ -88,7 +92,8 @@ namespace Cursed.Controllers
         [HttpPost("storage/add", Name = StoragesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Storage model)
         {
-            await logic.AddDataModelAsync(model);
+            var storage = await logic.AddDataModelAsync(model);
+            await logProvider.AddToLogAsync($"Added new storage (Id: {storage.Id}).");
             return RedirectToRoute(StoragesRouting.Index);
         }
 
@@ -100,6 +105,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Updated storage information (Id: {model.Id}).");
                 return RedirectToRoute(StoragesRouting.Index);
             }
             else
@@ -117,6 +123,7 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 await logic.RemoveDataModelAsync(id);
+                await logProvider.AddToLogAsync($"Removed storage (Id: {key}).");
                 return RedirectToRoute(StoragesRouting.Index);
             }
             else
