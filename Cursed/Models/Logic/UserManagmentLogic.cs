@@ -18,7 +18,7 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.Logic
 {
-    public class UserManagmentLogic : IReadColection<UserData>, IReadSingle<UserData>, IReadUpdateForm<UserData>, ICreate<RegistrationModel>, IUpdate<UserData>, IUpdate<UserAuthUpdateModel>, IDeleteByKey
+    public class UserManagmentLogic : IReadColection<UserData>, IReadSingle<UserData>, IReadUpdateForm<UserData>, IUpdate<UserData>, IUpdate<UserAuthUpdateModel>, IDeleteByKey
     {
         private readonly CursedAuthenticationContext db;
         private readonly IGenPasswordHash genPasswordHash;
@@ -44,7 +44,7 @@ namespace Cursed.Models.Logic
             return await db.UserData.SingleAsync(i => i.Login == (string)key);
         }
 
-        public async Task AddDataModelAsync(RegistrationModel model)
+        public async Task<UserData> AddDataModelAsync(RegistrationModel model)
         {
             var userData = new UserData
             {
@@ -57,9 +57,10 @@ namespace Cursed.Models.Logic
                 PasswordHash = genPasswordHash.GenerateHash(model.Password)
             };
 
-            db.Add(userData);
+            var entity = db.Add(userData);
             db.Add(userAuth);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(UserData model)

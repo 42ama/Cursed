@@ -89,11 +89,12 @@ namespace Cursed.Models.Logic
             return await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(Storage model)
+        public async Task<Storage> AddDataModelAsync(Storage model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(Storage model)

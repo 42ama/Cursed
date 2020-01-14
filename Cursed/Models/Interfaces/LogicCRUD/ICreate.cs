@@ -13,6 +13,6 @@ namespace Cursed.Models.Interfaces.LogicCRUD
         /// Add data model to database
         /// </summary>
         /// <param name="model">Data model to be added</param>
-        Task AddDataModelAsync(T model);
+        Task<T> AddDataModelAsync(T model);
     }
 }

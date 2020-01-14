@@ -58,11 +58,12 @@ namespace Cursed.Models.Logic
             return await db.License.SingleAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(License model)
+        public async Task<License> AddDataModelAsync(License model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(License model)

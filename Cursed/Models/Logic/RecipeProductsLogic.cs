@@ -56,10 +56,11 @@ namespace Cursed.Models.Logic
             return query;
         }
 
-        public async Task AddDataModelAsync(RecipeProductChanges model)
+        public async Task<RecipeProductChanges> AddDataModelAsync(RecipeProductChanges model)
         {
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(RecipeProductChanges model)

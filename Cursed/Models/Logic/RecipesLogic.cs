@@ -112,11 +112,12 @@ namespace Cursed.Models.Logic
         {
             return await db.Recipe.SingleAsync(i => i.Id == (int)key);
         }
-        public async Task AddDataModelAsync(Recipe model)
+        public async Task<Recipe> AddDataModelAsync(Recipe model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
         public async Task InverseTechnologistApprovalAsync(object key)
         {
@@ -144,7 +145,7 @@ namespace Cursed.Models.Logic
             }
             await UpdateDataModelAsync(model);
         }
-        public async Task AddChildDataModelAsync(Recipe model, int parentId)
+        public async Task<Recipe> AddChildDataModelAsync(Recipe model, int parentId)
         {
             model.Id = default;
             var entity = db.Add(model);
@@ -166,7 +167,9 @@ namespace Cursed.Models.Logic
             db.RecipeProductChanges.AddRange(recipeProductChanges);
             
             await db.SaveChangesAsync();
-            
+            return entity.Entity;
+
+
         }
         public async Task UpdateDataModelAsync(Recipe model)
         {

@@ -32,11 +32,12 @@ namespace Cursed.Models.Logic
             return await db.Operation.SingleAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(Operation model)
+        public async Task<Operation> AddDataModelAsync(Operation model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(Operation model)

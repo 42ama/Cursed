@@ -124,11 +124,12 @@ namespace Cursed.Models.Logic
             return await db.Facility.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
-        public async Task AddDataModelAsync(Facility model)
+        public async Task<Facility> AddDataModelAsync(Facility model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(Facility model)

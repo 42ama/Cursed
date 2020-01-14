@@ -148,11 +148,12 @@ namespace Cursed.Models.Logic
             await UpdateDataModelAsync(transaction);
         }
 
-        public async Task AddDataModelAsync(TransactionBatch model)
+        public async Task<TransactionBatch> AddDataModelAsync(TransactionBatch model)
         {
             model.Id = default;
-            db.Add(model);
+            var entity = db.Add(model);
             await db.SaveChangesAsync();
+            return entity.Entity;
         }
 
         public async Task UpdateDataModelAsync(TransactionBatch model)
