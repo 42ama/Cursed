@@ -107,8 +107,8 @@ namespace Cursed.Models.Logic
                          Name = pc.Name,
                          Type = pc.Type,
                          LicenseRequired = pc.LicenseRequired ?? false,
-                         Recipes = groupA?.Select(x => new TitleIdContainer { Id = x.Item2, Title = x.Item3 }).ToList() ?? new List<TitleIdContainer>(),
-                         Storages = groupB?.Select(x => new TitleIdContainer { Id = x.Item2, Title = x.Item3 }).ToList() ?? new List<TitleIdContainer>()
+                         Recipes = groupA?.Select(x => new ValueTuple<string, int> { Item2 = x.Item2, Item1 = x.Item3 }).ToList() ?? new List<ValueTuple<string, int>>(),
+                         Storages = groupB?.Select(x => new ValueTuple<string, int> { Item2 = x.Item2, Item1 = x.Item3 }).ToList() ?? new List<ValueTuple<string, int>>()
                      }).First();
             //used first instead of single, cause query results contains several
             //identical entities by number of 1 + Recipes.Count + Storages.Count
@@ -126,13 +126,20 @@ namespace Cursed.Models.Logic
                 }
             }
 
-            foreach (var recipe in dataModel.Recipes)
+            for (int i = 0; i < dataModel.Recipes.Count; i++)
             {
-                if(recipe.Title.Length > 45)
+                if (dataModel.Recipes[i].Item1.Length > 45)
                 {
-                    recipe.Title = recipe.Title.Substring(0, 45) + "...";
+                    dataModel.Recipes[i] = new ValueTuple<string, int>(dataModel.Recipes[i].Item1.Substring(0, 45) + "...", dataModel.Recipes[i].Item2);
                 }
             }
+            /*foreach (var recipe in dataModel.Recipes)
+            {
+                if(recipe.Item1.Length > 45)
+                {
+                    recipe.Item1 = recipe.Item1.Substring(0, 45) + "...";
+                }
+            }*/
 
             dataModel.Licenses = validLicenses;
 

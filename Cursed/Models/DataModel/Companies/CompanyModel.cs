@@ -7,7 +7,7 @@ namespace Cursed.Models.DataModel.Companies
 {
     public class CompanyModel : CompaniesAbstractModel
     {
-        public List<TitleIdContainer> Storages { get; set; }
-        public List<TitleIdContainer> Transactions { get; set; } //title is date string
+        public List<ValueTuple<string, int>> Storages { get; set; }
+        public List<ValueTuple<string, int>> Transactions { get; set; } //title is date string
     }
 }

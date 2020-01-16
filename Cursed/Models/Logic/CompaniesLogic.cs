@@ -63,8 +63,8 @@ namespace Cursed.Models.Logic
                         {
                             Id = c.Id,
                             Name = c.Name,
-                            Storages = cs.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Name }).ToList(),
-                            Transactions = cst.Single().Select(i => new TitleIdContainer { Id = i.Id, Title = i.Date.ToShortDateString() }).ToList()
+                            Storages = cs.Single().Select(i => new ValueTuple<string, int> { Item2 = i.Id, Item1 = i.Name }).ToList(),
+                            Transactions = cst.Single().Select(i => new ValueTuple<string, int> { Item2 = i.Id, Item1 = i.Date.ToShortDateString() }).ToList()
                         };
 
             return query.Single();

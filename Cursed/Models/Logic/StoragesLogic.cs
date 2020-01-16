@@ -41,7 +41,7 @@ namespace Cursed.Models.Logic
                             Name = s.Name,
                             Latitude = s.Latitude,
                             Longitude = s.Longitude,
-                            Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
+                            Company = comp != null ? new ValueTuple<string, int> { Item2 = comp.Id, Item1 = comp.Name } : new ValueTuple<string, int>(),
                             ProductsCount = t.Single().Count()
                         };
 
@@ -76,7 +76,7 @@ namespace Cursed.Models.Logic
                             Name = s.Name,
                             Latitude = s.Latitude,
                             Longitude = s.Longitude,
-                            Company = comp != null ? new TitleIdContainer { Id = comp.Id, Title = comp.Name } : null,
+                            Company = comp != null ? new ValueTuple<string, int> { Item2 = comp.Id, Item1 = comp.Name } : new ValueTuple<string, int>(),
                             Products = t.ToList()
                         };
 

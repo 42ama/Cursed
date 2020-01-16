@@ -31,9 +31,9 @@
     </tr>
     <tr>
         <td>Company:</td>
-        @if(Model.Company!=null)
+        @if(Model.Company != new ValueTuple<string, int>())
         {
-            <td>@Html.RouteLink(Model.Company.Title, CompaniesRouting.SingleItem, new { key = Model.Company.Id })</td>
+            <td>@Html.RouteLink(Model.Company.Item1, CompaniesRouting.SingleItem, new { key = Model.Company.Item2 })</td>
         }
         else
         {
