@@ -1,4 +1,4 @@
-﻿using Cursed.Models.Data.Utility.ErrorHandling;
+﻿using Cursed.Models.DataModel.Utility.ErrorHandling;
 using System;
 using System.Collections.Generic;
 using System.Linq;

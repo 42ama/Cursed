@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Services;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 using Cursed.Models.Routing;
 
 namespace Cursed.Models.Services

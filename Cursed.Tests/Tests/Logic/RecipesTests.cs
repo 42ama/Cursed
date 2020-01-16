@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Recipes;
+using Cursed.Models.DataModel.Shared;
+using Cursed.Models.DataModel.Recipes;
 
 namespace Cursed.Tests.Tests.Logic
 {

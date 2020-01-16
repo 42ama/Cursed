@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Companies;
+using Cursed.Models.DataModel.Companies;
 using Cursed.Models.Entities.Authentication;
 using Cursed.Models.Interfaces.LogicCRUD;
-using Cursed.Models.Data.Utility;
-using Cursed.Models.Data.Utility.ErrorHandling;
-using Cursed.Models.Data.Authentication;
+using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Authentication;
 using Cursed.Models.Services;
 
 namespace Cursed.Models.Logic

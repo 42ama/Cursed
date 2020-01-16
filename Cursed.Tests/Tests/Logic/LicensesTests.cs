@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.Data.Licenses;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.Licenses;
+using Cursed.Models.DataModel.Utility;
 using Cursed.Tests.Extensions;
 
 namespace Cursed.Tests.Tests.Logic

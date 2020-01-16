@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Models.Interfaces.LogicCRUD
 {

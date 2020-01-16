@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Data.Products;
+using Cursed.Models.DataModel.Products;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
-using Cursed.Models.Data.Utility;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Models.Logic
 {

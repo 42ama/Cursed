@@ -5,9 +5,9 @@ using Xunit;
 using System.Collections.Generic;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.Data.RecipeProducts;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.RecipeProducts;
+using Cursed.Models.DataModel.Shared;
+using Cursed.Models.DataModel.Utility;
 
 namespace Cursed.Tests.Tests.Logic
 {

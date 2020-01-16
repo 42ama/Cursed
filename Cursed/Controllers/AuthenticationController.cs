@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Context;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
-using Cursed.Models.Data.Authentication;
+using Cursed.Models.DataModel.Authentication;
 using Cursed.Models.Logic;
 using Cursed.Models.LogicValidation;
 using Microsoft.AspNetCore.Authorization;

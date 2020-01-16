@@ -3,9 +3,9 @@ using Xunit;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Services;
 using System.Collections.Generic;
-using Cursed.Models.Data.Shared;
+using Cursed.Models.DataModel.Shared;
 using System.Text;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Services
 {

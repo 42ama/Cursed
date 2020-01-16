@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Context;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
-using Cursed.Models.Data.Authentication;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Authentication;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Models.LogicValidation
 {

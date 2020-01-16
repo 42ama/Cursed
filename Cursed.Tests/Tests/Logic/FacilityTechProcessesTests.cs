@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.Data.FacilityTechProcesses;
+using Cursed.Models.DataModel.FacilityTechProcesses;
 
 namespace Cursed.Tests.Tests.Logic
 {

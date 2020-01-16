@@ -5,17 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Cursed.Models.Data.ProductsCatalog;
+using Cursed.Models.DataModel.ProductsCatalog;
 using Cursed.Models.Context;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
 using Microsoft.AspNetCore.Authorization;
-using Cursed.Models.Data.Utility.Authorization;
+using Cursed.Models.DataModel.Utility.Authorization;
 
 namespace Cursed.Controllers
 {

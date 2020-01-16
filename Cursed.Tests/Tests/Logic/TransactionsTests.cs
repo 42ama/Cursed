@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.Data.Transactions;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.Transactions;
+using Cursed.Models.DataModel.Shared;
+using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Extensions;
 using Cursed.Tests.Stubs;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Logic
 {

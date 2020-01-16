@@ -5,15 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Cursed.Models.Data.Products;
-using Cursed.Models.Data.Shared;
+using Cursed.Models.DataModel.Products;
+using Cursed.Models.DataModel.Shared;
 using Cursed.Models.Context;
 using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.Data.Utility;
-using Cursed.Models.Data.Utility.Authorization;
+using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Utility.Authorization;
 
 namespace Cursed.Controllers
 {

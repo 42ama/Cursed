@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Authentication;
-using Cursed.Models.Data.Companies;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.Companies;
+using Cursed.Models.DataModel.Utility;
 using Cursed.Tests.Stubs;
-using Cursed.Models.Data.Utility.ErrorHandling;
-using Cursed.Models.Data.Authentication;
+using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Authentication;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {
