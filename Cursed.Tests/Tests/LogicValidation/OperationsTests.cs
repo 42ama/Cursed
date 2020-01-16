@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.StaticReferences;
-using Cursed.Models.DataModel.Companies;
-using Cursed.Models.DataModel.Shared;
-using Cursed.Tests.Extensions;
 using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Tests.LogicValidation

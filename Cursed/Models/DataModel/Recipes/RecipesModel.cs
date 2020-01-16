@@ -1,4 +1,4 @@
-﻿using Cursed.Models.DataModel.Shared;
+﻿
 
 namespace Cursed.Models.DataModel.Recipes
 {

@@ -10,10 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
 using Cursed.Models.DataModel.Storages;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.DataModel.Shared;
-using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Interfaces.LogicCRUD;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.Products;
 
 namespace Cursed.Models.Logic
 {

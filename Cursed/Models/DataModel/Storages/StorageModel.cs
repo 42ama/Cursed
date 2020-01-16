@@ -1,4 +1,4 @@
-﻿using Cursed.Models.DataModel.Shared;
+﻿using Cursed.Models.DataModel.Products;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

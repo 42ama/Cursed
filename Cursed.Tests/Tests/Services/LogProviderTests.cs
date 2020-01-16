@@ -1,10 +1,7 @@
 ﻿using System;
 using Xunit;
 using System.Linq;
-using Cursed.Models.Entities;
 using Cursed.Models.Services;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Cursed.Tests.Stubs;
 using Cursed.Models.Entities.Authentication;
 

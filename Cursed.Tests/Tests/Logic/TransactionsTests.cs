@@ -6,7 +6,6 @@ using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.Transactions;
-using Cursed.Models.DataModel.Shared;
 using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Extensions;
 using Cursed.Models.StaticReferences;

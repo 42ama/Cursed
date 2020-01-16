@@ -6,8 +6,7 @@ using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.Storages;
-using Cursed.Models.DataModel.Shared;
-using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Products;
 
 namespace Cursed.Tests.Tests.Logic
 {

@@ -8,7 +8,6 @@ using Cursed.Models.Logic;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.DataModel.Shared;
 using Cursed.Tests.Stubs;
 using Cursed.Models.DataModel.Utility.ErrorHandling;
 

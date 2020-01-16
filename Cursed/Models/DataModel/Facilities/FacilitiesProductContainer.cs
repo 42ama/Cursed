@@ -1,7 +1,7 @@
 ﻿using Cursed.Models.Entities;
 using System.Collections.Generic;
 
-namespace Cursed.Models.DataModel.Shared
+namespace Cursed.Models.DataModel.Facilities
 {
     public class FacilitiesProductContainer
     {

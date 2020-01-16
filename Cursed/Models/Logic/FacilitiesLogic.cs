@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
 using Cursed.Models.DataModel.Facilities;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.DataModel.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Services;
 using Cursed.Models.DataModel.Utility.ErrorHandling;

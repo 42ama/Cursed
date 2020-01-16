@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Cursed.Models.DataModel.Transactions;
-using Cursed.Models.DataModel.Shared;
 using Cursed.Models.Context;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;

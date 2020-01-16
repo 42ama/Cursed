@@ -1,6 +1,6 @@
 ﻿@using Cursed.Models.DataModel.Recipes
+@using Cursed.Models.DataModel.RecipeProducts
 @using Cursed.Models.DataModel.Utility
-@using Cursed.Models.DataModel.Shared
 @model Pagenation<RecipesModel>
 @{
     ViewData["Title"] = "Index";
@@ -29,13 +29,13 @@
         @foreach (var item in Model.PagenatedCollection)
         {
             string content = item.Content;
-            string techApprov = item.TechApproved == true ? "Approved" : "Not approved" ;
+            string techApprov = item.TechApproved == true ? "Approved" : "Not approved";
             string govApprov = item.GovApproved == true ? "Approved" : "Not approved";
-            string parentRecipe = item.ParentRecipe != null ? "ParentId: " + item.ParentRecipe.Value.ToString() : "None"; 
+            string parentRecipe = item.ParentRecipe != null ? "ParentId: " + item.ParentRecipe.Value.ToString() : "None";
             <tr>
                 <td>@item.Id</td>
                 <td>@content</td>
-                @if(item.TechApproved == true)
+                @if (item.TechApproved == true)
                 {
                     <td bgcolor="green">@techApprov</td>
                 }
@@ -43,7 +43,7 @@
                 {
                     <td bgcolor="red">@techApprov</td>
                 }
-                @if(item.GovApproved == true)
+                @if (item.GovApproved == true)
                 {
                     <td bgcolor="green">@govApprov</td>
                 }
@@ -51,7 +51,7 @@
                 {
                     <td bgcolor="red">@govApprov</td>
                 }
-                @if(item.MaterialCount > 0)
+                @if (item.MaterialCount > 0)
                 {
                     <td>
                         <p>@item.MaterialCount materials</p>
@@ -62,7 +62,7 @@
                 {
                     <td>None</td>
                 }
-                @if(item.ProductCount > 0)
+                @if (item.ProductCount > 0)
                 {
                     <td>
                         <p>@item.ProductCount products</p>
@@ -74,7 +74,7 @@
                     <td>None</td>
                 }
                 <td>@parentRecipe</td>
-                @if(item.ChildRecipesCount > 0)
+                @if (item.ChildRecipesCount > 0)
                 {
                     <td>
                         <p>@item.ChildRecipesCount childs</p>
