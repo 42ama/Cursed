@@ -73,7 +73,7 @@
                 {
                     <tr>
                         <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
-                        @if(item.CAS.HasValue)
+                        @if (item.CAS.HasValue)
                         {
                             <td>@Html.RouteLink(item.CAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
                         }
@@ -103,7 +103,7 @@
                 {
                     <tr>
                         <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
-                        @if(item.CAS.HasValue)
+                        @if (item.CAS.HasValue)
                         {
                             <td>@Html.RouteLink(item.CAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
                         }
@@ -118,15 +118,35 @@
         </td>
     </tr>
     <tr>
+        <td>Used in Facilities:</td>
+        @if (Model.RelatedFacilities.Count() == 0)
+        {
+            <td>None</td>
+        }
+        else
+        {
+            <td>
+                <table>
+                    @foreach (var facility in Model.RelatedFacilities)
+                    {
+                        <tr>
+                            <td>@Html.RouteLink(facility.Name, FacilitiesRouting.SingleItem, new { key = facility.Id })</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        }
+    </tr>
+    <tr>
         <td>Parent:</td>
-            @if(Model.ParentRecipe != null)
-            {
-                <td>@Html.RouteLink(Model.ParentRecipe.ToString(), RecipesRouting.SingleItem, new { key = Model.ParentRecipe })</td>
-            }
-            else
-            {
-                <td>None</td>
-            }
+        @if (Model.ParentRecipe != null)
+        {
+            <td>@Html.RouteLink(Model.ParentRecipe.ToString(), RecipesRouting.SingleItem, new { key = Model.ParentRecipe })</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
     </tr>
     <tr>
         <td>Childs:</td>

@@ -14,6 +14,7 @@ using Cursed.Models.Data.Shared;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.Data.Utility.ErrorHandling;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Cursed.Models.Data.Utility;
 
 namespace Cursed.Models.Logic
 {
@@ -76,6 +77,22 @@ namespace Cursed.Models.Logic
                                     join ri in db.RecipeInheritance on r.Id equals ri.ParentId into t
                                     group t by r.Id) on r.Id equals bk.Key into childIds
                         from ci in childIds.DefaultIfEmpty()
+                        join tp in (from tps in (from r in recipes
+                                               join tp in db.TechProcess on r.Id equals tp.RecipeId into t
+                                               from t2 in t
+                                               join f in db.Facility on t2.FacilityId equals f.Id into t3
+                                               from fac in t3
+                                               select new
+                                               {
+                                                   RecipeId = r.Id,
+                                                   Facility = new Facility
+                                                   {
+                                                       Name = fac.Name,
+                                                       Id = fac.Id
+                                                   }
+                                               })
+                                    group tps by tps.RecipeId) on r.Id equals tp.Key into techProcesses
+                        from techP in techProcesses.DefaultIfEmpty()
                         join ck in (from rr in (from r in recipes
                                                 join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
                                                 from t2 in t
@@ -103,9 +120,9 @@ namespace Cursed.Models.Logic
                             GovApproved = r.GovermentApproval,
                             ParentRecipe = pis.Single().SingleOrDefault()?.ParentId,
                             ChildRecipes = ci.Single().Select(i => i.ChildId).ToList(),
-                            RecipeProducts = p?.Select(i => i.RecipeProductContainer).ToList() ?? new List<RecipeProductContainer>()
+                            RecipeProducts = p?.Select(i => i.RecipeProductContainer).ToList() ?? new List<RecipeProductContainer>(),
+                            RelatedFacilities = techP?.Select(i => i.Facility).ToList() ?? new List<Facility>()
                         };
-
             return query.Single();
         }
         public async Task<Recipe> GetSingleUpdateModelAsync(object key)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Cursed.Models.Entities;
 using Cursed.Models.Data.Shared;
 
 namespace Cursed.Models.Data.Recipes
@@ -10,5 +10,6 @@ namespace Cursed.Models.Data.Recipes
     {
         public List<RecipeProductContainer> RecipeProducts { get; set; }
         public List<int> ChildRecipes { get; set; }
+        public IEnumerable<Facility> RelatedFacilities { get; set; }
     }
 }

@@ -159,6 +159,45 @@ namespace Cursed.Tests.Tests.Logic
             };
         }
 
+        private IEnumerable<Facility> GetFacilities()
+        {
+            return new Facility[]
+            {
+                new Facility
+                {
+                    Name = "Facility #1",
+                    Id = 44440
+                },
+                new Facility
+                {
+                    Name = "Facility #2",
+                    Id = 44441
+                },
+            };
+        }
+
+        private IEnumerable<TechProcess> GetTechProcesses()
+        {
+            return new TechProcess[]
+            {
+                new TechProcess
+                {
+                    FacilityId = 44440,
+                    RecipeId = 44440
+                },
+                new TechProcess
+                {
+                    FacilityId = 44440,
+                    RecipeId = 44441
+                },
+                new TechProcess
+                {
+                    FacilityId = 44441,
+                    RecipeId = 44440
+                },
+            };
+        }
+
         [Fact]
         public async void AddRecipe_ToEmptyDbTable_AddedRecipeEqualExpectedRecipe()
         {
@@ -326,6 +365,7 @@ namespace Cursed.Tests.Tests.Logic
             fixture.db.RecipeInheritance.AddRange(recipeInheritances);
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.RecipeProductChanges.AddRange(recipeProductsChanges);
+
             await fixture.db.SaveChangesAsync();
             var expected = new List<RecipesModel>
             {
@@ -338,7 +378,7 @@ namespace Cursed.Tests.Tests.Logic
                     ParentRecipe = 44440,
                     ChildRecipesCount = 0,
                     ProductCount = 1,
-                    MaterialCount = 2
+                    MaterialCount = 2                    
                 },
                 new RecipesModel
                 {
@@ -375,15 +415,18 @@ namespace Cursed.Tests.Tests.Logic
         public async void GetRecipeModel_FromInitializedDbTables_LogicRecipeModelEqualExpectedRecipeModel()
         {
             // arrange
-                        var recipe = GetRecipes();
+            var recipe = GetRecipes();
             var recipeInheritance = GetRecipeInheritances();
             var productsCatalog = GetProductsCatalog();
             var recipeProductsChanges = GetRecipeProductsChanges();
-
+            var facilities = GetFacilities();
+            var techProcesses = GetTechProcesses();
             fixture.db.Recipe.AddRange(recipe);
             fixture.db.RecipeInheritance.AddRange(recipeInheritance);
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.RecipeProductChanges.AddRange(recipeProductsChanges);
+            fixture.db.Facility.AddRange(facilities);
+            fixture.db.TechProcess.AddRange(techProcesses);
             await fixture.db.SaveChangesAsync();
             var expected = new RecipeModel
             {
@@ -419,6 +462,19 @@ namespace Cursed.Tests.Tests.Logic
                         Quantity = (decimal)12.3456,
                         Type = ProductCatalogTypes.Material
                     },
+                },
+                RelatedFacilities = new List<Facility>
+                {
+                    new Facility
+                    {
+                        Name = "Facility #1",
+                        Id = 44440
+                    },
+                    new Facility
+                    {
+                        Name = "Facility #2",
+                        Id = 44441
+                    }
                 }
             };
 
@@ -440,6 +496,12 @@ namespace Cursed.Tests.Tests.Logic
                 expectedItem.CAS == actualItem.CAS &&
                 expectedItem.Quantity == actualItem.Quantity &&
                 expectedItem.Type == actualItem.Type);
+            }
+            foreach (var expectedItem in expected.RelatedFacilities)
+            {
+                Assert.Contains(actual.RelatedFacilities, actualItem =>
+                expectedItem.Id == actualItem.Id &&
+                expectedItem.Name == actualItem.Name);
             }
         }
 
