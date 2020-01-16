@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Cursed.Models.DataModel.Utility.Authorization;
+﻿using Cursed.Models.DataModel.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cursed.Controllers

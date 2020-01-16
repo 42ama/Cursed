@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cursed.Models.DataModel.Utility.Authorization
+namespace Cursed.Models.DataModel.Authorization
 {
     public class AuthorizeRoles
     {

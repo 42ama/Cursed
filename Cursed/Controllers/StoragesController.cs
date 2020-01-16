@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Cursed.Models.DataModel.Storages;
 using Cursed.Models.Context;
 using Cursed.Models.Entities.Data;
@@ -14,7 +10,7 @@ using Cursed.Models.Interfaces.ControllerCRUD;
 using Cursed.Models.DataModel.Pagenation;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
-using Cursed.Models.DataModel.Utility.Authorization;
+using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {

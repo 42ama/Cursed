@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Cursed.Models.DataModel.Utility.Authorization
+namespace Cursed.Models.DataModel.Authorization
 {
     public class AuthorizeRolesAttribute : AuthorizeAttribute
     {
