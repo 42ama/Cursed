@@ -133,13 +133,6 @@ namespace Cursed.Models.Logic
                     dataModel.Recipes[i] = new ValueTuple<string, int>(dataModel.Recipes[i].Item1.Substring(0, 45) + "...", dataModel.Recipes[i].Item2);
                 }
             }
-            /*foreach (var recipe in dataModel.Recipes)
-            {
-                if(recipe.Item1.Length > 45)
-                {
-                    recipe.Item1 = recipe.Item1.Substring(0, 45) + "...";
-                }
-            }*/
 
             dataModel.Licenses = validLicenses;
 
