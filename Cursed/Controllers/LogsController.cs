@@ -11,7 +11,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Pagenation;
 using Cursed.Models.DataModel.Utility.Authorization;
 using Cursed.Models.Entities.Authentication;
 

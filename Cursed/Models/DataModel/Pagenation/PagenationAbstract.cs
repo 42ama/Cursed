@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cursed.Models.DataModel.Utility
+namespace Cursed.Models.DataModel.Pagenation
 {
     public abstract class PagenationAbstract
     {

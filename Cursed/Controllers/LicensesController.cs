@@ -10,7 +10,7 @@ using Cursed.Models.Context;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;
 using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.DataModel.Utility;
+using Cursed.Models.DataModel.Pagenation;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
