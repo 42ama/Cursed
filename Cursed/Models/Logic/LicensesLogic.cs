@@ -53,6 +53,16 @@ namespace Cursed.Models.Logic
             return basicDataModelQuery.Single(i => i.Id == (int)key);
         }
 
+        /// <summary>
+        /// Returns a collection of entities that shares common <c>key</c> - Product Id
+        /// </summary>
+        /// <param name="relatedKey">Product Id</param>
+        /// <returns>Collection of entities that shares common <c>key</c> - Product Id</returns>
+        public async Task<IEnumerable<LicensesDataModel>> GetRelatedEntitiesByKeyAsync(object relatedKey, object exceptKey)
+        {
+            return basicDataModelQuery.Where(i => i.ProductId == (int)relatedKey && i.Id != (int)exceptKey);
+        }
+
         public async Task<License> GetSingleUpdateModelAsync(object key)
         {
             return await db.License.SingleAsync(i => i.Id == (int)key);

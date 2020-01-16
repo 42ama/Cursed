@@ -11,6 +11,6 @@ namespace Cursed.Models.Data.Licenses
         public int GovermentNum { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public int? ProductCAS { get; set; }
+        public int ProductCAS { get; set; }
     }
 }

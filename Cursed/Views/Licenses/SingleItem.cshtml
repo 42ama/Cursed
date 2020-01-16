@@ -37,17 +37,45 @@
     </tr>
     <tr>
         <td>Product CAS:</td>
-        @if (Model.ProductCAS.HasValue)
-        {
-            <td>@Html.RouteLink(Model.ProductCAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = Model.ProductId })</td>
-        }
-        else
-        {
-            <td>None</td>
-        }
+        <td>@Html.RouteLink(Model.ProductCAS.ToString(), ProductsCatalogRouting.SingleItem, new { key = Model.ProductId })</td>
+
     </tr>
     <tr>
         <td>License summary:</td>
         <td bgcolor="@attentionColor">@licenseSummary</td>
+    </tr>
+    <tr>
+        <td>Other licenses related to product:</td>
+        @if (Model.RelatedLicenses.Count() == 0)
+        {
+            <td>None</td>
+        }
+        else
+        {
+            <td>
+                <table>
+                    @foreach (var license in Model.RelatedLicenses)
+                    {
+                        string relatedAttentionColor;
+                        string relatedLicenseSummary;
+                        if (license.IsValid)
+                        {
+                            relatedAttentionColor = "green";
+                            relatedLicenseSummary = "Valid";
+                        }
+                        else
+                        {
+                            relatedAttentionColor = "red";
+                            relatedLicenseSummary = "Not valid";
+                        }
+                        <tr>
+                            <td>@Html.RouteLink(license.GovermentNum.ToString(), LicensesRouting.SingleItem, new { key = license.Id })</td>
+                            <td>@license.Date</td>
+                            <td bgcolor="@relatedAttentionColor">@relatedLicenseSummary</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        }  
     </tr>
 </table>

@@ -46,16 +46,7 @@ namespace Cursed.Controllers
             var viewModel = new List<LicensesViewModel>();
             foreach (var item in model)
             {
-                viewModel.Add(new LicensesViewModel
-                {
-                    Id = item.Id,
-                    GovermentNum = item.GovermentNum,
-                    Date = item.Date.ToShortDateString(),
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ProductCAS = item.ProductCAS,
-                    IsValid = licenseValidation.IsValid(new License { Date = item.Date })
-                });
+                viewModel.Add(LicensesDataModelToViewModel(item));
             }
             var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
 
@@ -71,16 +62,17 @@ namespace Cursed.Controllers
             if (statusMessage.IsCompleted)
             {
                 var dataModel = await logic.GetSingleDataModelAsync(id);
-                var viewModel = new LicensesViewModel
+                var viewModel = LicensesDataModelToViewModel(dataModel);
+
+                // gather entities related by product id
+                var relatedLicensesDataModel = await logic.GetRelatedEntitiesByKeyAsync(dataModel.ProductId, id);
+                var relatedLicensesViewModel = new List<LicensesViewModel>();
+                foreach (var licenseDataModel in relatedLicensesDataModel)
                 {
-                    Id = dataModel.Id,
-                    GovermentNum = dataModel.GovermentNum,
-                    Date = dataModel.Date.ToShortDateString(),
-                    ProductId = dataModel.ProductId,
-                    ProductName = dataModel.ProductName,
-                    ProductCAS = dataModel.ProductCAS,
-                    IsValid = licenseValidation.IsValid(new License { Date = dataModel.Date })
-                };
+                    relatedLicensesViewModel.Add(LicensesDataModelToViewModel(licenseDataModel));
+                }
+                viewModel.RelatedLicenses = relatedLicensesViewModel;
+
                 return View(viewModel);
             }
             else
@@ -157,6 +149,25 @@ namespace Cursed.Controllers
             {
                 return View("CustomError", statusMessage);
             }
+        }
+
+        /// <summary>
+        /// Conver LicensesDataModel to LicensesViewModel
+        /// </summary>
+        /// <param name="licenseDataModel">Data model to be converted</param>
+        /// <returns>LicensesViewModel</returns>
+        private LicensesViewModel LicensesDataModelToViewModel(LicensesDataModel licenseDataModel)
+        {
+            return new LicensesViewModel
+            {
+                Id = licenseDataModel.Id,
+                GovermentNum = licenseDataModel.GovermentNum,
+                Date = licenseDataModel.Date.ToShortDateString(),
+                ProductId = licenseDataModel.ProductId,
+                ProductName = licenseDataModel.ProductName,
+                ProductCAS = licenseDataModel.ProductCAS,
+                IsValid = licenseValidation.IsValid(new License { Date = licenseDataModel.Date })
+            };
         }
     }
 }

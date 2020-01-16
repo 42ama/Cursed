@@ -9,5 +9,6 @@ namespace Cursed.Models.Data.Licenses
     {
         public string Date { get; set; }
         public bool IsValid { get; set; }
+        public IEnumerable<LicensesViewModel> RelatedLicenses { get; set; }
     }
 }
