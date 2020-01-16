@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Data.Utility;

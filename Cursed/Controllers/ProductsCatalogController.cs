@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Context;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;
 using Cursed.Models.Data.Utility;
 using Cursed.Models.Interfaces.ControllerCRUD;

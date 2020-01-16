@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Data.Shared;
 
 namespace Cursed.Models.Data.Recipes

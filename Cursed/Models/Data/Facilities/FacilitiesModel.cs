@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.Data.Facilities
 {

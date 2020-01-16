@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Cursed.Models.Data.Facilities;
 using Cursed.Models.Data.Shared;
 using Cursed.Models.Context;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;
 using Cursed.Models.Routing;
 using Cursed.Models.Interfaces.ControllerCRUD;

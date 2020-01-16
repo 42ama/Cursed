@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cursed.Models.Services;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Tests.Stubs
 {

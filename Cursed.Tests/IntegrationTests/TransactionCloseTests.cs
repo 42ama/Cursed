@@ -6,7 +6,7 @@ using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Data.Shared;
 using Cursed.Tests.Stubs;
 using Cursed.Models.Data.Utility.ErrorHandling;

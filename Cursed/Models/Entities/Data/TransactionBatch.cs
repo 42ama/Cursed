@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Cursed.Models.Extensions;
 
-namespace Cursed.Models.Entities
+namespace Cursed.Models.Entities.Data
 {
     public partial class TransactionBatch
     {

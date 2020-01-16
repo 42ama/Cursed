@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cursed.Models.Services;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Data.Utility.ErrorHandling;
 
 namespace Cursed.Tests.Stubs

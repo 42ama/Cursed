@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.Context
 {

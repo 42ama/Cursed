@@ -2,7 +2,7 @@
 using Cursed.Models.Extensions;
 using System.Collections.Generic;
 
-namespace Cursed.Models.Entities
+namespace Cursed.Models.Entities.Data
 {
     public partial class License
     {
