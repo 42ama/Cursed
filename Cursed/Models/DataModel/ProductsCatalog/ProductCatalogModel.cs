@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.DataModel.ProductsCatalog

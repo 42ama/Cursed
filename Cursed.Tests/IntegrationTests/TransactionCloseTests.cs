@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.StaticReferences;
-using Cursed.Models.Logic;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
 using Cursed.Models.Entities.Data;
-using Cursed.Tests.Stubs;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
 
 namespace Cursed.Tests.IntegrationTests
 {

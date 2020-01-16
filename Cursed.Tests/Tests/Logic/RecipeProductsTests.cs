@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.RecipeProducts;
-using Cursed.Models.DataModel.Utility;
 using Cursed.Models.StaticReferences;
 
 namespace Cursed.Tests.Tests.Logic

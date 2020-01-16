@@ -4,7 +4,7 @@ using Cursed.Models.Entities.Data;
 using Cursed.Models.Services;
 using System.Collections.Generic;
 using Cursed.Models.StaticReferences;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Services
 {

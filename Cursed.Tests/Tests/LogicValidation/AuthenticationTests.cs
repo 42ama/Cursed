@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Authentication;
-using Cursed.Models.DataModel.Companies;
-using Cursed.Models.DataModel.Utility;
 using Cursed.Tests.Stubs;
 using Cursed.Models.Services;
 using Cursed.Models.DataModel.Authentication;
+using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {

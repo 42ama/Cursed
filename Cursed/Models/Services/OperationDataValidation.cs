@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Context;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 
 namespace Cursed.Models.Services

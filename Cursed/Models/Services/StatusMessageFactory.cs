@@ -1,4 +1,4 @@
-﻿using Cursed.Models.DataModel.Utility.ErrorHandling;
+﻿using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Models.Services
 {

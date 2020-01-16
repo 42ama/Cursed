@@ -1,13 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Context;
-using Cursed.Models.StaticReferences.Routing;
-using Cursed.Models.Services;
 using Cursed.Models.Entities.Authentication;
 
 namespace Cursed.Models.Logic

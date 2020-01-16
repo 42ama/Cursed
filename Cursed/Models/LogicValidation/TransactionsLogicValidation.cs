@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.DataModel.Companies;
-using Cursed.Models.Entities;
 using Cursed.Models.Services;
-using Cursed.Models.DataModel.Utility;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 
 namespace Cursed.Models.LogicValidation

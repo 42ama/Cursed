@@ -7,8 +7,6 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.ProductsCatalog;
 using Cursed.Models.StaticReferences;
-using Cursed.Models.DataModel.Utility;
-using Cursed.Tests.Extensions;
 using Cursed.Tests.Stubs;
 
 namespace Cursed.Tests.Tests.Logic

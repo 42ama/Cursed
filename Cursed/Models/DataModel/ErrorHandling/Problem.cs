@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
-namespace Cursed.Models.DataModel.Utility.ErrorHandling
+namespace Cursed.Models.DataModel.ErrorHandling
 {
     public class Problem
     {

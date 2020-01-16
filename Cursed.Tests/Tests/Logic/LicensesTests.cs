@@ -6,8 +6,6 @@ using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.Licenses;
-using Cursed.Models.DataModel.Utility;
-using Cursed.Tests.Extensions;
 
 namespace Cursed.Tests.Tests.Logic
 {

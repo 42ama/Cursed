@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Cursed.Models.DataModel.Utility;
 
 namespace Cursed.Models.DataModel.Companies
 {
