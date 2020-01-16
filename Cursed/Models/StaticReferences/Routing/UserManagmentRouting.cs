@@ -1,6 +1,6 @@
 ﻿
 
-namespace Cursed.Models.Routing
+namespace Cursed.Models.StaticReferences.Routing
 {
     public class UserManagmentRouting
     {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
-namespace Cursed.Models.Routing
+namespace Cursed.Models.StaticReferences.Routing
 {
     public class ProductsRouting
     {

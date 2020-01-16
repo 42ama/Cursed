@@ -13,7 +13,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Services;
 using Cursed.Models.DataModel.Utility;
 using Cursed.Models.DataModel.Utility.ErrorHandling;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 
 namespace Cursed.Models.LogicValidation
 {

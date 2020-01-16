@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using Cursed.Models.StaticReferences;
 using Cursed.Models.Logic;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;

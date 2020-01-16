@@ -1,10 +1,10 @@
 ﻿@using Cursed.Models.Entities
-@using Cursed.Models.DataModel.Shared
+@using Cursed.Models.StaticReferences
 @model ProductCatalog
 @{
     ViewData["Title"] = "EditSingleItem";
-    SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material}, Model?.Type);
-    string saveRoute = (string)ViewData["SaveRoute"];
+ SelectList selectType = new SelectList(new List<string> { ProductCatalogTypes.Product, ProductCatalogTypes.Material }, Model?.Type);
+ string saveRoute = (string)ViewData["SaveRoute"];
 }
 
 <h1>EditSingleItem</h1>

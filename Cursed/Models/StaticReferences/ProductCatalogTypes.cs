@@ -1,6 +1,6 @@
 ﻿
 
-namespace Cursed.Models.DataModel.Shared
+namespace Cursed.Models.StaticReferences
 {
     public static class ProductCatalogTypes
     {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
+using Cursed.Models.StaticReferences;
 using Cursed.Models.DataModel.Recipes;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.Shared;

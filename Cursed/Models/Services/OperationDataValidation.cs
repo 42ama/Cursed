@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.Context;
 using Cursed.Models.DataModel.Utility.ErrorHandling;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 
 namespace Cursed.Models.Services
 {

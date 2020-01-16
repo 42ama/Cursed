@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Cursed.Models.Context;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Entities;
 using Cursed.Models.Interfaces.LogicCRUD;
 using Cursed.Models.DataModel.Utility;

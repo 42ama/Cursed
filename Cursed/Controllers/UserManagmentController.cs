@@ -11,7 +11,7 @@ using Cursed.Models.Entities;
 using Cursed.Models.Logic;
 using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
 using Microsoft.AspNetCore.Authorization;

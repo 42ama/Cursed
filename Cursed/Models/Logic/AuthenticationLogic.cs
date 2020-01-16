@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Context;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.Entities.Authentication;
 

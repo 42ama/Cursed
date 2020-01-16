@@ -9,6 +9,7 @@ using Cursed.Models.DataModel.Transactions;
 using Cursed.Models.DataModel.Shared;
 using Cursed.Models.DataModel.Utility;
 using Cursed.Models.Extensions;
+using Cursed.Models.StaticReferences;
 using Cursed.Tests.Stubs;
 using Cursed.Models.DataModel.Utility.ErrorHandling;
 

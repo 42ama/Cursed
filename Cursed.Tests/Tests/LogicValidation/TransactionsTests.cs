@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Data;
+using Cursed.Models.StaticReferences;
 using Cursed.Models.DataModel.Companies;
 using Cursed.Models.DataModel.Shared;
 using Cursed.Tests.Stubs;

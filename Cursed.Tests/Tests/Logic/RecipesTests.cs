@@ -7,6 +7,7 @@ using Cursed.Models.Logic;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.DataModel.Shared;
 using Cursed.Models.DataModel.Recipes;
+using Cursed.Models.StaticReferences;
 
 namespace Cursed.Tests.Tests.Logic
 {
