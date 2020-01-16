@@ -8,7 +8,7 @@ using Cursed.Models.Entities.Authentication;
 using Cursed.Models.DataModel.Companies;
 using Cursed.Models.DataModel.Utility;
 using Cursed.Tests.Stubs;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.Services;
 using Cursed.Models.DataModel.Authentication;
 
 namespace Cursed.Tests.Tests.LogicValidation

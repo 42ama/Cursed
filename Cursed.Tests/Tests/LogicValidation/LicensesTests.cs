@@ -2,7 +2,7 @@
 using Xunit;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Data;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.Services;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {

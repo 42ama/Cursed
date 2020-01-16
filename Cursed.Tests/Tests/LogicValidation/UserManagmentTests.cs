@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 using Cursed.Models.LogicValidation;
-using Cursed.Models.DataModel.Utility.ErrorHandling;
+using Cursed.Models.Services;
 using Cursed.Models.Entities.Authentication;
 using Cursed.Tests.Stubs;
 
