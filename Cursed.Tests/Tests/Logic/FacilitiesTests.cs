@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.Facilities;
-using Cursed.Models.Data.Shared;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.Facilities;
+using Cursed.Models.StaticReferences;
 using Cursed.Tests.Extensions;
 using Cursed.Tests.Stubs;
 

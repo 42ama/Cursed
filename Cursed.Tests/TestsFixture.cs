@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Xunit;
 using Cursed.Tests.Extensions;
 using Cursed.Models.Context;

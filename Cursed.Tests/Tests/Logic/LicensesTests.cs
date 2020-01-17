@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.Licenses;
-using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.Licenses;
 
 namespace Cursed.Tests.Tests.Logic
 {

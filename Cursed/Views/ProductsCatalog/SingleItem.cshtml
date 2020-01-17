@@ -1,4 +1,4 @@
-﻿@using Cursed.Models.Data.ProductsCatalog
+﻿@using Cursed.Models.DataModel.ProductsCatalog
 @model ProductCatalogModel
 @{
     ViewData["Title"] = "SingleItem";
@@ -30,7 +30,7 @@
             {
                 foreach (var item in Model.Recipes)
                 {
-                    <p>@Html.RouteLink(item.Title, RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink(item.Item1, RecipesRouting.SingleItem, new { key = item.Item2 })</p>
                 }
             }
             else
@@ -46,7 +46,7 @@
             {
                 foreach (var item in Model.Storages)
                 {
-                    <p>@Html.RouteLink(item.Title, StoragesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink(item.Item1, StoragesRouting.SingleItem, new { key = item.Item2 })</p>
                 }
             }
             else

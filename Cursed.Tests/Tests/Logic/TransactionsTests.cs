@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.Transactions;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.Transactions;
 using Cursed.Models.Extensions;
-using Cursed.Tests.Stubs;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.StaticReferences;
 
 namespace Cursed.Tests.Tests.Logic
 {

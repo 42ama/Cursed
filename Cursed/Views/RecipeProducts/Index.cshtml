@@ -1,12 +1,10 @@
-﻿@using Cursed.Models.Entities
-@using Cursed.Models.Data.RecipeProducts
-@using Cursed.Models.Data.Utility
-@using Cursed.Models.Data.Shared
+﻿@using Cursed.Models.DataModel.RecipeProducts
+@using Cursed.Models.StaticReferences
 @model CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
 @{
     int recipeId = (int)ViewData["RecipeId"];
     ViewData["PagenationKey"] = recipeId.ToString();
-    SelectList selectType = new SelectList(new List<string>{ProductCatalogTypes.Product,ProductCatalogTypes.Material});
+    SelectList selectType = new SelectList(new List<string> { ProductCatalogTypes.Product, ProductCatalogTypes.Material });
     ViewData["Title"] = "Index";
     ViewData["PagenationRouteLink"] = RecipeProductsRouting.Index;
 
@@ -30,7 +28,7 @@
         {
             <tr>
                 <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
-                @if(item.Cas.HasValue)
+                @if (item.Cas.HasValue)
                 {
                     <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
                 }
@@ -93,6 +91,6 @@
                 </td>
             </tr>
         }
-        </tbody>
+    </tbody>
 </table>
 @await Html.PartialAsync("_PagenationByParam/PrevNextControl", (PagenationAbstract)Model.Pagenation, ViewData)

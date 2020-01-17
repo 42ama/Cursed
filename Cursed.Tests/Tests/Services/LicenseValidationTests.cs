@@ -1,9 +1,7 @@
 ﻿using System;
 using Xunit;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Services;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cursed.Tests.Tests.Services
 {

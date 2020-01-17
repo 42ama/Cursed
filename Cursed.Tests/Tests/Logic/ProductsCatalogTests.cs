@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.ProductsCatalog;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.ProductsCatalog;
+using Cursed.Models.StaticReferences;
 using Cursed.Tests.Stubs;
 
 namespace Cursed.Tests.Tests.Logic
@@ -331,8 +329,8 @@ namespace Cursed.Tests.Tests.Logic
                 Type = ProductCatalogTypes.Material,
                 LicenseRequired = true,
                 Licenses = new List<(License license, bool isValid)>(),
-                Storages = new List<TitleIdContainer>(),
-                Recipes = new List<TitleIdContainer>()
+                Storages = new List<ValueTuple<string, int>>(),
+                Recipes = new List<ValueTuple<string, int>>()
         };
             
             foreach (var license in licenses)
@@ -341,13 +339,13 @@ namespace Cursed.Tests.Tests.Logic
             }
             foreach (var storage in storages)
             {
-                expected.Storages.Add(new TitleIdContainer { Title = storage.Name, Id = storage.Id });
+                expected.Storages.Add(new ValueTuple<string, int> { Item1 = storage.Name, Item2 = storage.Id });
             }
             foreach (var recipe in recipes)
             {
                 if(recipe.Content.Length >= 45)
                 {
-                    expected.Recipes.Add(new TitleIdContainer { Id = recipe.Id, Title = recipe.Content.Substring(0, 45) + "..." });
+                    expected.Recipes.Add(new ValueTuple<string, int> { Item2 = recipe.Id, Item1 = recipe.Content.Substring(0, 45) + "..." });
                 }
             }
             
@@ -364,14 +362,14 @@ namespace Cursed.Tests.Tests.Logic
             foreach (var expectedStorage in expected.Storages)
             {
                 Assert.Contains(actual.Storages, actualStorage =>
-                    expectedStorage.Id == actualStorage.Id &&
-                    expectedStorage.Title == actualStorage.Title);
+                    expectedStorage.Item2 == actualStorage.Item2 &&
+                    expectedStorage.Item1 == actualStorage.Item1);
             }
             foreach (var expectedRecipe in expected.Recipes)
             {
                 Assert.Contains(actual.Recipes, actualRecipe =>
-                    expectedRecipe.Id == actualRecipe.Id &&
-                    expectedRecipe.Title == actualRecipe.Title);
+                    expectedRecipe.Item2 == actualRecipe.Item2 &&
+                    expectedRecipe.Item1 == actualRecipe.Item1);
             }
         }
 

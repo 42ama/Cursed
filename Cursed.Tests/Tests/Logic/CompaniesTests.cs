@@ -4,10 +4,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.Companies;
-using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.Companies;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -217,25 +215,25 @@ namespace Cursed.Tests.Tests.Logic
                 Name = "Test company #1"
             };
 
-            var storagesTitleIds = new List<TitleIdContainer>();
+            var storagesTitleIds = new List<ValueTuple<string, int>>();
             foreach (var storage in storages.Where(i => i.CompanyId == expected.Id))
             {
-                storagesTitleIds.Add(new TitleIdContainer
+                storagesTitleIds.Add(new ValueTuple<string, int>
                 {
-                    Title = storage.Name,
-                    Id = storage.Id
+                    Item1 = storage.Name,
+                    Item2 = storage.Id
                 });
             }
 
             expected.Storages = storagesTitleIds;
 
-            var transactionsTitleIds = new List<TitleIdContainer>();
+            var transactionsTitleIds = new List<ValueTuple<string, int>>();
             foreach (var transaction in transactions.Where(i => i.CompanyId == expected.Id))
             {
-                transactionsTitleIds.Add(new TitleIdContainer
+                transactionsTitleIds.Add(new ValueTuple<string, int>
                 {
-                    Title = transaction.Date.ToShortDateString(),
-                    Id = transaction.Id
+                    Item1 = transaction.Date.ToShortDateString(),
+                    Item2 = transaction.Id
                 });
             }
 
@@ -250,14 +248,14 @@ namespace Cursed.Tests.Tests.Logic
             foreach (var expectedStorage in expected.Storages)
             {
                 Assert.Contains(actual.Storages, actualStorage =>
-                    actualStorage.Id == expectedStorage.Id &&
-                    actualStorage.Title == expectedStorage.Title);
+                    actualStorage.Item2 == expectedStorage.Item2 &&
+                    actualStorage.Item1 == expectedStorage.Item1);
             }
             foreach (var expectedTransaction in expected.Transactions)
             {
                 Assert.Contains(actual.Transactions, actualTransaction =>
-                    actualTransaction.Id == expectedTransaction.Id &&
-                    actualTransaction.Title == expectedTransaction.Title);
+                    actualTransaction.Item2 == expectedTransaction.Item2 &&
+                    actualTransaction.Item1 == expectedTransaction.Item1);
             }
         }
 

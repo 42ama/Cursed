@@ -1,11 +1,10 @@
 ﻿using System;
 using Xunit;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Services;
 using System.Collections.Generic;
-using Cursed.Models.Data.Shared;
-using System.Text;
-using Cursed.Models.Data.Utility.ErrorHandling;
+using Cursed.Models.StaticReferences;
+using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Tests.Tests.Services
 {

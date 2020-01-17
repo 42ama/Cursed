@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
-using Cursed.Models.Entities;
-using Cursed.Models.Data.Storages;
-using Cursed.Models.Data.Shared;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.Entities.Data;
+using Cursed.Models.DataModel.Storages;
+using Cursed.Models.DataModel.Products;
 
 namespace Cursed.Tests.Tests.Logic
 {
@@ -222,7 +221,7 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Test storage #1",
                     Latitude = (decimal)12.3456,
                     Longitude = (decimal)78.9012,
-                    Company = new TitleIdContainer{Id = 44440, Title = "Company #1"},
+                    Company = new ValueTuple<string, int>{Item2 = 44440, Item1 = "Company #1"},
                     ProductsCount = 2
                 },
                 new StoragesModel
@@ -231,7 +230,7 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Test storage #2",
                     Latitude = (decimal)12.3456,
                     Longitude = (decimal)78.9012,
-                    Company = new TitleIdContainer{Id = 44440, Title = "Company #1"},
+                    Company = new ValueTuple<string, int>{Item2 = 44440, Item1 = "Company #1"},
                     ProductsCount = 1
                 },
                 new StoragesModel
@@ -240,7 +239,7 @@ namespace Cursed.Tests.Tests.Logic
                     Name = "Test storage #3",
                     Latitude = (decimal)12.3456,
                     Longitude = (decimal)78.9012,
-                    Company = new TitleIdContainer{Id = 44441, Title = "Company #2"},
+                    Company = new ValueTuple<string, int>{Item2 = 44441, Item1 = "Company #2"},
                     ProductsCount = 1
                 }
             };
@@ -256,8 +255,8 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.Name == actualItem.Name &&
                     expectedItem.Latitude == actualItem.Latitude &&
                     expectedItem.Longitude == actualItem.Longitude &&
-                    expectedItem.Company.Title == actualItem.Company.Title &&
-                    expectedItem.Company.Id == actualItem.Company.Id &&
+                    expectedItem.Company.Item2 == actualItem.Company.Item2 &&
+                    expectedItem.Company.Item1 == actualItem.Company.Item1 &&
                     expectedItem.ProductsCount == actualItem.ProductsCount);
             }
         }
@@ -283,7 +282,7 @@ namespace Cursed.Tests.Tests.Logic
                 Name = "Test storage #1",
                 Latitude = (decimal)12.3456,
                 Longitude = (decimal)78.9012,
-                Company = new TitleIdContainer { Title = "Company #1", Id = 44440 },
+                Company = new ValueTuple<string, int> { Item1 = "Company #1", Item2 = 44440 },
                 Products = new List<ProductContainer>()
             };
             foreach (var product in products.Where(i => i.StorageId == expected.Id))
@@ -308,8 +307,8 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.Name, expected.Name);
             Assert.Equal(actual.Latitude, expected.Latitude);
             Assert.Equal(actual.Longitude, expected.Longitude);
-            Assert.Equal(actual.Company.Title, expected.Company.Title);
-            Assert.Equal(actual.Company.Id, expected.Company.Id);
+            Assert.Equal(actual.Company.Item2, expected.Company.Item2);
+            Assert.Equal(actual.Company.Item1, expected.Company.Item1);
             foreach (var expectedProduct in expected.Products)
             {
                 Assert.Contains(actual.Products, actualProduct =>

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Cursed.Models.Logic;
 using Cursed.Models.Entities.Authentication;
-using Cursed.Models.Data.Companies;
-using Cursed.Models.Data.Utility;
-using Cursed.Tests.Extensions;
 
 namespace Cursed.Tests.Tests.Logic
 {

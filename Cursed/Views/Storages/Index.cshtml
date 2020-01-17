@@ -1,4 +1,4 @@
-﻿@using Cursed.Models.Data.Storages
+﻿@using Cursed.Models.DataModel.Storages
 
 @model Pagenation<StoragesModel>
 @{
@@ -27,9 +27,9 @@
                 <td>@item.Name</td>
                 <td>@item.Latitude</td>
                 <td>@item.Longitude</td>
-                @if(item.Company != null)
+                @if(item.Company != new ValueTuple<string, int>())
                 {
-                    <td>@Html.RouteLink(item.Company.Title, CompaniesRouting.SingleItem, new { key = item.Company.Id })</td>
+                    <td>@Html.RouteLink(item.Company.Item1, CompaniesRouting.SingleItem, new { key = item.Company.Item2 })</td>
                 }
                 else
                 {

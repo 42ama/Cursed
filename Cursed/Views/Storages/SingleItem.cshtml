@@ -1,4 +1,5 @@
-﻿@using Cursed.Models.Data.Storages
+﻿@using Cursed.Models.DataModel.Storages
+@using Cursed.Models.DataModel.Products
 @model StorageModel
 @{
     ViewData["Title"] = "SingleItem";
@@ -31,9 +32,9 @@
     </tr>
     <tr>
         <td>Company:</td>
-        @if(Model.Company!=null)
+        @if(Model.Company != new ValueTuple<string, int>())
         {
-            <td>@Html.RouteLink(Model.Company.Title, CompaniesRouting.SingleItem, new { key = Model.Company.Id })</td>
+            <td>@Html.RouteLink(Model.Company.Item1, CompaniesRouting.SingleItem, new { key = Model.Company.Item2 })</td>
         }
         else
         {

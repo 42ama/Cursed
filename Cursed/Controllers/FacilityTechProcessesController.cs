@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Cursed.Models.Data.FacilityTechProcesses;
-using Cursed.Models.Data.Shared;
+using Cursed.Models.DataModel.FacilityTechProcesses;
 using Cursed.Models.Context;
-using Cursed.Models.Entities;
+using Cursed.Models.Entities.Data;
 using Cursed.Models.Logic;
-using Cursed.Models.Routing;
-using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.StaticReferences.Routing;
+using Cursed.Models.DataModel.Pagenation;
 using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
-using Cursed.Models.Data.Utility.Authorization;
+using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {

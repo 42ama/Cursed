@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Cursed.Models.Data.ProductsCatalog;
 using Cursed.Models.Context;
-using Cursed.Models.Entities;
 using Cursed.Models.Logic;
-using Cursed.Models.Data.Utility;
+using Cursed.Models.DataModel.Pagenation;
 using Cursed.Models.Interfaces.ControllerCRUD;
-using Cursed.Models.Routing;
+using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.LogicValidation;
-using Microsoft.AspNetCore.Authorization;
-using Cursed.Models.Data.Utility.Authorization;
-using Cursed.Models.Data.Authentication;
+using Cursed.Models.DataModel.Authorization;
+using Cursed.Models.DataModel.Authentication;
 using Cursed.Models.Entities.Authentication;
 using Microsoft.AspNetCore.Http;
 

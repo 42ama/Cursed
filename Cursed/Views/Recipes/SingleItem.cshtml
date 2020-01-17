@@ -1,11 +1,11 @@
-﻿@using Cursed.Models.Data.Recipes
-@using Cursed.Models.Data.Utility
-@using Cursed.Models.Data.Shared
+﻿@using Cursed.Models.DataModel.Recipes
+@using Cursed.Models.DataModel.RecipeProducts
+@using Cursed.Models.StaticReferences
 @model RecipeModel
 @{
     ViewData["Title"] = "SingleItem";
     string govApprov = Model.GovApproved == true ? "Approved" : "Not approved";
-    string techApprov = Model.TechApproved == true ? "Approved" : "Not approved" ; 
+    string techApprov = Model.TechApproved == true ? "Approved" : "Not approved";
 }
 <h1>RecipeId: @Model.Id</h1>
 <p>@Html.RouteLink("Add child", RecipesRouting.AddChildSingleItem, new { key = Model.Id })</p>
