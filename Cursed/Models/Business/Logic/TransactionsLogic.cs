@@ -107,7 +107,7 @@ namespace Cursed.Models.Logic
         {
             var transaction = db.TransactionBatch.Single(i => i.Id == id);
 
-            foreach (var operation in db.Operation.Where(i => i.TransactionId == id))
+            foreach (var operation in await db.Operation.Where(i => i.TransactionId == id).ToListAsync())
             {
                 Product productInc;
                 Product productDec;
