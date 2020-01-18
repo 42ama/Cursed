@@ -10,6 +10,10 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.Logic
 {
+    /// <summary>
+    /// Facilities section logic. Consists of CRUD actions for facilities, including gathering methods for
+    /// both single facility and collection of all facilities.
+    /// </summary>
     public class FacilitiesLogic : IReadColection<FacilitiesModel>, IReadSingle<FacilityModel>, IReadUpdateForm<Facility>, ICUD<Facility>
     {
         private readonly CursedDataContext db;
@@ -20,8 +24,13 @@ namespace Cursed.Models.Logic
             this.licenseValidation = licenseValidation;
         }
 
+        /// <summary>
+        /// Gather all facilities from database.
+        /// </summary>
+        /// <returns>All facilities from database. Each facility contains more information than Facility entity.</returns>
         public async Task<IEnumerable<FacilitiesModel>> GetAllDataModelAsync()
         {
+            // gather facilities, to have unblocking call when grouping
             var facilities = await db.Facility.ToListAsync();
             var query = from f in facilities
                         join q in (from f in facilities
@@ -41,11 +50,19 @@ namespace Cursed.Models.Logic
             return query;
         }
 
+        /// <summary>
+        /// Gather single facility, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Single facility, which found by <c>key</c>. Contains more information than Facility entity.</returns>
         public async Task<FacilityModel> GetSingleDataModelAsync(object key)
         {
+            // gather facilities, to have unblocking call when grouping
             var facilities = await db.Facility.ToListAsync();
+            // gather licenses, to have validation information on each license
             var licensesList = await db.License.ToListAsync();
 
+            // gather basic data required for display facility
             var queryInner = (from f in facilities
                              where f.Id == (int)key
                              join tp in db.TechProcess on f.Id equals tp.FacilityId into techprocesses
@@ -70,16 +87,18 @@ namespace Cursed.Models.Logic
                                  LicenseRequired = pcs.LicenseRequired ?? false
                              } by f.Id).ToList();
 
-            // for each product connect license from previously loaded list and set IsValid property,
-            // baseed on validation
+            // for each product connect license from previously loaded list and 
+            // based on validation set IsValid property
             foreach (var group in queryInner)
             {
                 foreach (var item in group)
                 {
                     if(item.LicenseRequired)
                     {
+                        // set default to false
                         item.IsValid = false;
                         var licenses = licensesList.Where(i => i.ProductId == item.ProductId);
+                        // if valid license for current proudct if found, set IsValid to true
                         foreach (var license in licenses)
                         {
                             if (licenseValidation.IsValid(license))
@@ -91,11 +110,13 @@ namespace Cursed.Models.Logic
                     }
                     else
                     {
+                        // if license isn't required, consider product valid
                         item.IsValid = true;
                     }
                 }
             }
 
+            // group gathered data into final model
             var queryOuter = from f in facilities
                         where f.Id == (int)key
                         join qi in queryInner on f.Id equals qi.Key
@@ -111,12 +132,21 @@ namespace Cursed.Models.Logic
             return queryOuter.Single();
         }
 
-
+        /// <summary>
+        /// Gather single facility, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Single facility, which found by <c>key</c>.</returns>
         public async Task<Facility> GetSingleUpdateModelAsync(object key)
         {
             return await db.Facility.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
+        /// <summary>
+        /// Add new facility.
+        /// </summary>
+        /// <param name="model">Facility to be added</param>
+        /// <returns>Added facility with correct key(Id) value</returns>
         public async Task<Facility> AddDataModelAsync(Facility model)
         {
             model.Id = default;
@@ -125,6 +155,10 @@ namespace Cursed.Models.Logic
             return entity.Entity;
         }
 
+        /// <summary>
+        /// Update facility.
+        /// </summary>
+        /// <param name="model">Updated facility information</param>
         public async Task UpdateDataModelAsync(Facility model)
         {
             var currentModel = await db.Facility.FirstOrDefaultAsync(i => i.Id == model.Id);
@@ -132,6 +166,10 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Delete facility.
+        /// </summary>
+        /// <param name="key">Id of facility to be deleted</param>
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Facility.FindAsync((int)key);

@@ -11,6 +11,10 @@ using Cursed.Models.DataModel.RecipeProducts;
 
 namespace Cursed.Models.Logic
 {
+    /// <summary>
+    /// Recipes section logic. Consists of CRUD actions for recipes, including gathering methods for
+    /// both single recipe and collection of all recipes.
+    /// </summary>
     public class RecipesLogic : IReadColection<RecipesModel>, IReadSingle<RecipeModel>, IReadUpdateForm<Recipe>, ICUD<Recipe>
     {
         private readonly CursedDataContext db;
@@ -19,8 +23,13 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
+        /// <summary>
+        /// Gather all recipes from database.
+        /// </summary>
+        /// <returns>All recipes from database. Each recipe contains more information than Recipe entity.</returns>
         public async Task<IEnumerable<RecipesModel>> GetAllDataModelAsync()
         {
+            // gather recipes, to have unblocking call when grouping
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
                      join ak in (from r in recipes
@@ -55,8 +64,15 @@ namespace Cursed.Models.Logic
 
             return query;
         }
+
+        /// <summary>
+        /// Gather single recipe, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of recipe to be found</param>
+        /// <returns>Single recipe, which found by <c>key</c>. Contains more information than Recipe entity.</returns>
         public async Task<RecipeModel> GetSingleDataModelAsync(object key)
         {
+            // gather recipes, to have unblocking call when grouping
             var recipes = await db.Recipe.ToListAsync();
             var query = from r in recipes
                         where r.Id == (int)key
@@ -114,12 +130,25 @@ namespace Cursed.Models.Logic
                             RecipeProducts = p?.Select(i => i.RecipeProductContainer).ToList() ?? new List<RecipeProductContainer>(),
                             RelatedFacilities = techP?.Select(i => i.Facility).ToList() ?? new List<Facility>()
                         };
+
             return query.Single();
         }
+
+        /// <summary>
+        /// Gather single recipe, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of recipe to be found</param>
+        /// <returns>Single recipe, which found by <c>key</c>.</returns>
         public async Task<Recipe> GetSingleUpdateModelAsync(object key)
         {
             return await db.Recipe.SingleAsync(i => i.Id == (int)key);
         }
+
+        /// <summary>
+        /// Add new recipe.
+        /// </summary>
+        /// <param name="model">Recipe to be added</param>
+        /// <returns>Added recipe with correct key(Id) value</returns>
         public async Task<Recipe> AddDataModelAsync(Recipe model)
         {
             model.Id = default;
@@ -127,6 +156,11 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
             return entity.Entity;
         }
+
+        /// <summary>
+        /// Inverse TechApproval field of specific recipe
+        /// </summary>
+        /// <param name="key">Id of recipe to be found</param>
         public async Task InverseTechnologistApprovalAsync(object key)
         {
             var model = await db.Recipe.FirstOrDefaultAsync(i => i.Id == (int)key);
@@ -140,6 +174,11 @@ namespace Cursed.Models.Logic
             }
             await UpdateDataModelAsync(model);
         }
+
+        /// <summary>
+        /// Inverse GovermentApproval field of specific recipe
+        /// </summary>
+        /// <param name="key">Id of recipe to be found</param>
         public async Task InverseGovermentApprovalAsync(object key)
         {
             var model = await db.Recipe.FirstOrDefaultAsync(i => i.Id == (int)key);
@@ -153,6 +192,13 @@ namespace Cursed.Models.Logic
             }
             await UpdateDataModelAsync(model);
         }
+
+        /// <summary>
+        /// Add new recipe, as child to existing recipe
+        /// </summary>
+        /// <param name="model">Recipe to be added</param>
+        /// <param name="parentId">Id of recipe, which will be registered as parent</param>
+        /// <returns>Added recipe with correct key(Id) value</returns>
         public async Task<Recipe> AddChildDataModelAsync(Recipe model, int parentId)
         {
             model.Id = default;
@@ -176,15 +222,23 @@ namespace Cursed.Models.Logic
             
             await db.SaveChangesAsync();
             return entity.Entity;
-
-
         }
+
+        /// <summary>
+        /// Update recipe.
+        /// </summary>
+        /// <param name="model">Updated recipe information</param>
         public async Task UpdateDataModelAsync(Recipe model)
         {
             var currentModel = await db.Recipe.FirstOrDefaultAsync(i => i.Id == model.Id);
             db.Entry(currentModel).CurrentValues.SetValues(model);
             await db.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Delete recipe.
+        /// </summary>
+        /// <param name="key">Id of recipe to be deleted</param>
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Recipe.FindAsync((int)key);

@@ -7,6 +7,9 @@ using Cursed.Models.Entities.Authentication;
 
 namespace Cursed.Models.Logic
 {
+    /// <summary>
+    /// Logs section logic. Consists of read action for logs.
+    /// </summary>
     public class LogsLogic : IReadColection<LogRecord>
     {
         private readonly CursedAuthenticationContext db;
@@ -15,6 +18,10 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
+        /// <summary>
+        /// Gather all logs from database.
+        /// </summary>
+        /// <returns>All logs from database</returns>
         public async Task<IEnumerable<LogRecord>> GetAllDataModelAsync()
         {
             return await db.LogRecord.ToListAsync();

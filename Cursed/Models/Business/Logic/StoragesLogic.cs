@@ -11,6 +11,10 @@ using Cursed.Models.DataModel.Products;
 
 namespace Cursed.Models.Logic
 {
+    /// <summary>
+    /// Storages section logic. Consists of CRUD actions for storages, including gathering methods for
+    /// both single storage and collection of all storages.
+    /// </summary>
     public class StoragesLogic : IReadColection<StoragesModel>, IReadSingle<StorageModel>, IReadUpdateForm<Storage>, ICUD<Storage>
     {
         private readonly CursedDataContext db;
@@ -19,8 +23,13 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
+        /// <summary>
+        /// Gather all storages from database.
+        /// </summary>
+        /// <returns>All storages from database. Each storage contains more information than Storage entity.</returns>
         public async Task<IEnumerable<StoragesModel>> GetAllDataModelAsync()
         {
+            // gather storages, to have unblocking call when grouping
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         join p in (from s in storages
@@ -42,8 +51,14 @@ namespace Cursed.Models.Logic
             return query;
         }
 
+        /// <summary>
+        /// Gather single storage, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Single storage, which found by <c>key</c>. Contains more information than Storage entity.</returns>
         public async Task<StorageModel> GetSingleDataModelAsync(object key)
         {
+            // gather storages, to have unblocking call when grouping
             var storages = await db.Storage.ToListAsync();
             var query = from s in storages
                         where s.Id == (int)key
@@ -76,13 +91,22 @@ namespace Cursed.Models.Logic
 
             return query.Single();
         }
-    
 
+        /// <summary>
+        /// Gather single storage, which found by <c>key</c>.
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Single storage, which found by <c>key</c>.</returns>
         public async Task<Storage> GetSingleUpdateModelAsync(object key)
         {
             return await db.Storage.SingleOrDefaultAsync(i => i.Id == (int)key);
         }
 
+        /// <summary>
+        /// Add new storage.
+        /// </summary>
+        /// <param name="model">Storage to be added</param>
+        /// <returns>Added storage with correct key(Id) value</returns>
         public async Task<Storage> AddDataModelAsync(Storage model)
         {
             model.Id = default;
@@ -91,6 +115,10 @@ namespace Cursed.Models.Logic
             return entity.Entity;
         }
 
+        /// <summary>
+        /// Update storage.
+        /// </summary>
+        /// <param name="model">Updated storage information</param>
         public async Task UpdateDataModelAsync(Storage model)
         {
             var currentModel = await db.Storage.FirstOrDefaultAsync(i => i.Id == model.Id);
@@ -98,6 +126,10 @@ namespace Cursed.Models.Logic
             await db.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Delete storage.
+        /// </summary>
+        /// <param name="key">Id of storage to be deleted</param>
         public async Task RemoveDataModelAsync(object key)
         {
             var entity = await db.Storage.FindAsync((int)key);

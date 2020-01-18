@@ -7,6 +7,9 @@ using Cursed.Models.Interfaces.LogicCRUD;
 
 namespace Cursed.Models.Logic
 {
+    /// <summary>
+    /// Authetication section logic. Consists of read action for products at storage.
+    /// </summary>
     public class ProductsLogic : IReadCollectionByParam<ProductsDataModel>
     {
         private readonly CursedDataContext db;
@@ -15,6 +18,11 @@ namespace Cursed.Models.Logic
             this.db = db;
         }
 
+        /// <summary>
+        /// Gather all products at specific storage from database.
+        /// </summary>
+        /// <param name="key">Id of storage to which products belongs</param>
+        /// <returns>All products at specific storage from database. Each product contains more information than Product entity.</returns>
         public async Task<IEnumerable<ProductsDataModel>> GetAllDataModelAsync(object key)
         {
             int storageId = (int)key;
