@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Cursed.Models.Extensions
 {
+    /// <summary>
+    /// Trim extensions for DateTime struct. Clear value of instance up to selected precision.
+    /// </summary>
     public static partial class DateTimeExtensions
     {
         /// <summary>
