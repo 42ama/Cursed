@@ -38,7 +38,7 @@ namespace Cursed.Controllers
         /// Main page of section, contains consolidated collection of products in recipe. 
         /// Can be navigated through pagenation.
         /// </summary>
-        /// <param name="key">Id of recipe to which products belongs</param>
+        /// <param name="key">Id of recipe to which product recipe relations belongs</param>
         /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
         /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
