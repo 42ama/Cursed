@@ -38,6 +38,13 @@ namespace Cursed
 
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
+            services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(15);
+            });
+
             services.AddSingleton<ILicenseValidation, LicenseValidation>();
             services.AddSingleton<IErrorHandlerFactory, StatusMessageFactory>();
             services.AddSingleton<IGenPasswordHash, PasswordHash>();
@@ -83,8 +90,7 @@ namespace Cursed
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/hub/error");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
