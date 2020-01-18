@@ -1,10 +1,18 @@
-﻿@using Cursed.Models.Entities
-@model Company
+﻿@model Company
 @{
     ViewData["Title"] = "EditSingleItem";
     string saveRoute = (string)ViewData["SaveRoute"];
 }
-<h1>EditSingleItem</h1>
+<h1>Companies</h1>
+@if (Model != null)
+{
+    <h2>Edit company @Model.Name</h2>
+}
+else
+{
+    <h2>Add new company</h2>
+}
+
 
 <form asp-antiforgery="true" method="post" role="form">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
@@ -17,7 +25,7 @@
             <input required asp-for="Name" type="text" name="Name" value="@Model?.Name">
         </div>
     </div>
-     <div class="form-group">
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
         </div>

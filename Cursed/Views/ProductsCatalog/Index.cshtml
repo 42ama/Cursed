@@ -5,7 +5,7 @@
     ViewData["PagenationRouteLink"] = ProductsCatalogRouting.Index;
 }
 
-<h1>Product Catalog Index</h1>
+<h1>Product Catalog</h1>
 <p>@Html.RouteLink("Add", ProductsCatalogRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
@@ -14,8 +14,6 @@
         <tr>
             <td style="text-align:center">Name</td>
             <td style="text-align:center">CAS</td>
-            <td style="text-align:center"><p>Licensed</p><p>until</p></td>
-            <td style="text-align:center"><p>License</p><p>number</p></td>
             <td style="text-align:center"><p>License</p><p>summary</p></td>
             <td style="text-align:center">Used in</td>
             <td style="text-align:center">Contained in</td>

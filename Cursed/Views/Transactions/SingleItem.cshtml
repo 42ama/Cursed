@@ -4,7 +4,8 @@
     ViewData["Title"] = "SingleItem";
 
 }
-<h1>Transaction: @Model.Id</h1>
+<h1>Transactions</h1>
+<h2>Transaction: @Model.Id</h2>
 <p>@Html.RouteLink("Edit", TransactionsRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@TransactionsRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />

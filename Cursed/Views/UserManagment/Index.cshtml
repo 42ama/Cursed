@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
     ViewData["PagenationRouteLink"] = UserManagmentRouting.Index;
 }
-<h1>Facilities</h1>
+<h1>Users</h1>
 <p>@Html.RouteLink("Add", UserManagmentRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)

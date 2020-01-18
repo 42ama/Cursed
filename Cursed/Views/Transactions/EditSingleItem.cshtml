@@ -6,7 +6,15 @@
     string saveRoute = (string)ViewData["SaveRoute"];
 }
 
-<h1>EditSingleItem</h1>
+<h1>Transactions</h1>
+@if (Model != null)
+{
+    <h2>Edit transaction Id:@Model.Id</h2>
+}
+else
+{
+    <h2>Add new transaction</h2>
+}
 
 <form asp-antiforgery="true" method="post" role="form">
     <div class="validation" asp-validation-summary="ModelOnly"></div>

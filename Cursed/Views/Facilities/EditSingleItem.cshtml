@@ -3,7 +3,15 @@
     ViewData["Title"] = "EditSingleItem";
     string saveRoute = (string)ViewData["SaveRoute"];
 }
-<h1>EditSingleItem</h1>
+<h1>Facilities</h1>
+@if (Model != null)
+{
+    <h2>Edit facility @Model.Name</h2>
+}
+else
+{
+    <h2>Add new facility</h2>
+}
 
 <form asp-antiforgery="true" method="post" role="form">
     <div class="validation" asp-validation-summary="ModelOnly"></div>

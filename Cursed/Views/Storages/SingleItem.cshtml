@@ -4,9 +4,9 @@
 @{
     ViewData["Title"] = "SingleItem";
 }
-<h1>SingleItem</h1>
+<h1>Storages</h1>
 
-<h1>@Model.Name</h1>
+<h2>@Model.Name</h2>
 <p>@Html.RouteLink("Products", ProductsRouting.Index, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Edit", StoragesRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@StoragesRouting.DeleteSingleItem">

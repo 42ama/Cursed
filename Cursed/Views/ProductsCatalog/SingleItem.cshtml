@@ -4,7 +4,8 @@
     ViewData["Title"] = "SingleItem";
 
 }
-<h1>@Model.Name</h1>
+<h1>Product Catalog</h1>
+<h2>@Model.Name</h2>
 <p>@Html.RouteLink("Edit", ProductsCatalogRouting.GetEditSingleItem, new { key = Model.ProductId })</p>
 <form asp-antiforgery="true" method="post" asp-route="@ProductsCatalogRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.ProductId" />
@@ -12,15 +13,15 @@
 </form>
 <table>
     <tr>
-        <td><b>Name</b></td>
-        <td><b>@Model.Name</b></td>
+        <td>Name:</td>
+        <td>@Model.Name</td>
     </tr>
     <tr>
-        <td><b>CAS</b></td>
-        <td><b>@Model.CAS</b></td>
+        <td>CAS:</td>
+        <td>@Model.CAS</td>
     </tr>
     <tr>
-        <td valign="top"><b>Recipes</b></td>
+        <td valign="top">Recipes:</td>
         <td>
             @if (Model.Recipes.Count > 0)
             {
@@ -36,7 +37,7 @@
         </td>
     </tr>
     <tr>
-        <td valign="top"><b>Storages</b></td>
+        <td valign="top">Storages:</td>
         <td>
             @if (Model.Storages.Count > 0)
             {
@@ -52,7 +53,7 @@
         </td>
     </tr>
     <tr>
-        <td valign="top"><b>Licenses</b></td>
+        <td valign="top">Licenses:</td>
         <td>
             @if (Model.Licenses.Count > 0)
             {

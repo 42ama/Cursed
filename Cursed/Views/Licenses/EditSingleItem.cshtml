@@ -1,12 +1,18 @@
-﻿@using Cursed.Models.Entities
-@model License
+﻿@model License
 @{
     ViewData["Title"] = "EditSingleItem";
     string saveRoute = (string)ViewData["SaveRoute"];
 }
-<h1>EditSingleItem</h1>
+<h1>Licenses</h1>
+@if (Model != null)
+{
+    <h2>Edit license №@Model.GovermentNum</h2>
+}
+else
+{
+    <h2>Add new license</h2>
+}
 
-@*Lacks proper product id field*@
 <form asp-antiforgery="true" method="post" role="form">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
@@ -25,11 +31,6 @@
         </div>
     </div>
     <p>License expires at:*</p>@Html.EditorFor(model => model.Date)
-    @*<div class="form-group">
-        <div>
-            <input required type="text" asp-for="Date" value="@Model?.Date" style="width: 100px;" name="Date" id="Date" class="hasDatepicker" />
-        </div>
-    </div>*@
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />

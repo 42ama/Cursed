@@ -6,7 +6,7 @@
     ViewData["PagenationRouteLink"] = RecipesRouting.Index;
 }
 
-<h1>Recipe Index</h1>
+<h1>Recipes</h1>
 <p>@Html.RouteLink("Add", RecipesRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)

@@ -7,7 +7,7 @@
     string licenseSummary;
 }
 
-<h1>Licenses Index</h1>
+<h1>Licenses</h1>
 <p>@Html.RouteLink("Add", LicensesRouting.GetEditSingleItem)</p>
 @await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
 @await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)

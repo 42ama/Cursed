@@ -7,7 +7,8 @@
     string govApprov = Model.GovApproved == true ? "Approved" : "Not approved";
     string techApprov = Model.TechApproved == true ? "Approved" : "Not approved";
 }
-<h1>RecipeId: @Model.Id</h1>
+<h1>Recipes</h1>
+<h2>RecipeId: @Model.Id</h2>
 <p>@Html.RouteLink("Add child", RecipesRouting.AddChildSingleItem, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <p>@Html.RouteLink("Show consumed and produced Products", RecipeProductsRouting.Index, new { key = Model.Id })</p>

@@ -3,8 +3,8 @@
     ViewData["Title"] = "AddChildSingleItem";
     int parentId = (int)ViewData["parentId"];
 }
-
-<h1>Add child of @parentId recipe.</h1>
+<h1>Recipes</h1>
+<h2>Add child of @parentId recipe.</h2>
 <form asp-antiforgery="true" method="post" role="form">
     <div>
         <input hidden type="number" name="parentId" value="@parentId">

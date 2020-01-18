@@ -1,12 +1,18 @@
-﻿@using Cursed.Models.Entities
-@using Cursed.Models.StaticReferences
-@model ProductCatalog
+﻿@model ProductCatalog
 @{
     ViewData["Title"] = "EditSingleItem";
- string saveRoute = (string)ViewData["SaveRoute"];
+    string saveRoute = (string)ViewData["SaveRoute"];
 }
 
-<h1>EditSingleItem</h1>
+<h1>Product Catalog</h1>
+@if (Model != null)
+{
+    <h2>Edit product @Model.Name from catalog</h2>
+}
+else
+{
+    <h2>Add new product to catalog</h2>
+}
 
 <form asp-antiforgery="true" method="post" role="form">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
@@ -33,5 +39,3 @@
     </div>
 </form>
 <p>Fields labeld with * are required</p>
-<!--Add license managment(create new in ajax)-->
-<!--Fix ajax method posting-->

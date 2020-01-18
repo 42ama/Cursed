@@ -15,8 +15,8 @@
         licenseSummary = "Not valid";
     }
 }
-
-<h1>License №@Model.GovermentNum</h1>
+<h1>Licenses</h1>
+<h2>License №@Model.GovermentNum</h2>
 <p>@Html.RouteLink("Edit", LicensesRouting.GetEditSingleItem, new { key = Model.Id })</p>
 <form asp-antiforgery="true" method="post" asp-route="@LicensesRouting.DeleteSingleItem">
     <input hidden type="number" name="key" value="@Model.Id" />

@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = "EditSingleItem";
 }
-<h1>Edit User</h1>
+<h1>Users</h1>
+<h2>Edit user</h2>
 <p>@Html.RouteLink("Back to user", UserManagmentRouting.SingleItem, new { key = Model.Login })</p>
 
 <form asp-antiforgery="true" method="post" role="form" asp-route="@UserManagmentRouting.EditUserData">

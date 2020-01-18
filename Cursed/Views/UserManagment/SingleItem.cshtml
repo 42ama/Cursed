@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = "SingleItem";
 }
-<h1>User: @Model.Login</h1>
+<h1>Users</h1>
+<h2>User: @Model.Login</h2>
 <p>@Html.RouteLink("Edit", UserManagmentRouting.GetEditSingleItem, new { key = Model.Login })</p>
 <form asp-antiforgery="true" method="post" asp-route="@UserManagmentRouting.DeleteSingleItem">
     <input hidden type="text" name="key" value="@Model.Login" />
