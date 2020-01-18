@@ -16,7 +16,7 @@
 <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.AddSingleItem">
     <input hidden name="FacilityId" type="number" value="@facilityId" />
     <input required name="RecipeId" type="number" placeholder="Recipe Id" />
-    <input required name="DayEffiency" type="number" placeholder="Day Efficiency" />
+    <input required name="DayEfficiency" type="number" placeholder="Day Efficiency" />
     <input type="submit" class="btn btn-default" value="Add" />
 </form>
 <table>
@@ -54,12 +54,12 @@
                     <p>@displayText</p>
                 </td>
                 <td colspan="3">@item.RecipeContent</td>
-                <td>@item.DayEffiency</td>
+                <td>@item.DayEfficiency</td>
                 <td>
                     <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.EditSingleItem">
                         <input hidden name="FacilityId" type="number" value="@facilityId" />
                         <input hidden name="RecipeId" type="number" value="@item.RecipeId" />
-                        <input required name="DayEffiency" type="number" value="@item.DayEffiency" placeholder="Day Efficiency"/>
+                        <input required name="DayEfficiency" type="number" value="@item.DayEfficiency" placeholder="Day Efficiency"/>
                         <input type="submit" class="btn btn-default" value="Edit" />
                     </form>
                     <form asp-antiforgery="true" method="post" asp-route="@FacilityTechProcessesRouting.DeleteSingleItem">

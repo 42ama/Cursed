@@ -10,6 +10,6 @@ namespace Cursed.Models.DataModel.FacilityTechProcesses
         public string RecipeContent { get; set; }
         public bool RecipeTechApprov { get; set; }
         public bool RecipeGovApprov { get; set; }
-        public decimal DayEffiency { get; set; }
+        public decimal DayEfficiency { get; set; }
     }
 }

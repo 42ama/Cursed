@@ -175,7 +175,7 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     FacilityId = 44440,
                     FacilityName = "Test facility",
-                    DayEffiency = 41,
+                    DayEfficiency = 41,
                     RecipeId = 44440,
                     RecipeContent = "Im recipe #1 content",
                     RecipeGovApprov = true,
@@ -185,7 +185,7 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     FacilityId = 44440,
                     FacilityName = "Test facility",
-                    DayEffiency = 42,
+                    DayEfficiency = 42,
                     RecipeId = 44441,
                     RecipeContent = "Im recipe #2 content",
                     RecipeGovApprov = true,
@@ -195,7 +195,7 @@ namespace Cursed.Tests.Tests.Logic
                 {
                     FacilityId = 44440,
                     FacilityName = "Test facility",
-                    DayEffiency = 43,
+                    DayEfficiency = 43,
                     RecipeId = 44442,
                     RecipeContent = "Im recipe #3 content",
                     RecipeGovApprov = false,
@@ -213,7 +213,7 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.RecipeId == actualItem.RecipeId &&
                     expectedItem.FacilityId == actualItem.FacilityId &&
                     expectedItem.FacilityName == actualItem.FacilityName &&
-                    expectedItem.DayEffiency == actualItem.DayEffiency &&
+                    expectedItem.DayEfficiency == actualItem.DayEfficiency &&
                     expectedItem.RecipeContent == actualItem.RecipeContent &&
                     expectedItem.RecipeGovApprov == actualItem.RecipeGovApprov &&
                     expectedItem.RecipeTechApprov == actualItem.RecipeTechApprov);
