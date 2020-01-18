@@ -11,6 +11,9 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Products section controller. Consists of Index action, which displays products in specific storage.
+    /// </summary>
     [Route("products")]
     public class ProductsController : Controller, IReadCollectionByParam
     {
@@ -20,6 +23,13 @@ namespace Cursed.Controllers
             logic = new ProductsLogic(db);
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of products at storage. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="key">Id of storage to which products belongs</param>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = ProductsRouting.Index)]
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
@@ -28,7 +38,9 @@ namespace Cursed.Controllers
             ViewData["StorageId"] = storageId;
             var model = await logic.GetAllDataModelAsync(storageId);
 
+            // form pagenation model
             var pagenationModel = new Pagenation<ProductsDataModel>(model, itemsOnPage, currentPage);
+
             return View(pagenationModel);
         }
     }

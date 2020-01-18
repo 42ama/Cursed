@@ -12,6 +12,10 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Operations section controller. Consists of CUD actions for operations. Read actions
+    /// handled through transactions section.
+    /// </summary>
     [Route("transactions/transaction")]
     public class OperationsController : Controller, IReadUpdateForm, ICreate<Operation>, IUpdate<Operation>, IDeleteByModel<Operation>
     {
@@ -27,6 +31,10 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Display a page with form to update operation.
+        /// </summary>
+        /// <param name="key">Id of operation to be edit</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("operation/edit", Name = OperationsRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
@@ -36,7 +44,6 @@ namespace Cursed.Controllers
 
             if (statusMessage.IsCompleted)
             {
-                ViewData["SaveRoute"] = OperationsRouting.EditSingleItem;
                 if (statusMessage.IsCompleted)
                 {
                     var model = await logic.GetSingleUpdateModelAsync(id);
@@ -46,6 +53,10 @@ namespace Cursed.Controllers
             return View("CustomError", statusMessage);
         }
 
+        /// <summary>
+        /// Post action to add new operation.
+        /// </summary>
+        /// <param name="model">Operation to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/add", Name = OperationsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Operation model)
@@ -55,6 +66,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
         }
 
+        /// <summary>
+        /// Post action to update operation.
+        /// </summary>
+        /// <param name="model">Updated operation information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/edit", Name = OperationsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Operation model)
@@ -72,6 +87,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete operation.
+        /// </summary>
+        /// <param name="model">Model of operation containing key information (Id) to find operation and transaction information (TransactionId) for further redirect</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("operation/delete", Name = OperationsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(Operation model)

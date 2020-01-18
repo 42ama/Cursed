@@ -14,6 +14,10 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Products catalog section controller. Consists of CRUD actions for products in catalog, including read action for
+    /// both single product and collection of all products.
+    /// </summary>
     [Route("products-catalog")]
     public class ProductsCatalogController : Controller, ICUD<ProductCatalog>, IReadColection, IReadSingle, IReadUpdateForm
     {
@@ -31,16 +35,28 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of products from catalog. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("", Name = ProductsCatalogRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
+
+            // form pagenation model
             var pagenationModel = new Pagenation<ProductsCatalogModel>(model, itemsOnPage, currentPage);
 
             return View(pagenationModel);
         }
 
+        /// <summary>
+        /// Displays a single product from catalog, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of product from catalog to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("product", Name = ProductsCatalogRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -58,11 +74,17 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new product to catalog.
+        /// </summary>
+        /// <param name="key">Id of product from catalog to be edited, if null - considered that product added to catalog insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("product/edit", Name = ProductsCatalogRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
-            if(key != null)
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
+            if (key != null)
             {
                 int id = Int32.Parse(key);
                 ViewData["SaveRoute"] = ProductsCatalogRouting.EditSingleItem;
@@ -85,6 +107,10 @@ namespace Cursed.Controllers
             
         }
 
+        /// <summary>
+        /// Post action to add new product to catalog.
+        /// </summary>
+        /// <param name="model">Product to be added to catalog</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/add", Name = ProductsCatalogRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(ProductCatalog model)
@@ -94,6 +120,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(ProductsCatalogRouting.Index);
         }
 
+        /// <summary>
+        /// Post action to update product from catalog.
+        /// </summary>
+        /// <param name="model">Updated product from catalog information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/edit", Name = ProductsCatalogRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(ProductCatalog model)
@@ -111,6 +141,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete product from catalog.
+        /// </summary>
+        /// <param name="key">Id of product from catalog to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("product/delete", Name = ProductsCatalogRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)

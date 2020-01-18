@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Used for log-in and log-out of user. Also provides AccesDenied page, which accessed
+    /// in cases user doesn't have required role to access action.
+    /// </summary>
     public class AuthenticationController : Controller
     {
         private readonly AuthenticationLogic logic;
@@ -88,6 +92,13 @@ namespace Cursed.Controllers
             return RedirectToRoute(HubRouting.Index);
         }
 
+
+        /// <summary>
+        /// Authehticate user in system. <c>HttpContext.User</c> now will contain <c>userName</c> and <c>roleName</c>
+        /// of user
+        /// </summary>
+        /// <param name="userName">Username to be stored in user identity</param>
+        /// <param name="roleName">Role to be stored in user identity</param>
         private async Task Authenticate(string userName, string roleName)
         {
             // create list of user claims

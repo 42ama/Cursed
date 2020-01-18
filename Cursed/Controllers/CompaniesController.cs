@@ -14,6 +14,10 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Companies section controller. Consists of CRUD actions for companies, including read action for
+    /// both single company and collection of all companies.
+    /// </summary>
     [Route("companies")]
     public class CompaniesController : Controller, ICUD<Company>, IReadColection, IReadSingle, IReadUpdateForm
     {
@@ -29,18 +33,29 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of companies. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = CompaniesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
-
+            
+            // form pagenation model
             var pagenationModel = new Pagenation<CompaniesModel>(model, itemsOnPage, currentPage);
 
             return View(pagenationModel);
 
         }
 
+        /// <summary>
+        /// Displays a single company, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("company", Name = CompaniesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -58,10 +73,16 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new company.
+        /// </summary>
+        /// <param name="key">Id of company to be edited, if null - considered that company added insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("company/edit", Name = CompaniesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
             if (key != null)
             {
                 int id = Int32.Parse(key);
@@ -84,6 +105,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to add new company.
+        /// </summary>
+        /// <param name="model">Company to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/add", Name = CompaniesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Company model)
@@ -93,6 +118,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(CompaniesRouting.Index);
         }
 
+        /// <summary>
+        /// Post action to update company.
+        /// </summary>
+        /// <param name="model">Updated company information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/edit", Name = CompaniesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Company model)
@@ -110,6 +139,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete company.
+        /// </summary>
+        /// <param name="key">Id of company to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("company/delete", Name = CompaniesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)

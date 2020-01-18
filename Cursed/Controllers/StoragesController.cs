@@ -14,6 +14,10 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Storages section controller. Consists of CRUD actions for storages, including read action for
+    /// both single storage and collection of all storages.
+    /// </summary>
     [Route("storages")]
     public class StoragesController : Controller, ICUD<Storage>, IReadColection, IReadSingle, IReadUpdateForm
     {
@@ -30,15 +34,28 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of storages. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = StoragesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
+
+            // form pagenation model
             var pagenationModel = new Pagenation<StoragesModel>(model, itemsOnPage, currentPage);
+
             return View(pagenationModel);
         }
 
+        /// <summary>
+        /// Displays a single storage, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("storage", Name = StoragesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -57,10 +74,16 @@ namespace Cursed.Controllers
 
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new storage.
+        /// </summary>
+        /// <param name="key">Id of storage to be edited, if null - considered that storage added insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("storage/edit", Name = StoragesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
             if (key != null)
             {
                 int id = Int32.Parse(key);
@@ -83,6 +106,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to add new storage.
+        /// </summary>
+        /// <param name="model">Storage to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/add", Name = StoragesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Storage model)
@@ -92,6 +119,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(StoragesRouting.Index);
         }
 
+        /// <summary>
+        /// Post action to update storage.
+        /// </summary>
+        /// <param name="model">Updated storage information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/edit", Name = StoragesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Storage model)
@@ -109,6 +140,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete storage.
+        /// </summary>
+        /// <param name="key">Id of storage to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("storage/delete", Name = StoragesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)

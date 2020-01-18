@@ -14,6 +14,11 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Transactions section controller. Consists of CRUD actions for transactions, including read action for
+    /// both single transaction and collection of all transactions. Read action for single transaction, also
+    /// provides view of all related operations.
+    /// </summary>
     [Route("transactions")]
     public class TransactionsController : Controller, ICUD<TransactionBatch>, IReadColection, IReadSingle, IReadUpdateForm
     {
@@ -30,15 +35,28 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of transactions. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = TransactionsRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
+
+            // form pagenation model
             var pagenationModel = new Pagenation<TransactionsModel>(model, itemsOnPage, currentPage);
+
             return View(pagenationModel);
         }
 
+        /// <summary>
+        /// Displays a single transaction, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of transaction to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("transaction", Name = TransactionsRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -57,10 +75,16 @@ namespace Cursed.Controllers
 
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new transaction.
+        /// </summary>
+        /// <param name="key">Id of transaction to be edited, if null - considered that transaction added insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpGet("transaction/edit", Name = TransactionsRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
             if (key != null)
             {
                 int id = Int32.Parse(key);
@@ -83,6 +107,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to close transaction. Which mean apply all operations record in it to database.
+        /// </summary>
+        /// <param name="key">Id of transaction to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/close", Name = TransactionsRouting.CloseTransaction)]
         public async Task<IActionResult> CloseTransaction(string key)
@@ -101,6 +129,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to open transaction. Which mean undo all operations record in it to database.
+        /// </summary>
+        /// <param name="key">Id of transaction to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/open", Name = TransactionsRouting.OpenTransaction)]
         public async Task<IActionResult> OpenTransaction(string key)
@@ -119,6 +151,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to add new transaction.
+        /// </summary>
+        /// <param name="model">Transaction to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/add", Name = TransactionsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TransactionBatch model)
@@ -128,6 +164,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(TransactionsRouting.Index);
         }
 
+        /// <summary>
+        /// Post action to update transaction.
+        /// </summary>
+        /// <param name="model">Updated transaction information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/edit", Name = TransactionsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TransactionBatch model)
@@ -145,6 +185,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete transaction.
+        /// </summary>
+        /// <param name="key">Id of transaction to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager)]
         [HttpPost("transaction/delete", Name = TransactionsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)

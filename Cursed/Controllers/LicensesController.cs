@@ -15,6 +15,10 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Licenses section controller. Consists of CRUD actions for licenses, including read action for
+    /// both single license and collection of all licenses.
+    /// </summary>
     [Route("licenses")]
     public class LicensesController : Controller, ICUD<License>, IReadColection, IReadSingle, IReadUpdateForm
     {
@@ -33,6 +37,12 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of licenses. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("", Name = LicensesRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
@@ -44,11 +54,16 @@ namespace Cursed.Controllers
             {
                 viewModel.Add(LicensesDataModelToViewModel(item));
             }
+            // form pagenation model
             var pagenationModel = new Pagenation<LicensesViewModel>(viewModel, itemsOnPage, currentPage);
 
             return View(pagenationModel);
         }
 
+        /// <summary>
+        /// Displays a single license, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of license to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist, AuthorizeRoles.GovermentAgent)]
         [HttpGet("license", Name = LicensesRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -60,7 +75,7 @@ namespace Cursed.Controllers
                 var dataModel = await logic.GetSingleDataModelAsync(id);
                 var viewModel = LicensesDataModelToViewModel(dataModel);
 
-                // gather entities related by product id
+                // gather licenses related to current license by product id
                 var relatedLicensesDataModel = await logic.GetRelatedEntitiesByKeyAsync(dataModel.ProductId, id);
                 var relatedLicensesViewModel = new List<LicensesViewModel>();
                 foreach (var licenseDataModel in relatedLicensesDataModel)
@@ -77,10 +92,16 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new license.
+        /// </summary>
+        /// <param name="key">Id of license to be edited, if null - considered that license added insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpGet("license/edit", Name = LicensesRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
             if (key != null)
             {
                 int id = Int32.Parse(key);
@@ -103,6 +124,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to add new license.
+        /// </summary>
+        /// <param name="model">License to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
@@ -112,6 +137,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(LicensesRouting.Index);
         }
 
+        /// <summary>
+        /// Post action to update license.
+        /// </summary>
+        /// <param name="model">Updated license information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/edit", Name = LicensesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(License model)
@@ -129,6 +158,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete license.
+        /// </summary>
+        /// <param name="key">Id of license to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.GovermentAgent)]
         [HttpPost("license/delete", Name = LicensesRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)
@@ -148,10 +181,10 @@ namespace Cursed.Controllers
         }
 
         /// <summary>
-        /// Conver LicensesDataModel to LicensesViewModel
+        /// Convert LicensesDataModel to LicensesViewModel
         /// </summary>
         /// <param name="licenseDataModel">Data model to be converted</param>
-        /// <returns>LicensesViewModel</returns>
+        /// <returns>Converted LicensesViewModel instance</returns>
         private LicensesViewModel LicensesDataModelToViewModel(LicensesDataModel licenseDataModel)
         {
             return new LicensesViewModel

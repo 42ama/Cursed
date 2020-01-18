@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// User managment section controller. Consists of CRUD actions for users, including read action for
+    /// both single user and collection of all users.
+    /// </summary>
     [Route("user-managment")]
     public class UserManagmentController : Controller, IReadColection, IReadSingle, IReadUpdateForm, ICreate<RegistrationModel>, IUpdate<UserData>, IUpdate<UserAuthUpdateModel>, IDeleteByKey
     {
@@ -32,16 +36,28 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of users. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
         [HttpGet("", Name = UserManagmentRouting.Index)]
         public async Task<IActionResult> Index(int currentPage = 1, int itemsOnPage = 20)
         {
             var model = await logic.GetAllDataModelAsync();
+
+            // form pagenation model
             var pagenationModel = new Pagenation<UserData>(model, itemsOnPage, currentPage);
 
             return View(pagenationModel);
         }
 
+        /// <summary>
+        /// Displays a single user, which found by <c>key</c>
+        /// </summary>
+        /// <param name="key">Id of user to be found</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
         [HttpGet("user", Name = UserManagmentRouting.SingleItem)]
         public async Task<IActionResult> SingleItem(string key)
@@ -58,10 +74,16 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Display a page with form to update/add new user.
+        /// </summary>
+        /// <param name="key">Id of user to be edited, if null - considered that user added insted of edited</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
         [HttpGet("user/edit", Name = UserManagmentRouting.GetEditSingleItem)]
         public async Task<IActionResult> GetEditSingleItem(string key)
         {
+            // add distincted from edit, by presence of key parameter
+            // further on they distincted by ViewData[SaveRoute]
             if (key != null)
             {
                 ViewData["SaveRoute"] = UserManagmentRouting.GetEditSingleItem;
@@ -83,6 +105,10 @@ namespace Cursed.Controllers
 
         }
 
+        /// <summary>
+        /// Post action to add new user.
+        /// </summary>
+        /// <param name="model">User to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
         [HttpPost("user/add", Name = UserManagmentRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(RegistrationModel model)
@@ -100,8 +126,12 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to update user data.
+        /// </summary>
+        /// <param name="model">Updated user data</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
-        [HttpPost("user/edit-data", Name = UserManagmentRouting.EditUserAuth)]
+        [HttpPost("user/edit-auth", Name = UserManagmentRouting.EditUserAuth)]
         public async Task<IActionResult> EditSingleItem(UserAuthUpdateModel model)
         {
             var statusMessage = await logicValidation.CheckUpdateUserAuthUpdateModelAsync(model.Login, model.PasswordOld);
@@ -117,8 +147,12 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to update user security data.
+        /// </summary>
+        /// <param name="model">Updated user security data</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
-        [HttpPost("user/edit-auth", Name = UserManagmentRouting.EditUserData)]
+        [HttpPost("user/edit-data", Name = UserManagmentRouting.EditUserData)]
         public async Task<IActionResult> EditSingleItem(UserData model)
         {
             var statusMessage = await logicValidation.CheckUpdateUserDataUpdateModelAsync(model.Login, model.RoleName);
@@ -134,6 +168,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete user.
+        /// </summary>
+        /// <param name="key">Id of user to be deleted</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator)]
         [HttpPost("user/delete", Name = UserManagmentRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(string key)

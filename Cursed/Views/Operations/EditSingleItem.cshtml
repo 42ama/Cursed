@@ -1,7 +1,6 @@
 ﻿@model Operation
 @{
     ViewData["Title"] = "EditSingleItem";
-    string saveRoute = (string)ViewData["SaveRoute"];
 }
 <h1>Transactions</h1>
 <h2>Edit operation @Model.Id</h2>
@@ -43,10 +42,8 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+            <input asp-route="@OperationsRouting.EditSingleItem" type="submit" class="btn btn-default" value="Save" />
         </div>
     </div>
 </form>
 <p>Fields labeld with * are required</p>
-<!--Add license managment(create new in ajax)-->
-<!--Fix ajax method posting-->

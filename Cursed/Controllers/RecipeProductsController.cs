@@ -16,6 +16,9 @@ using Cursed.Models.DataModel.Authorization;
 
 namespace Cursed.Controllers
 {
+    /// <summary>
+    /// Tech processes section controller. Consists of CRUD actions for tech processes.
+    /// </summary>
     [Route("recipes/products")]
     public class RecipeProductsController : Controller, IReadCollectionByParam, ICreate<RecipeProductChanges>, IUpdate<RecipeProductChanges>, IDeleteByModel<RecipeProductChanges>
     {
@@ -31,15 +34,26 @@ namespace Cursed.Controllers
             this.logProvider = logProvider;
         }
 
+        /// <summary>
+        /// Main page of section, contains consolidated collection of products in recipe. 
+        /// Can be navigated through pagenation.
+        /// </summary>
+        /// <param name="key">Id of recipe to which products belongs</param>
+        /// <param name="currentPage">Defines which portion of items from collection, will be shown</param>
+        /// <param name="itemsOnPage">Defines how many item there will be in a portion</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Manager, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpGet("", Name = RecipeProductsRouting.Index)]
         public async Task<IActionResult> Index(string key, int currentPage = 1, int itemsOnPage = 20)
         {
             int recipeId = Int32.Parse(key);
             var addedProducts = await logic.GetAllDataModelAsync(recipeId);
+            // collect products already used in recipe
             var ignoreProducts = addedProducts.Select(i => i.ProductId).Distinct();
+            // and collect all other products from catalog, which can be added
             var notAddedProducts = logic.GetProductsFromCatalog(ignoreProducts);
+            // id of recipe in which these products used
             ViewData["RecipeId"] = recipeId;
+            // form pagenation model, with added collection of unsed products from catalog
             var model = new CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
             {
                 Collection = addedProducts,
@@ -48,6 +62,10 @@ namespace Cursed.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Post action to add new recipe product relation.
+        /// </summary>
+        /// <param name="model">Recipe product relation to be added</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("add", Name = RecipeProductsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
@@ -57,6 +75,10 @@ namespace Cursed.Controllers
             return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
         }
 
+        /// <summary>
+        /// Post action to update recipe product relation.
+        /// </summary>
+        /// <param name="model">Updated recipe product relation information</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("edit", Name = RecipeProductsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
@@ -74,6 +96,10 @@ namespace Cursed.Controllers
             }
         }
 
+        /// <summary>
+        /// Post action to delete recipe product relation.
+        /// </summary>
+        /// <param name="model">Model of recipe product relation containing key information (ProductId and RecipeId) to find recipe product changes</param>
         [AuthorizeRoles(AuthorizeRoles.Administrator, AuthorizeRoles.Technologist, AuthorizeRoles.SeniorTechnologist)]
         [HttpPost("delete", Name = RecipeProductsRouting.DeleteSingleItem)]
         public async Task<IActionResult> DeleteSingleItem(RecipeProductChanges model)
