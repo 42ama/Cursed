@@ -8,6 +8,10 @@ using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Models.LogicValidation
 {
+    /// <summary>
+    /// Authentication section logic validation. Contains of methods used to validate authentication
+    /// in specific situations.
+    /// </summary>
     public class AuthenticationLogicValidation
     {
         private readonly CursedAuthenticationContext db;
@@ -21,6 +25,11 @@ namespace Cursed.Models.LogicValidation
             this.genPassHash = genPassHash;
         }
 
+        /// <summary>
+        /// Checks if <c>model</c> is valid
+        /// </summary>
+        /// <param name="model">Login model</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckLogin(LoginModel model)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
@@ -30,9 +39,11 @@ namespace Cursed.Models.LogicValidation
                 UseKeyWithRoute = false
             });
 
+            // check if user exists
             var userAuth = await db.UserAuth.FirstOrDefaultAsync(u => u.Login == model.Login);
             if (userAuth != null)
             {
+                // check if password correct with using of IGenPasswordHash service
                 if (!genPassHash.IsPasswordMathcingHash(model.Password, userAuth.PasswordHash))
                 {
                     statusMessage.AddProblem(new Problem

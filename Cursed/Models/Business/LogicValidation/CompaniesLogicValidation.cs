@@ -8,6 +8,10 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
+    /// <summary>
+    /// Companies section logic validation. Contains of methods used to validate company actions
+    /// in specific situations.
+    /// </summary>
     public class CompaniesLogicValidation
     {
         private readonly CursedDataContext db;
@@ -19,21 +23,41 @@ namespace Cursed.Models.LogicValidation
             this.errorHandlerFactory = errorHandlerFactory;
         }
 
+        /// <summary>
+        /// Checks if company is valid, to be gathered
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if company is valid, to be gatherd for update
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if company is valid, to be updated
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if company is valid, to be removed
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
@@ -43,7 +67,7 @@ namespace Cursed.Models.LogicValidation
                 return statusMessage;
             }
 
-            // check related entities
+            // there must be no related entites to delete company
             var storages = db.Storage.Where(i => i.CompanyId == (int)key);
             var transactions = db.TransactionBatch.Where(i => i.CompanyId == (int)key);
 
@@ -76,6 +100,12 @@ namespace Cursed.Models.LogicValidation
 
             return statusMessage;
         }
+
+        /// <summary>
+        /// Checks if company exists
+        /// </summary>
+        /// <param name="key">Id of company to be found</param>
+        /// <returns>Status message with validaton information</returns>
         private async Task<IErrorHandler> CheckExists(object key)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
@@ -85,6 +115,7 @@ namespace Cursed.Models.LogicValidation
                     RedirectRoute = CompaniesRouting.SingleItem
                 });
 
+            // check if company exists
             if (await db.Company.FirstOrDefaultAsync(i => i.Id == (int)key) == null)
             {
                 statusMessage.AddProblem(new Problem

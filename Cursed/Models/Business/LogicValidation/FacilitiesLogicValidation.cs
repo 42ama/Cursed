@@ -8,6 +8,10 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
+    /// <summary>
+    /// Facilities section logic validation. Contains of methods used to validate facility actions
+    /// in specific situations.
+    /// </summary>
     public class FacilitiesLogicValidation
     {
         private readonly CursedDataContext db;
@@ -19,21 +23,41 @@ namespace Cursed.Models.LogicValidation
             this.errorHandlerFactory = errorHandlerFactory;
         }
 
+        /// <summary>
+        /// Checks if facility is valid, to be gathered
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if facility is valid, to be gathered for update
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if facility is valid, to be updated
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if facility is valid, to be removed
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
@@ -43,7 +67,7 @@ namespace Cursed.Models.LogicValidation
                 return statusMessage;
             }
 
-            // check related entities
+            // there must be no related entites to delete facility
             var techProcesses = db.TechProcess.Where(i => i.FacilityId == (int)key);
 
             if (techProcesses.Any())
@@ -62,6 +86,12 @@ namespace Cursed.Models.LogicValidation
 
             return statusMessage;
         }
+
+        /// <summary>
+        /// Checks if facility exists
+        /// </summary>
+        /// <param name="key">Id of facility to be found</param>
+        /// <returns>Status message with validaton information</returns>
         private async Task<IErrorHandler> CheckExists(object key)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
@@ -71,6 +101,7 @@ namespace Cursed.Models.LogicValidation
                 RedirectRoute = FacilitiesRouting.SingleItem
             });
 
+            // check if facility exists
             if (await db.Facility.FirstOrDefaultAsync(i => i.Id == (int)key) == null)
             {
                 statusMessage.AddProblem(new Problem

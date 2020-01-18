@@ -8,6 +8,10 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
+    /// <summary>
+    /// Storages section logic validation. Contains of methods used to validate storages actions
+    /// in specific situations.
+    /// </summary>
     public class StoragesLogicValidation
     {
         private readonly CursedDataContext db;
@@ -19,21 +23,42 @@ namespace Cursed.Models.LogicValidation
             this.errorHandlerFactory = errorHandlerFactory;
         }
 
+        /// <summary>
+        /// Checks if storage is valid, to be gathered
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+
+        /// <summary>
+        /// Checks if storage is valid, to be gathered for update
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckGetSingleUpdateModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if storage is valid, to be updated
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if storage is valid, to be removed
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             var statusMessage = await CheckExists(key);
@@ -43,7 +68,7 @@ namespace Cursed.Models.LogicValidation
                 return statusMessage;
             }
 
-            // check related entities
+            // there must be no related entites to delete storage
             var products = db.Product.Where(i => i.StorageId == (int)key);
             var operations = db.Operation.Where(i => i.StorageToId == (int)key || i.StorageFromId == (int)key);
 
@@ -76,6 +101,12 @@ namespace Cursed.Models.LogicValidation
 
             return statusMessage;
         }
+
+        /// <summary>
+        /// Checks if storage exists
+        /// </summary>
+        /// <param name="key">Id of storage to be found</param>
+        /// <returns>Status message with validaton information</returns>
         private async Task<IErrorHandler> CheckExists(object key)
         {
             var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
@@ -85,6 +116,7 @@ namespace Cursed.Models.LogicValidation
                 RedirectRoute = StoragesRouting.SingleItem
             });
 
+            // checl if storage exists
             if (await db.Storage.FirstOrDefaultAsync(i => i.Id == (int)key) == null)
             {
                 statusMessage.AddProblem(new Problem

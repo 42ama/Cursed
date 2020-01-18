@@ -8,6 +8,10 @@ using Cursed.Models.Services;
 
 namespace Cursed.Models.LogicValidation
 {
+    /// <summary>
+    /// Recipe products section logic validation. Contains of methods used to validate recipe product actions
+    /// in specific situations.
+    /// </summary>
     public class RecipeProductsLogicValidation
     {
         private readonly CursedDataContext db;
@@ -19,15 +23,31 @@ namespace Cursed.Models.LogicValidation
             this.errorHandlerFactory = errorHandlerFactory;
         }
 
+        /// <summary>
+        /// Checks if product recipe relation is valid, to be updated
+        /// </summary>
+        /// <param name="key">ProductId and RecipeId of product recipe relation to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
 
+        /// <summary>
+        /// Checks if product recipe relation is valid, to be removed
+        /// </summary>
+        /// <param name="key">ProductId and RecipeId of product recipe relation to be found</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             return await CheckExists(key);
         }
+
+        /// <summary>
+        /// Checks if product recipe relation exists
+        /// </summary>
+        /// <param name="key">ProductId and RecipeId of product recipe relation to be found</param>
+        /// <returns>Status message with validaton information</returns>
         private async Task<IErrorHandler> CheckExists(object key)
         {
             // recipeId and productId
@@ -38,7 +58,8 @@ namespace Cursed.Models.LogicValidation
                 EntityKey = tupleKey.Item1.ToString(),
                 RedirectRoute = RecipeProductsRouting.Index
             });
-            
+
+            // check if product recipe relation exists
             if (await db.RecipeProductChanges.FirstOrDefaultAsync(i => i.RecipeId == tupleKey.Item1 &&
             i.ProductId == tupleKey.Item2) == null)
             {
