@@ -7,6 +7,9 @@ using Cursed.Models.StaticReferences.Routing;
 
 namespace Cursed.Models.Services
 {
+    /// <summary>
+    /// Provides means to validatie Operation
+    /// </summary>
     public class OperationDataValidation : IOperationDataValidation
     {
         private readonly CursedDataContext db;
@@ -15,6 +18,11 @@ namespace Cursed.Models.Services
             db = context;
         }
 
+        /// <summary>
+        /// Validate <c>operation</c>
+        /// </summary>
+        /// <param name="operation">Operation which will be validated</param>
+        /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> IsValidAsync(Operation operation)
         {
             IErrorHandler statusMessage = new StatusMessage
@@ -26,6 +34,8 @@ namespace Cursed.Models.Services
                     RedirectRoute = OperationsRouting.SingleItem
                 }
             };
+
+            // all related to operation entities must exist
             var product = await db.Product.SingleOrDefaultAsync(i => i.Uid == operation.ProductId && i.StorageId == operation.StorageFromId);
             var storageFrom = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageFromId);
             var storageTo = await db.Storage.SingleOrDefaultAsync(i => i.Id == operation.StorageToId);
@@ -80,6 +90,8 @@ namespace Cursed.Models.Services
                 });
             }
 
+            // quantity of product at storage from must be greater or equal to
+            // quantity of product at storage to
             if(product != null && storageFrom != null)
             {
                 if (product.Quantity < operation.Quantity)
@@ -95,7 +107,6 @@ namespace Cursed.Models.Services
                 }
             }
             
-
             return statusMessage;
         }
     }

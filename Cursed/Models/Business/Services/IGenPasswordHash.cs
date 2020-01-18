@@ -11,6 +11,7 @@
         /// <param name="password">Hash is based on this string</param>
         /// <returns>Hash based on password string</returns>
         string GenerateHash(string password);
+
         /// <summary>
         /// Compare hash generated from password string versus hash string
         /// </summary>
