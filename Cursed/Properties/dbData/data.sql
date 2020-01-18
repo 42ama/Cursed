@@ -175,9 +175,9 @@ SET IDENTITY_INSERT Product ON;
 INSERT INTO Product
     (Id, UId, Quantity, QuantityUnit, Price, StorageID)
 VALUES 
-    (1, 23, 450.2, N'мл.', 170, 1),
-    (2, 24, 220.33, N'мл.', 120, 1),
-    (3, 25, 150.99, N'мл.', 50, 1),
+    (1, 2, 450.2, N'мл.', 170, 1),
+    (2, 4, 420.33, N'мл.', 120, 1),
+    (3, 25, 1500.99, N'мл.', 50, 1),
     (4, 23, 150.1, N'мл.', 170, 2),
     (5, 24, 120.2, N'мл.', 170, 1),
     (6, 2, 50000, N'мл.', 20, 3),
@@ -266,4 +266,30 @@ VALUES
     (2, 3), (2, 4), (2, 5),
     (3, 6), (2, 31), (3, 32)
 ;
+END;
+
+IF(NOT EXISTS(SELECT 1 FROM dbo.TransactionBatch))
+BEGIN
+SET IDENTITY_INSERT TransactionBatch ON;
+INSERT INTO TransactionBatch
+    (Id, CompanyId, Date, Type, IsOpen)
+VALUES 
+    (1, 2, '2019-11-11', 'income', 0),
+	(2, 1, '2019-09-09', 'income', 0)
+;
+SET IDENTITY_INSERT TransactionBatch OFF;
+END;
+
+
+IF(NOT EXISTS(SELECT 1 FROM dbo.Operation))
+BEGIN
+SET IDENTITY_INSERT Operation ON;
+INSERT INTO Operation
+    (Id, ProductId, TransactionId, Quantity, Price, StorageFromId, StorageToId)
+VALUES 
+    (1, 25, 1, 1000, 25, 5, 1),
+	(2, 2, 2, 322, 11, 3, 1),
+	(3, 4, 2, 322, 24, 3, 1)
+;
+SET IDENTITY_INSERT Operation OFF;
 END;
