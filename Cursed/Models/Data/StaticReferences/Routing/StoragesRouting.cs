@@ -2,6 +2,9 @@
 
 namespace Cursed.Models.StaticReferences.Routing
 {
+    /// <summary>
+    /// Route names for Storages section
+    /// </summary>
     public class StoragesRouting
     {
         public const string Index = "GetStorages";

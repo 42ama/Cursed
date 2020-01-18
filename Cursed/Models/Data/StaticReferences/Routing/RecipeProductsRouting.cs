@@ -2,6 +2,9 @@
 
 namespace Cursed.Models.StaticReferences.Routing
 {
+    /// <summary>
+    /// Route names for RecipeProducts section
+    /// </summary>
     public class RecipeProductsRouting
     {
         public const string Index = "GetRecipeProducts";

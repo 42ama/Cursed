@@ -2,6 +2,9 @@
 
 namespace Cursed.Models.StaticReferences.Routing
 {
+    /// <summary>
+    /// Route names for UserManagment section
+    /// </summary>
     public class UserManagmentRouting
     {
         public const string Index = "GetUsers";
