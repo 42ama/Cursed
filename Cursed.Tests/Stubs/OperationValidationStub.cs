@@ -5,6 +5,9 @@ using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Tests.Stubs
 {
+    /// <summary>
+    /// Stub for using instead of IOperationDataValidation. Returns valid status message
+    /// </summary>
     public class OperationValidationStub : IOperationDataValidation
     {
         /// <returns>valid status message</returns>

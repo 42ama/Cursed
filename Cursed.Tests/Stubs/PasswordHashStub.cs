@@ -16,6 +16,7 @@ namespace Cursed.Tests.Stubs
             return "hash";
         }
 
+        /// <returns>True if password == "tetriandoh"</returns>
         public bool IsPasswordMathcingHash(string password, string savedPasswordHash)
         {
             if(password == "tetriandoh")
