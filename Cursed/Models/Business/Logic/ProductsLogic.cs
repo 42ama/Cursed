@@ -25,7 +25,6 @@ namespace Cursed.Models.Logic
                         {
                             Id = p.Id,
                             Name = pc.Name,
-                            Type = pc.Type,
                             Price = p.Price,
                             Quantity = p.Quantity,
                             QuantityUnit = p.QuantityUnit,

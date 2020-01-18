@@ -126,11 +126,6 @@ namespace Cursed.Models.Context
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(16)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Recipe>(entity =>

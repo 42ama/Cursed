@@ -34,8 +34,7 @@ namespace Cursed.Tests.Tests.Logic
                 Id = 44440,
                 Cas = 4040404,
                 Name = "Testesteron",
-                LicenseRequired = true,
-                Type = ProductCatalogTypes.Product
+                LicenseRequired = true
             };
         }
 
@@ -82,8 +81,7 @@ namespace Cursed.Tests.Tests.Logic
                     Price = 22.1M,
                     Quantity = 5,
                     QuantityUnit = "mg.",
-                    Name = productCatalog.Name,
-                    Type = productCatalog.Type
+                    Name = productCatalog.Name
                 },
                 new ProductsDataModel
                 {
@@ -92,8 +90,7 @@ namespace Cursed.Tests.Tests.Logic
                     Price = 14.1M,
                     Quantity = 6,
                     QuantityUnit = "mg.",
-                    Name = productCatalog.Name,
-                    Type = productCatalog.Type
+                    Name = productCatalog.Name
                 },
             };
             int storageId = 44440;
@@ -107,7 +104,6 @@ namespace Cursed.Tests.Tests.Logic
                 Assert.Contains(actual, actualItem =>
                     expectedItem.Id == actualItem.Id &&
                     expectedItem.Name == actualItem.Name &&
-                    expectedItem.Type == actualItem.Type &&
                     expectedItem.Uid == actualItem.Uid &&
                     expectedItem.Price == actualItem.Price &&
                     expectedItem.Quantity == actualItem.Quantity &&

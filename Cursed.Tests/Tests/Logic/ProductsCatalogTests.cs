@@ -35,8 +35,7 @@ namespace Cursed.Tests.Tests.Logic
                 Id = 44440,
                 Cas = 4040404,
                 LicenseRequired = true,
-                Name = "Testotin",
-                Type = ProductCatalogTypes.Product
+                Name = "Testotin"
             };
         }
 
@@ -49,7 +48,6 @@ namespace Cursed.Tests.Tests.Logic
                     Id = 44440,
                     Cas = 4040404,
                     Name = "Testin",
-                    Type = ProductCatalogTypes.Material,
                     LicenseRequired = true
                 },
                 new ProductCatalog
@@ -57,7 +55,6 @@ namespace Cursed.Tests.Tests.Logic
                     Id = 44441,
                     Cas = 4040414,
                     Name = "Testotin",
-                    Type = ProductCatalogTypes.Product,
                     LicenseRequired = false
                 }
             };
@@ -197,7 +194,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Cas, actual.Cas);
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Type, actual.Type);
         }
 
         [Fact]
@@ -229,8 +225,7 @@ namespace Cursed.Tests.Tests.Logic
                 Id = product.Id,
                 Cas = 4040404,
                 LicenseRequired = true,
-                Name = "Testedtin",
-                Type = ProductCatalogTypes.Product
+                Name = "Testedtin"
             };
 
             // act
@@ -242,7 +237,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Cas, actual.Cas);
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Type, actual.Type);
         }
 
         [Fact]
@@ -266,7 +260,6 @@ namespace Cursed.Tests.Tests.Logic
                     ProductId = 44440,
                     CAS = 4040404,
                     Name = "Testin",
-                    Type = ProductCatalogTypes.Material,
                     LicenseRequired = true,
                     IsValid = true,
                     StoragesCount = 3,
@@ -277,7 +270,6 @@ namespace Cursed.Tests.Tests.Logic
                     ProductId = 44441,
                     CAS = 4040414,
                     Name = "Testotin",
-                    Type = ProductCatalogTypes.Product,
                     LicenseRequired = false,
                     IsValid = true,
                     StoragesCount = 1,
@@ -295,7 +287,6 @@ namespace Cursed.Tests.Tests.Logic
                     expectedItem.ProductId == actualItem.ProductId &&
                     expectedItem.CAS == actualItem.CAS &&
                     expectedItem.Name == actualItem.Name &&
-                    expectedItem.Type == actualItem.Type &&
                     expectedItem.LicenseRequired == actualItem.LicenseRequired &&
                     expectedItem.IsValid == actualItem.IsValid &&
                     expectedItem.StoragesCount == actualItem.StoragesCount &&
@@ -326,7 +317,6 @@ namespace Cursed.Tests.Tests.Logic
                 ProductId = 44440,
                 CAS = 4040404,
                 Name = "Testin",
-                Type = ProductCatalogTypes.Material,
                 LicenseRequired = true,
                 Licenses = new List<(License license, bool isValid)>(),
                 Storages = new List<ValueTuple<string, int>>(),
@@ -357,7 +347,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(actual.ProductId, expected.ProductId);
             Assert.Equal(actual.CAS, expected.CAS);
             Assert.Equal(actual.Name, expected.Name);
-            Assert.Equal(actual.Type, expected.Type);
             Assert.Equal(actual.LicenseRequired, expected.LicenseRequired);
             foreach (var expectedStorage in expected.Storages)
             {
@@ -390,7 +379,6 @@ namespace Cursed.Tests.Tests.Logic
             Assert.Equal(expected.Cas, actual.Cas);
             Assert.Equal(expected.LicenseRequired, actual.LicenseRequired);
             Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Type, actual.Type);
         }
     }
 }

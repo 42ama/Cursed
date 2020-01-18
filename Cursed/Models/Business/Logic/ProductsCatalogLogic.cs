@@ -42,7 +42,6 @@ namespace Cursed.Models.Logic
                                  ProductId = pc.Id,
                                  Name = pc.Name,
                                  CAS = pc.Cas,
-                                 Type = pc.Type,
                                  LicenseRequired = pc.LicenseRequired ?? false,
                                  StoragesCount = d.Count,
                                  RecipesCount = e.Count
@@ -98,7 +97,6 @@ namespace Cursed.Models.Logic
                          ProductId = Uid,
                          CAS = pc.Cas,
                          Name = pc.Name,
-                         Type = pc.Type,
                          LicenseRequired = pc.LicenseRequired ?? false,
                          Recipes = groupA?.Select(x => new ValueTuple<string, int> { Item2 = x.Item2, Item1 = x.Item3 }).ToList() ?? new List<ValueTuple<string, int>>(),
                          Storages = groupB?.Select(x => new ValueTuple<string, int> { Item2 = x.Item2, Item1 = x.Item3 }).ToList() ?? new List<ValueTuple<string, int>>()

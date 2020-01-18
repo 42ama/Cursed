@@ -59,8 +59,7 @@ namespace Cursed.Tests.IntegrationTests
                 Id = 44440,
                 Cas = 4040404,
                 LicenseRequired = true,
-                Name = "Testotin",
-                Type = ProductCatalogTypes.Product
+                Name = "Testotin"
             };
         }
 

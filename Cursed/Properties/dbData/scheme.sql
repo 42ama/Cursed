@@ -4,7 +4,6 @@ CREATE TABLE ProductCatalog
   (
   	[Id] INT IDENTITY(1,1) NOT NULL, 
   	[Name] NVARCHAR(50) NOT NULL,
-  	[Type] VARCHAR(16) NOT NULL,
   	[CAS] INT NOT NULL,
   	[LicenseRequired] BIT NULL,
 

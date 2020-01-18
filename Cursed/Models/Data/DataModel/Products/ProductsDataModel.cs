@@ -9,7 +9,6 @@ namespace Cursed.Models.DataModel.Products
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; }
         public int Uid { get; set; }
         public decimal Quantity { get; set; }
         public string QuantityUnit { get; set; }

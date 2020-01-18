@@ -12,7 +12,6 @@
     <thead>
         <tr>
             <td>Name</td>
-            <td>Type</td>
             <td>Quantity</td>
             <td>Price</td>
             <td>Total</td>
@@ -25,7 +24,6 @@
             decimal total = item.Price * item.Quantity;
             <tr>
                 <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Uid })</td>
-                <td>@item.Type</td>
                 <td>@quantity</td>
                 <td>@item.Price $</td>
                 <td>@total $</td>

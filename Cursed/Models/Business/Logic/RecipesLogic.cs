@@ -34,8 +34,6 @@ namespace Cursed.Models.Logic
                      join ck in (from rr in (from r in recipes
                                              join rpc in db.RecipeProductChanges on r.Id equals rpc.RecipeId into t
                                              from t2 in t
-                                             join pc in db.ProductCatalog on t2?.ProductId equals pc.Id into t3
-                                             from t4 in t3
                                              select new
                                              {
                                                  RecipeId = r.Id,

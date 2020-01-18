@@ -52,8 +52,7 @@ namespace Cursed.Tests.Tests.LogicValidation
                 Id = 44440,
                 Cas = 4040404,
                 LicenseRequired = true,
-                Name = "Testotin",
-                Type = ProductCatalogTypes.Product
+                Name = "Testotin"
             };
         }
         

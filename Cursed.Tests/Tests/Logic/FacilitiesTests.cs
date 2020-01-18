@@ -165,40 +165,35 @@ namespace Cursed.Tests.Tests.Logic
                     Id = 44440,
                     Cas = 4040404,
                     LicenseRequired = null,
-                    Name = "Testotin",
-                    Type = ProductCatalogTypes.Material
+                    Name = "Testotin"
                 },
                 new ProductCatalog
                 {
                     Id = 44441,
                     Cas = 4040414,
                     LicenseRequired = false,
-                    Name = "Materialotin #1",
-                    Type = ProductCatalogTypes.Material
+                    Name = "Materialotin #1"
                 },
                 new ProductCatalog
                 {
                     Id = 44442,
                     Cas = 4041404,
                     LicenseRequired = true,
-                    Name = "Materialotin #2",
-                    Type = ProductCatalogTypes.Material
+                    Name = "Materialotin #2"
                 },
                 new ProductCatalog
                 {
                     Id = 44443,
                     Cas = 4140404,
                     LicenseRequired = false,
-                    Name = "Producin #1",
-                    Type = ProductCatalogTypes.Product
+                    Name = "Producin #1"
                 },
                 new ProductCatalog
                 {
                     Id = 44444,
                     Cas = 5050505,
                     LicenseRequired = true,
-                    Name = "Producin #2",
-                    Type = ProductCatalogTypes.Product
+                    Name = "Producin #2"
                 },
             };
         }
@@ -389,7 +384,7 @@ namespace Cursed.Tests.Tests.Logic
                         RecipeEfficiency = techProcesses.Single(i => i.FacilityId == 44440 && i.RecipeId == recipe.Id).DayEfficiency,
                         ProductId = rpc.ProductId,
                         ProductName = product.Name,
-                        ProductType = product.Type,
+                        ProductType = rpc.Type,
                         LicenseRequired = product.LicenseRequired ?? false,
                         Quantity = rpc.Quantity,
                         IsValid = false

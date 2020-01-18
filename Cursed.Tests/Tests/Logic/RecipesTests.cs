@@ -81,32 +81,28 @@ namespace Cursed.Tests.Tests.Logic
                     Id = 44440,
                     Cas = 4040404,
                     Name = "Testesteron",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Product
+                    LicenseRequired = true
                 },
                 new ProductCatalog
                 {
                     Id = 44441,
                     Cas = 4040414,
                     Name = "Testin",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Material
+                    LicenseRequired = true
                 },
                 new ProductCatalog
                 {
                     Id = 44442,
                     Cas = 4041404,
                     Name = "Testonion",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Material
+                    LicenseRequired = true
                 },
                 new ProductCatalog
                 {
                     Id = 44443,
                     Cas = 4140404,
                     Name = "Testerer",
-                    LicenseRequired = true,
-                    Type = ProductCatalogTypes.Material
+                    LicenseRequired = true
                 },
             };
         }
