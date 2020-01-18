@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace Cursed.Models.DataModel.Products
 {
+    /// <summary>
+    /// Model used for products at storage gathering
+    /// </summary>
     public class ProductContainer
     {
         public int Id { get; set; }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace Cursed.Models.DataModel.Authorization
 {
+    /// <summary>
+    /// Static refrences for authoriztion roles, used to reduce coupling
+    /// </summary>
     public class AuthorizeRoles
     {
         public const string Administrator = "ADMIN";

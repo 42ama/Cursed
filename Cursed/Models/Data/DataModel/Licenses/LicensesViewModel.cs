@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Cursed.Models.DataModel.Licenses
 {
+    /// <summary>
+    /// Model used as base for licenses data presenting 
+    /// </summary>
     public class LicensesViewModel : LicensesAbstractModel
     {
         public string Date { get; set; }

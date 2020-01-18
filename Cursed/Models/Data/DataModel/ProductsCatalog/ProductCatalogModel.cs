@@ -4,6 +4,9 @@ using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.DataModel.ProductsCatalog
 {
+    /// <summary>
+    /// Model used for single product from catalog gathering
+    /// </summary>
     public class ProductCatalogModel : ProductsCatalogAbstractModel
     {
         public List<(License license, bool isValid)> Licenses { get; set; }

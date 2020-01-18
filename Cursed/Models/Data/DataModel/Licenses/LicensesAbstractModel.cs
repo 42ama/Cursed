@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace Cursed.Models.DataModel.Licenses
 {
+    /// <summary>
+    /// Model used as base for licenses data gathering 
+    /// </summary>
     public abstract class LicensesAbstractModel
     {
         public int Id { get; set; }

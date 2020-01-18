@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Cursed.Models.DataModel.Facilities
 {
+    /// <summary>
+    /// Support model used for single facility gathering
+    /// </summary>
     public class FacilitiesProductContainer
     {
         public int FacilityId { get; set; }

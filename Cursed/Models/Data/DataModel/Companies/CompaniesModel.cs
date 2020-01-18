@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace Cursed.Models.DataModel.Companies
 {
+    /// <summary>
+    /// Model used for multiple companies data gathering
+    /// </summary>
     public class CompaniesModel : CompaniesAbstractModel
     {
         public int StoragesCount { get; set; }

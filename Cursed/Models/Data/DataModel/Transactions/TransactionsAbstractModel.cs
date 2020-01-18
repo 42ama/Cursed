@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Cursed.Models.Extensions;
 
 namespace Cursed.Models.DataModel.Transactions
 {
+    /// <summary>
+    /// Model used as base for transactions data gathering 
+    /// </summary>
     public class TransactionsAbstractModel
     {
         public int Id { get; set; }

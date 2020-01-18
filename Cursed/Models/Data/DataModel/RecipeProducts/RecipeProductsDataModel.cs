@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace Cursed.Models.DataModel.RecipeProducts
 {
+    /// <summary>
+    /// Model used for products to recipe relation gathering
+    /// </summary>
     public class RecipeProductsDataModel
     {
         public int RecipeId { get; set; }

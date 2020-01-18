@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace Cursed.Models.DataModel.Pagenation
 {
+    /// <summary>
+    /// Model used for pagenation
+    /// </summary>
+    /// <typeparam name="T">Type of entity stored in PagenatedCollection</typeparam>
     public class Pagenation<T> : PagenationAbstract
     {
         override public int Total { get; protected set; }
@@ -19,7 +23,7 @@ namespace Cursed.Models.DataModel.Pagenation
 
             Total = (int)Math.Ceiling(Collection.Count / (double)ItemsOnPage);
             
-
+            // dispence items on pages
             if (currentPage >= 1 && currentPage <= Total)
             {
                 int itemsToCopy = ItemsOnPage;

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Cursed.Models.DataModel.Authentication
 {
+    /// <summary>
+    /// Model used for registration of new user
+    /// </summary>
     public class RegistrationModel
     {
         [Required(ErrorMessage = "Login required")]

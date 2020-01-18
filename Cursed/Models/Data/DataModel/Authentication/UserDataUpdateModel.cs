@@ -1,12 +1,11 @@
 ﻿using Cursed.Models.Entities.Authentication;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Cursed.Models.DataModel.Authentication
 {
+    /// <summary>
+    /// Model used for updating User Data. Can be converted from UserData through constructor.
+    /// </summary>
     public class UserDataUpdateModel
     {
         public UserDataUpdateModel() { }

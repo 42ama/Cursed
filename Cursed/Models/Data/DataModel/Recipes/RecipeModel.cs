@@ -4,6 +4,9 @@ using Cursed.Models.DataModel.RecipeProducts;
 
 namespace Cursed.Models.DataModel.Recipes
 {
+    /// <summary>
+    /// Model used for single recipe data gathering
+    /// </summary>
     public class RecipeModel : RecipesAbstractModel
     {
         public List<RecipeProductContainer> RecipeProducts { get; set; }

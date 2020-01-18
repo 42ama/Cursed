@@ -2,6 +2,9 @@
 
 namespace Cursed.Models.DataModel.FacilityTechProcesses
 {
+    /// <summary>
+    /// Model used for tech process gathering
+    /// </summary>
     public class FacilityTechProcessesDataModel
     {
         public int FacilityId { get; set; }
