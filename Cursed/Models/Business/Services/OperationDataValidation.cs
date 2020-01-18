@@ -102,7 +102,8 @@ namespace Cursed.Models.Services
                         EntityKey = product.Id.ToString(),
                         Message = $"Quantity of product at storage from ({product.Quantity}) is lesser, then " +
                         $"operation is trying to withdraw ({operation.Quantity}).",
-                        RedirectRoute = ProductsRouting.SingleItem
+                        RedirectRoute = ProductsRouting.Index,
+                        UseKeyWithRoute = false
                     });
                 }
             }

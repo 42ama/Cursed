@@ -81,7 +81,8 @@ namespace Cursed.Models.LogicValidation
                         Entity = "Product.",
                         EntityKey = product.Id.ToString(),
                         Message = "You must remove dependent Product in Storage first.",
-                        RedirectRoute = ProductsRouting.SingleItem
+                        RedirectRoute = ProductsRouting.Index,
+                        UseKeyWithRoute = false
                     });
                 }
             }
