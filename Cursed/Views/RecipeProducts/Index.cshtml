@@ -1,0 +1,91 @@
+﻿@using Cursed.Models.DataModel.RecipeProducts
+@using Cursed.Models.StaticReferences
+@model CollectionPlusPagenation<RecipeProductsDataModel, ProductCatalog>
+@{
+    int recipeId = (int)ViewData["RecipeId"];
+    ViewData["PagenationKey"] = recipeId.ToString();
+    SelectList selectType = new SelectList(new List<string> { ProductCatalogTypes.Product, ProductCatalogTypes.Material });
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = RecipeProductsRouting.Index;
+
+}
+
+<h1>Add products to recipe: @recipeId</h1>
+<p>@Html.RouteLink("Back to recipe", RecipesRouting.SingleItem, new { key = recipeId.ToString() })</p>
+<h2>Products in recipe:</h2>
+<table>
+    <thead>
+        <tr>
+            <td>Product Name</td>
+            <td>CAS</td>
+            <td>Type</td>
+            <td>Quantity</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Collection)
+        {
+            <tr>
+                <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                @if (item.Cas.HasValue)
+                {
+                    <td>@Html.RouteLink(item.Cas.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>@item.Type</td>
+                <td>@item.Quantity mg</td>
+                <td>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.EditSingleItem">
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.ProductId" />
+                        <input hidden name="type" type="text" value="@item.Type" />
+                        <input required name="quantity" type="number" value="@item.Quantity" placeholder="Quantity">
+                        <input type="submit" class="btn btn-default" value="Edit" />
+                    </form>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.DeleteSingleItem">
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.ProductId" />
+                        <input hidden name="Type" type="text" value="@item.Type" />
+                        <input type="submit" class="btn btn-default" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_PagenationByParam/ItemsOnPageControl", (PagenationAbstract)Model.Pagenation, ViewData)
+@await Html.PartialAsync("_PagenationByParam/PagesControl", (PagenationAbstract)Model.Pagenation, ViewData)
+<h2>All products:</h2>
+<table>
+    <thead>
+        <tr>
+            <td>Product Name</td>
+            <td>CAS</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Pagenation.PagenatedCollection)
+        {
+            <tr>
+                <td>@Html.RouteLink(item.Name, ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
+
+                <td>@Html.RouteLink(item.Cas.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.Id })</td>
+                <td>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipeProductsRouting.AddSingleItem">
+                        <input hidden name="recipeId" type="number" value="@recipeId" />
+                        <input hidden name="productId" type="number" value="@item.Id" />
+                        <select required name="type" asp-items="selectType"></select>
+                        <input required name="quantity" type="number" placeholder="Quantity">
+                        <input type="submit" class="btn btn-default" value="Add" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_PagenationByParam/PrevNextControl", (PagenationAbstract)Model.Pagenation, ViewData)

@@ -1,0 +1,40 @@
+﻿@model Recipe
+@{
+    ViewData["Title"] = "EditSingleItem";
+    string saveRoute = (string)ViewData["SaveRoute"];
+}
+
+<h1>Recipes</h1>
+@if (Model != null)
+{
+    <h2>Edit recipe Id:@Model.Id</h2>
+}
+else
+{
+    <h2>Add new recipe</h2>
+}
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    @if (ViewData["parentId"] != null)
+    {
+        int parentId = (int)ViewData["parentId"];
+        <div>
+            <input hidden type="number" name="parentId" value="@parentId">
+        </div>
+    }
+    <div>
+        <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
+    </div>
+    <div class="form-group">
+        <label for="Content">Content:*</label>
+        <div>
+            <textarea cols="100" rows="20" required asp-for="Content" name="Content" value="@Model?.Content"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@saveRoute type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>
+<p>Fields labeld with * are required</p>

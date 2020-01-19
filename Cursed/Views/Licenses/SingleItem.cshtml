@@ -1,0 +1,81 @@
+﻿@using Cursed.Models.DataModel.Licenses
+@model LicensesViewModel
+@{
+    ViewData["Title"] = "SingleItem";
+    string attentionColor;
+    string licenseSummary;
+    if(Model.IsValid)
+    {
+        attentionColor = "green";
+        licenseSummary = "Valid";
+    }
+    else
+    {
+        attentionColor = "red";
+        licenseSummary = "Not valid";
+    }
+}
+<h1>Licenses</h1>
+<h2>License №@Model.GovermentNum</h2>
+<p>@Html.RouteLink("Edit", LicensesRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@LicensesRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Licensed until:</td>
+        <td>@Model.Date</td>
+    </tr>
+    <tr>
+        <td>License number:</td>
+        <td>@Model.GovermentNum</td>
+    </tr>
+    <tr>
+        <td>Product name:</td>
+        <td>@Html.RouteLink(Model.ProductName, ProductsCatalogRouting.SingleItem, new { key = Model.ProductId })</td>
+    </tr>
+    <tr>
+        <td>Product CAS:</td>
+        <td>@Html.RouteLink(Model.ProductCAS.ToString(), ProductsCatalogRouting.SingleItem, new { key = Model.ProductId })</td>
+
+    </tr>
+    <tr>
+        <td>License summary:</td>
+        <td bgcolor="@attentionColor">@licenseSummary</td>
+    </tr>
+    <tr>
+        <td>Other licenses related to product:</td>
+        @if (Model.RelatedLicenses.Count() == 0)
+        {
+            <td>None</td>
+        }
+        else
+        {
+            <td>
+                <table>
+                    @foreach (var license in Model.RelatedLicenses)
+                    {
+                        string relatedAttentionColor;
+                        string relatedLicenseSummary;
+                        if (license.IsValid)
+                        {
+                            relatedAttentionColor = "green";
+                            relatedLicenseSummary = "Valid";
+                        }
+                        else
+                        {
+                            relatedAttentionColor = "red";
+                            relatedLicenseSummary = "Not valid";
+                        }
+                        <tr>
+                            <td>@Html.RouteLink(license.GovermentNum.ToString(), LicensesRouting.SingleItem, new { key = license.Id })</td>
+                            <td>@license.Date</td>
+                            <td bgcolor="@relatedAttentionColor">@relatedLicenseSummary</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        }  
+    </tr>
+</table>

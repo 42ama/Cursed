@@ -1,0 +1,8 @@
+﻿@{
+    string userRole = User.FindFirst(System.Security.Claims.ClaimsIdentity.DefaultRoleClaimType)?.Value;
+    ViewData["Title"] = "Index";
+}
+
+<h1>Hub</h1>
+
+@{await Html.RenderPartialAsync("_CategoriesListPartial", (ulClass:"", userRole: userRole));}

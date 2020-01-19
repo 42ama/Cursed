@@ -1,0 +1,60 @@
+﻿@using Cursed.Models.DataModel.Authorization;
+
+@model (string ulClass, string userRole)
+    <ul class="@Model.ulClass">
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@CompaniesRouting.Index">Companies</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@FacilitiesRouting.Index">Facilities</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist || Model.userRole == AuthorizeRoles.GovermentAgent)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@LicensesRouting.Index">Licenses</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist || Model.userRole == AuthorizeRoles.GovermentAgent)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@ProductsCatalogRouting.Index">Products</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist || Model.userRole == AuthorizeRoles.GovermentAgent)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@RecipesRouting.Index">Recipes</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@StoragesRouting.Index">Storages</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator || Model.userRole == AuthorizeRoles.Manager || Model.userRole == AuthorizeRoles.Technologist || Model.userRole == AuthorizeRoles.SeniorTechnologist)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@TransactionsRouting.Index">Transactions</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@UserManagmentRouting.Index">Users</a>
+            </li>
+        }
+        @if (Model.userRole == AuthorizeRoles.Administrator)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-route="@LogsRouting.Index">Logs</a>
+            </li>
+        }
+
+    </ul>

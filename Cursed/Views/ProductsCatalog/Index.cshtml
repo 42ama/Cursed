@@ -1,0 +1,76 @@
+﻿@using Cursed.Models.DataModel.ProductsCatalog
+@model Pagenation<ProductsCatalogModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = ProductsCatalogRouting.Index;
+}
+
+<h1>Product Catalog</h1>
+<p>@Html.RouteLink("Add", ProductsCatalogRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td style="text-align:center">Name</td>
+            <td style="text-align:center">CAS</td>
+            <td style="text-align:center"><p>License</p><p>summary</p></td>
+            <td style="text-align:center">Used in</td>
+            <td style="text-align:center">Contained in</td>
+            <td style="text-align:center"><!--for edit/delete button--></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            string licenseSummary;
+            string bgColor;
+            if (item.LicenseRequired)
+            {
+                if (item.IsValid == true)
+                {
+                    licenseSummary = "Valid";
+                    bgColor = "green";
+                }
+                else
+                {
+                    licenseSummary = "Not valud";
+                    bgColor = "red";
+                }
+            }
+            else
+            {
+                licenseSummary = "Not required";
+                bgColor = "grey";
+            }
+            <tr>
+                <td style="text-align:center">@item.Name</td>
+                <td style="text-align:center">@item.CAS</td>
+                <td style="text-align:center" bgcolor="@bgColor">@licenseSummary</td>
+                <td style="text-align:center">
+                    <p>@item.RecipesCount Recipes</p>
+                    @if (item.RecipesCount != 0)
+                    {
+                        <p>@Html.RouteLink("See All", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
+                    }
+                </td>
+                <td style="text-align:center">
+                    <p>@item.StoragesCount Storages</p>
+                    @if (item.RecipesCount != 0)
+                    {
+                        <p>@Html.RouteLink("See All", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
+                    }
+                </td>
+                <td style="text-align:center">
+                    <p>@Html.RouteLink("Show", ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</p>
+                    <p>@Html.RouteLink("Edit", ProductsCatalogRouting.GetEditSingleItem, new { key = item.ProductId })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@ProductsCatalogRouting.DeleteSingleItem">
+                        <input hidden type="number" name="key" value="@item.ProductId" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

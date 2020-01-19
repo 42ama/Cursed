@@ -1,0 +1,35 @@
+﻿@using Cursed.Models.Entities.Authentication
+@model Pagenation<LogRecord>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = LogsRouting.Index;
+}
+
+<h1>Logs</h1>
+
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td style="text-align:center">Id</td>
+            <td style="text-align:center">Record</td>
+            <td style="text-align:center">Login</td>
+            <td style="text-align:center">IP</td>
+            <td style="text-align:center">Date</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            <tr>
+                <td style="text-align:center">@item.Id</td>
+                <td style="text-align:center">@item.Record</td>
+                <td style="text-align:center">@item.UserLogin</td>
+                <td style="text-align:center">@item.UserIP</td>
+                <td style="text-align:center">@item.Date.ToString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

@@ -1,0 +1,75 @@
+﻿@using Cursed.Models.DataModel.ProductsCatalog
+@model ProductCatalogModel
+@{
+    ViewData["Title"] = "SingleItem";
+
+}
+<h1>Product Catalog</h1>
+<h2>@Model.Name</h2>
+<p>@Html.RouteLink("Edit", ProductsCatalogRouting.GetEditSingleItem, new { key = Model.ProductId })</p>
+<form asp-antiforgery="true" method="post" asp-route="@ProductsCatalogRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.ProductId" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Name:</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>CAS:</td>
+        <td>@Model.CAS</td>
+    </tr>
+    <tr>
+        <td valign="top">Recipes:</td>
+        <td>
+            @if (Model.Recipes.Count > 0)
+            {
+                foreach (var item in Model.Recipes)
+                {
+                    <p>@Html.RouteLink(item.Item1, RecipesRouting.SingleItem, new { key = item.Item2 })</p>
+                }
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td valign="top">Storages:</td>
+        <td>
+            @if (Model.Storages.Count > 0)
+            {
+                foreach (var item in Model.Storages)
+                {
+                    <p>@Html.RouteLink(item.Item1, StoragesRouting.SingleItem, new { key = item.Item2 })</p>
+                }
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td valign="top">Licenses:</td>
+        <td>
+            @if (Model.Licenses.Count > 0)
+            {
+                <table>
+                        @foreach (var item in Model.Licenses)
+                        {
+                            string bgColor = item.isValid ? "green" : "red";
+                            <tr><td bgcolor="@bgColor">@Html.RouteLink($"{item.license.GovermentNum}: {item.license.Date.ToShortDateString()}", LicensesRouting.SingleItem, new { key = item.license.Id })</td></tr>
+                        }
+                </table>
+            }
+            else
+            {
+                <p>Empty</p>
+            }
+        </td>
+    </tr>
+</table>
+

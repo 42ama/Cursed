@@ -1,0 +1,41 @@
+﻿@using Cursed.Models.DataModel.Authentication;
+@model RegistrationModel
+@{
+    ViewData["Title"] = "AddSingleItem";
+}
+<h1>Users</h1>
+<h2>Add user</h2>
+
+<form asp-antiforgery="true" method="post" role="form">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label for="Login">Login:</label>
+        <div>
+            <input required asp-for="Login" type="text" name="Login">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Password">Password:</label>
+        <div>
+            <input required asp-for="Password" type="password" name="Password">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="PasswordConfirm">Confirm password:</label>
+        <div>
+            <input required asp-for="PasswordConfirm" type="password" name="PasswordConfirm">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="RoleName">Role:</label>
+        <div>
+            <input required asp-for="RoleName" type="text" name="RoleName">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input asp-route=@UserManagmentRouting.AddSingleItem type="submit" class="btn btn-default" value="Save" />
+        </div>
+    </div>
+</form>

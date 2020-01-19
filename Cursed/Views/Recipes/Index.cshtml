@@ -1,0 +1,100 @@
+﻿@using Cursed.Models.DataModel.Recipes
+@using Cursed.Models.DataModel.RecipeProducts
+@model Pagenation<RecipesModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = RecipesRouting.Index;
+}
+
+<h1>Recipes</h1>
+<p>@Html.RouteLink("Add", RecipesRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Recipe Id</td>
+            <td>Content</td>
+            <td>Technical Approval</td>
+            <td>Goverment Approval</td>
+            <td>Materials</td>
+            <td>Products</td>
+            <td>Parent</td>
+            <td>Childs</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            string content = item.Content;
+            string techApprov = item.TechApproved == true ? "Approved" : "Not approved";
+            string govApprov = item.GovApproved == true ? "Approved" : "Not approved";
+            string parentRecipe = item.ParentRecipe != null ? "ParentId: " + item.ParentRecipe.Value.ToString() : "None";
+            <tr>
+                <td>@item.Id</td>
+                <td>@content</td>
+                @if (item.TechApproved == true)
+                {
+                    <td bgcolor="green">@techApprov</td>
+                }
+                else
+                {
+                    <td bgcolor="red">@techApprov</td>
+                }
+                @if (item.GovApproved == true)
+                {
+                    <td bgcolor="green">@govApprov</td>
+                }
+                else
+                {
+                    <td bgcolor="red">@govApprov</td>
+                }
+                @if (item.MaterialCount > 0)
+                {
+                    <td>
+                        <p>@item.MaterialCount materials</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    </td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                @if (item.ProductCount > 0)
+                {
+                    <td>
+                        <p>@item.ProductCount products</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    </td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>@parentRecipe</td>
+                @if (item.ChildRecipesCount > 0)
+                {
+                    <td>
+                        <p>@item.ChildRecipesCount childs</p>
+                        <p>@Html.RouteLink("See All", RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    </td>
+                }
+                else
+                {
+                    <td>None</td>
+                }
+                <td>
+                    <p>@Html.RouteLink("Show", RecipesRouting.SingleItem, new { key = item.Id })</p>
+                    <p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = item.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.DeleteSingleItem">
+                        <input hidden type="number" name="key" value="@item.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

@@ -1,0 +1,74 @@
+﻿@using Cursed.Models.DataModel.Storages
+@using Cursed.Models.DataModel.Products
+@model StorageModel
+@{
+    ViewData["Title"] = "SingleItem";
+}
+<h1>Storages</h1>
+
+<h2>@Model.Name</h2>
+<p>@Html.RouteLink("Products", ProductsRouting.Index, new { key = Model.Id })</p>
+<p>@Html.RouteLink("Edit", StoragesRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@StoragesRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+
+<table>
+    <tr>
+        <td>Name:</td>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <td>Coordinates:</td>
+        @if(Model.Latitude.HasValue && Model.Longitude.HasValue)
+        {
+            <td>Latitude: @Model.Latitude.Value; Longitude: @Model.Longitude.Value</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
+    </tr>
+    <tr>
+        <td>Company:</td>
+        @if(Model.Company != new ValueTuple<string, int>())
+        {
+            <td>@Html.RouteLink(Model.Company.Item1, CompaniesRouting.SingleItem, new { key = Model.Company.Item2 })</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
+    </tr>
+    <tr>
+        <td>Products:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Quantity</td>
+                        <td>Price</td>
+                        <td>Total</td>
+                        <td>@*buttons*@</td>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.Products)
+                {
+                    string quantity = $"{item.Quantity} {item.QuantityUnit}";
+                    decimal total = item.Quantity * item.Price;
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@quantity</td>
+                        <td>@item.Price $</td>
+                        <td>@total $</td>
+                        <td>
+                            <p>@Html.RouteLink("Show in catalog", ProductsCatalogRouting.SingleItem, new { key = item.Uid })</p>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+</table>

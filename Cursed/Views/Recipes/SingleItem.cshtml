@@ -1,0 +1,161 @@
+﻿@using Cursed.Models.DataModel.Recipes
+@using Cursed.Models.DataModel.RecipeProducts
+@using Cursed.Models.StaticReferences
+@model RecipeModel
+@{
+    ViewData["Title"] = "SingleItem";
+    string govApprov = Model.GovApproved == true ? "Approved" : "Not approved";
+    string techApprov = Model.TechApproved == true ? "Approved" : "Not approved";
+}
+<h1>Recipes</h1>
+<h2>RecipeId: @Model.Id</h2>
+<p>@Html.RouteLink("Add child", RecipesRouting.AddChildSingleItem, new { key = Model.Id })</p>
+<p>@Html.RouteLink("Edit", RecipesRouting.GetEditSingleItem, new { key = Model.Id })</p>
+<p>@Html.RouteLink("Show consumed and produced Products", RecipeProductsRouting.Index, new { key = Model.Id })</p>
+<form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.DeleteSingleItem">
+    <input hidden type="number" name="key" value="@Model.Id" />
+    <input type="submit" class="btn btn-dark" value="Delete" />
+</form>
+<table>
+    <tr>
+        <td>Id:</td>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <td>Content:</td>
+        <td>@Model.Content</td>
+    </tr>
+    <tr>
+        <td>Technical Approval:</td>
+        @if (Model.TechApproved == true)
+        {
+            <td bgcolor="green">@techApprov</td>
+        }
+        else
+        {
+            <td bgcolor="red">@techApprov</td>
+        }
+        <td>
+            <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.InverseTechnologistApproval">
+                <input hidden type="number" name="key" value="@Model.Id" />
+                <input type="submit" class="btn btn-dark" value="Change state" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>Goverment Approval:</td>
+        @if (Model.GovApproved == true)
+        {
+            <td bgcolor="green">@govApprov</td>
+        }
+        else
+        {
+            <td bgcolor="red">@govApprov</td>
+        }
+        <td>
+            <form asp-antiforgery="true" method="post" asp-route="@RecipesRouting.InverseGovermentApproval">
+                <input hidden type="number" name="key" value="@Model.Id" />
+                <input type="submit" class="btn btn-dark" value="Change state" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>Materials:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Material</td>
+                        <td>CAS</td>
+                        <td>Consumed</td>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Material))
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                        @if (item.CAS.HasValue)
+                        {
+                            <td>@Html.RouteLink(item.CAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                        }
+                        else
+                        {
+                            <td>None</td>
+                        }
+
+                        <td>@item.Quantity mg</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Products:</td>
+        <td>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Product</td>
+                        <td>CAS</td>
+                        <td>Produced</td>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.RecipeProducts.Where(i => i.Type == ProductCatalogTypes.Product))
+                {
+                    <tr>
+                        <td>@Html.RouteLink(item.ProductName, ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                        @if (item.CAS.HasValue)
+                        {
+                            <td>@Html.RouteLink(item.CAS.Value.ToString(), ProductsCatalogRouting.SingleItem, new { key = item.ProductId })</td>
+                        }
+                        else
+                        {
+                            <td>None</td>
+                        }
+                        <td>@item.Quantity mg</td>
+                    </tr>
+                }
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>Used in Facilities:</td>
+        @if (Model.RelatedFacilities.Count() == 0)
+        {
+            <td>None</td>
+        }
+        else
+        {
+            <td>
+                <table>
+                    @foreach (var facility in Model.RelatedFacilities)
+                    {
+                        <tr>
+                            <td>@Html.RouteLink(facility.Name, FacilitiesRouting.SingleItem, new { key = facility.Id })</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>Parent:</td>
+        @if (Model.ParentRecipe != null)
+        {
+            <td>@Html.RouteLink(Model.ParentRecipe.ToString(), RecipesRouting.SingleItem, new { key = Model.ParentRecipe })</td>
+        }
+        else
+        {
+            <td>None</td>
+        }
+    </tr>
+    <tr>
+        <td>Childs:</td>
+        <td>
+            @foreach (var item in Model.ChildRecipes)
+            {
+                <p>@Html.RouteLink(item.ToString(), RecipesRouting.SingleItem, new { key = item })</p>
+            }
+        </td>
+    </tr>
+</table>

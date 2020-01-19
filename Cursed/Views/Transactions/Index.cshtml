@@ -1,0 +1,53 @@
+﻿@using Cursed.Models.DataModel.Transactions
+@model Pagenation<TransactionsModel>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = TransactionsRouting.Index;
+}
+
+<h1>Transactions Index</h1>
+<p>@Html.RouteLink("Add", TransactionsRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Company</td>
+            <td>Type</td>
+            <td>Closed</td><!--When or not closed-->
+            <td>Comment</td>
+            <td>Operations Count</td>
+            <td><!--for edit/delete button--></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model.PagenatedCollection)
+        {
+            <tr>
+                <td>@transaction.Id</td>
+                <td>@Html.RouteLink(transaction.CompanyName, CompaniesRouting.SingleItem, new { key = transaction.CompanyId})</td>
+                <td>@transaction.Type</td>
+                @if(transaction.IsOpen)
+                {
+                    <td>Not closed</td>
+                }
+                else
+                {
+                    <td>@transaction.Date.ToShortDateString()</td>
+                }
+                <td>@transaction.Comment</td>
+                <td>@transaction.OperationsCount</td>
+                <td>
+                    <p>@Html.RouteLink("Show", TransactionsRouting.SingleItem, new { key = transaction.Id })</p>
+                    <p>@Html.RouteLink("Edit", TransactionsRouting.GetEditSingleItem, new { key = transaction.Id })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@TransactionsRouting.DeleteSingleItem">
+                        <input hidden type="number" name="key" value="@transaction.Id" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)

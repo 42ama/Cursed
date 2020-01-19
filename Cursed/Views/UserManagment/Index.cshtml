@@ -1,0 +1,38 @@
+﻿@using Cursed.Models.Entities.Authentication;
+
+@model Pagenation<UserData>
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PagenationRouteLink"] = UserManagmentRouting.Index;
+}
+<h1>Users</h1>
+<p>@Html.RouteLink("Add", UserManagmentRouting.GetEditSingleItem)</p>
+@await Html.PartialAsync("_Pagenation/ItemsOnPageControl", (PagenationAbstract)Model, ViewData)
+@await Html.PartialAsync("_Pagenation/PagesControl", (PagenationAbstract)Model, ViewData)
+<table>
+    <thead>
+        <tr>
+            <td>Login</td>
+            <td>Role</td>
+            <td>@*buttons*@</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PagenatedCollection)
+        {
+            <tr>
+                <td>@item.Login</td>
+                <td>@item.RoleName</td>
+                <td>
+                    <p>@Html.RouteLink("Show", UserManagmentRouting.SingleItem, new { key = item.Login })</p>
+                    <p>@Html.RouteLink("Edit", UserManagmentRouting.GetEditSingleItem, new { key = item.Login })</p>
+                    <form asp-antiforgery="true" method="post" asp-route="@UserManagmentRouting.DeleteSingleItem">
+                        <input hidden type="text" name="key" value="@item.Login" />
+                        <input type="submit" class="btn btn-dark" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@await Html.PartialAsync("_Pagenation/PrevNextControl", (PagenationAbstract)Model, ViewData)
