@@ -8,6 +8,8 @@ Cursed is stock accounting system for pharmaceutics company.
 
 For development and testing purposes you can fork this repository and launch project in your Visual Studio. Or launch server from [docker container](https://hub.docker.com/repository/docker/42ama/cursed/).
 
+If running it up for manuall testing, you probably gonna need [login-password combinations](https://github.com/42ama/Cursed/wiki/Roles.-Login:pass-combinations.) for authentication in system.
+
 ## Running the tests
 
 Project is tested with use of XUnit framework and all tests located in **Cursed.Tests** namespace.
