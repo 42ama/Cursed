@@ -2,7 +2,7 @@
 
 Cursed is stock accounting system for pharmaceutics company.
 
-Don't forget to checkout [wiki](https://github.com/42ama/Cursed/wiki) for additional information.
+**Don't forget to checkout [wiki](https://github.com/42ama/Cursed/wiki) for additional information.**
 
 ## Getting Started
 
