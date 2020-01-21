@@ -62,6 +62,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> AddSingleItem(Operation model)
         {
             var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            logicValidation.ValidateModel(statusMessage, ModelState);
             if (statusMessage.IsCompleted)
             {
                 var operation = await logic.AddDataModelAsync(model);
@@ -83,6 +84,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> EditSingleItem(Operation model)
         {
             var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
+            logicValidation.ValidateModel(statusMessage, ModelState);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);

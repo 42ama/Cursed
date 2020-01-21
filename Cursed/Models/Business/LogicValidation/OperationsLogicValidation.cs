@@ -5,6 +5,8 @@ using Cursed.Models.Services;
 using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Entities.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -25,6 +27,52 @@ namespace Cursed.Models.LogicValidation
         }
 
         /// <summary>
+        /// Validates operation model
+        /// </summary>
+        /// <param name="modelState">Model state with validation problems</param>
+        /// <returns></returns>
+        public IErrorHandler ValidateModel(ModelStateDictionary modelState)
+        {
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Operations.",
+                EntityKey = "",
+                RedirectRoute = TransactionsRouting.Index,
+                UseKeyWithRoute = false
+            });
+
+            return ValidateModel(statusMessage, modelState);
+        }
+
+        /// <summary>
+        /// Validates operation relation model
+        /// </summary>
+        /// <param name="statusMessage">Error handler to which found problems will be added</param>
+        /// <param name="modelState">Model state with validation problems</param>
+        /// <returns></returns>
+        public IErrorHandler ValidateModel(IErrorHandler statusMessage, ModelStateDictionary modelState)
+        {
+            if (!modelState.IsValid)
+            {
+                var errors = modelState.Values.SelectMany(i => i.Errors);
+
+                foreach (var error in errors)
+                {
+                    statusMessage.AddProblem(new Problem
+                    {
+                        Entity = "Operations.",
+                        EntityKey = "",
+                        Message = error.ErrorMessage,
+                        RedirectRoute = TransactionsRouting.Index,
+                        UseKeyWithRoute = false
+                    });
+                }
+            }
+
+            return statusMessage;
+        }
+
+        /// <summary>
         /// Checks if operation is valid, to be gatherd for update
         /// </summary>
         /// <param name="key">Id of operation to be found</param>
@@ -37,7 +85,7 @@ namespace Cursed.Models.LogicValidation
         /// <summary>
         /// Checks if operation is valid, to be updated
         /// </summary>
-        /// <param name="key">Id of operation to be found</param>
+        /// <param name="model">Operation to be found</param>
         /// <returns>Status message with validaton information</returns>
         public async Task<IErrorHandler> CheckUpdateDataModelAsync(Operation model)
         {
@@ -128,6 +176,19 @@ namespace Cursed.Models.LogicValidation
                     Entity = "Storage.",
                     EntityKey = (model.StorageToId).ToString(),
                     Message = "Storage To with this Id isn't found",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            // check if related transaction exists
+            if (model.StorageToId == model.StorageFromId)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Storage.",
+                    EntityKey = "",
+                    Message = "Operation can't transfer products between same storage",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });
