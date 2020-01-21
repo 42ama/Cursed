@@ -38,13 +38,13 @@ namespace Cursed.Tests
             await context.Operation.ClearIfAny();
             await context.License.ClearIfAny();
             await context.TransactionBatch.ClearIfAny();
-            await context.Company.ClearIfAny();
             await context.TechProcess.ClearIfAny();
             await context.Facility.ClearIfAny();
             await context.Product.ClearIfAny();
             await context.Recipe.ClearIfAny();
             await context.ProductCatalog.ClearIfAny();
             await context.Storage.ClearIfAny();
+            await context.Company.ClearIfAny();
             await context.SaveChangesAsync();
         }
 
