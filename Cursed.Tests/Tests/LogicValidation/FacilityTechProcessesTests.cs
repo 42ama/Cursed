@@ -91,7 +91,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             var techProcess = GetTechProcess();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync((techProcess.FacilityId, techProcess.RecipeId));
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(techProcess);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -101,16 +101,51 @@ namespace Cursed.Tests.Tests.LogicValidation
         public async void CheckUpdateTechProcess_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
         {
             // arrange
+            var facility = GetFacility();
+            var recipe = GetRecipe();
             var techProcess = GetTechProcess();
+            fixture.db.Add(facility);
+            fixture.db.Add(recipe);
             fixture.db.Add(techProcess);
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync((techProcess.FacilityId, techProcess.RecipeId));
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(techProcess);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
+        [Fact]
+        public async void CheckAddTechProcess_WithEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var techProcess = GetTechProcess();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(techProcess);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddTechProcess_WithInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var facility = GetFacility();
+            var recipe = GetRecipe();
+            var techProcess = GetTechProcess();
+            fixture.db.Add(facility);
+            fixture.db.Add(recipe);
+            fixture.db.Add(techProcess);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(techProcess);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
     }
 }

@@ -5,6 +5,7 @@ using Cursed.Models.Context;
 using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -26,11 +27,31 @@ namespace Cursed.Models.LogicValidation
         /// <summary>
         /// Checks if tech process is valid, to be updated
         /// </summary>
-        /// <param name="key">RecipeId and FacilityId of tech process to be found</param>
+        /// <param name="model">Technological process model to be validated</param>
         /// <returns>Status message with validaton information</returns>
-        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateDataModelAsync(TechProcess model)
         {
-            return await CheckExists(key);
+            var statusMessage = await CheckExists((model.FacilityId, model.RecipeId));
+
+            return await CheckRelatedEntitiesExists(model, statusMessage);
+        }
+
+        /// <summary>
+        /// Checks if technological process is valid, to be added
+        /// </summary>
+        /// <param name="model">Technological process model to be validated</param>
+        /// <returns>Status message with validaton information</returns>
+        public async Task<IErrorHandler> CheckAddDataModelAsync(TechProcess model)
+        {
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Technological procces.",
+                EntityKey = "",
+                RedirectRoute = HubRouting.Index,
+                UseKeyWithRoute = false
+            });
+
+            return await CheckRelatedEntitiesExists(model, statusMessage);
         }
 
         /// <summary>
@@ -41,6 +62,43 @@ namespace Cursed.Models.LogicValidation
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             return await CheckExists(key);
+        }
+
+        /// <summary>
+        /// Checks if related entities exitst
+        /// </summary>
+        /// <param name="model">Technological process model to be validated</param>
+        /// <param name="statusMessage">Error handler to which problem will be added</param>
+        /// <returns>Status message with validaton information</returns>
+        private async Task<IErrorHandler> CheckRelatedEntitiesExists(TechProcess model, IErrorHandler statusMessage)
+        {
+            // check if related facility exists
+            if (await db.Facility.FirstOrDefaultAsync(i => i.Id == model.FacilityId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Facility.",
+                    EntityKey = (model.FacilityId).ToString(),
+                    Message = "Facility with this Id isn't found",
+                    RedirectRoute = FacilitiesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            // check if related product from catalog exists
+            if (await db.Recipe.FirstOrDefaultAsync(i => i.Id == model.RecipeId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Recipe.",
+                    EntityKey = (model.RecipeId).ToString(),
+                    Message = "Recipe with this Id isn't found",
+                    RedirectRoute = RecipesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            return statusMessage;
         }
 
         /// <summary>

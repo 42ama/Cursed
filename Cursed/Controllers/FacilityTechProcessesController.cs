@@ -61,9 +61,17 @@ namespace Cursed.Controllers
         [HttpPost("add", Name = FacilityTechProcessesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TechProcess model)
         {
-            var techProcess = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new technological process (Facility Id: {techProcess.FacilityId}; Recipe Id: {techProcess.RecipeId}).");
-            return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                var techProcess = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new technological process (Facility Id: {techProcess.FacilityId}; Recipe Id: {techProcess.RecipeId}).");
+                return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace Cursed.Controllers
         [HttpPost("edit", Name = FacilityTechProcessesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TechProcess model)
         {
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync((model.FacilityId, model.RecipeId));
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
