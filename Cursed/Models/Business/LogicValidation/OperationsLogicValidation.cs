@@ -114,7 +114,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Storage.",
                     EntityKey = (model.StorageFromId).ToString(),
-                    Message = "Storage with this Id isn't found",
+                    Message = "Storage From with this Id isn't found",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });
@@ -127,7 +127,7 @@ namespace Cursed.Models.LogicValidation
                 {
                     Entity = "Storage.",
                     EntityKey = (model.StorageToId).ToString(),
-                    Message = "Storage with this Id isn't found",
+                    Message = "Storage To with this Id isn't found",
                     RedirectRoute = StoragesRouting.Index,
                     UseKeyWithRoute = false
                 });
