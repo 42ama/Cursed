@@ -24,6 +24,15 @@ namespace Cursed.Tests.Tests.LogicValidation
             await TestsFixture.ClearDatabase(fixture.db);
         }
 
+        private Company GetCompany()
+        {
+            return new Company
+            {
+                Id = 44440,
+                Name = "Test company"
+            };
+        }
+
         private Storage GetStorage()
         {
             return new Storage
@@ -180,7 +189,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             var storage = GetStorage();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(storage.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(storage);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -191,15 +200,46 @@ namespace Cursed.Tests.Tests.LogicValidation
         {
             // arrange
             var storage = GetStorage();
+            var company = GetCompany();
             fixture.db.Add(storage);
+            fixture.db.Add(company);
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(storage.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(storage);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
+        [Fact]
+        public async void CheckAddStorage_ToEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var storage = GetStorage();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(storage);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddStorage_WithInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var storage = GetStorage();
+            var company = GetCompany();
+            fixture.db.Add(storage);
+            fixture.db.Add(company);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(storage);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
     }
 }

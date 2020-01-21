@@ -5,6 +5,7 @@ using Cursed.Models.Context;
 using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -47,11 +48,31 @@ namespace Cursed.Models.LogicValidation
         /// <summary>
         /// Checks if storage is valid, to be updated
         /// </summary>
-        /// <param name="key">Id of storage to be found</param>
+        /// <param name="model">Storage model to be validated</param>
         /// <returns>Status message with validaton information</returns>
-        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateDataModelAsync(Storage model)
         {
-            return await CheckExists(key);
+            var statusMessage = await CheckExists(model.Id);
+
+            return await CheckRelatedEntitiesExists(model, statusMessage);
+        }
+
+        /// <summary>
+        /// Checks if storage is valid, to be added
+        /// </summary>
+        /// <param name="model">Storage model to be validated</param>
+        /// <returns>Status message with validaton information</returns>
+        public async Task<IErrorHandler> CheckAddDataModelAsync(Storage model)
+        {
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Storage.",
+                EntityKey = "",
+                RedirectRoute = StoragesRouting.Index,
+                UseKeyWithRoute = false
+            });
+
+            return await CheckRelatedEntitiesExists(model, statusMessage);
         }
 
         /// <summary>
@@ -100,6 +121,29 @@ namespace Cursed.Models.LogicValidation
                 }
             }
 
+            return statusMessage;
+        }
+
+        /// <summary>
+        /// Checks if related entities exitst
+        /// </summary>
+        /// <param name="model">Storage model with key properties of related entities</param>
+        /// <param name="statusMessage">Error handler to which problem will be added</param>
+        /// <returns>Status message with validaton information</returns>
+        private async Task<IErrorHandler> CheckRelatedEntitiesExists(Storage model, IErrorHandler statusMessage)
+        {
+            // check if related company exists
+            if (await db.Company.FirstOrDefaultAsync(i => i.Id == model.CompanyId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Company.",
+                    EntityKey = (model.CompanyId).ToString(),
+                    Message = "Company with this Id isn't found",
+                    RedirectRoute = CompaniesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
             return statusMessage;
         }
 
