@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Cursed.Models.Context;
@@ -24,7 +25,7 @@ namespace Cursed.Models.Logic
         /// <returns>All logs from database</returns>
         public async Task<IEnumerable<LogRecord>> GetAllDataModelAsync()
         {
-            return await db.LogRecord.ToListAsync();
+            return await db.LogRecord.OrderByDescending(i => i.Id).ToListAsync();
         }
     }
 }
