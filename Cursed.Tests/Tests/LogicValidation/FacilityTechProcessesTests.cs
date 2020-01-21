@@ -142,7 +142,6 @@ namespace Cursed.Tests.Tests.LogicValidation
             var techProcess = GetTechProcess();
             fixture.db.Add(facility);
             fixture.db.Add(recipe);
-            fixture.db.Add(techProcess);
             await fixture.db.SaveChangesAsync();
 
             // act
@@ -150,6 +149,25 @@ namespace Cursed.Tests.Tests.LogicValidation
 
             // assert
             Assert.True(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddTechProcess_WithInitializedDbTableSameTechProcessExists_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var facility = GetFacility();
+            var recipe = GetRecipe();
+            var techProcess = GetTechProcess();
+            fixture.db.Add(facility);
+            fixture.db.Add(recipe);
+            fixture.db.Add(techProcess);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(techProcess);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]

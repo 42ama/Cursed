@@ -81,7 +81,10 @@ namespace Cursed.Models.LogicValidation
                 UseKeyWithRoute = false
             });
 
-            return await CheckRelatedEntitiesExists(model, statusMessage);
+            await CheckNotExists((model.FacilityId, model.RecipeId), statusMessage);
+            await CheckRelatedEntitiesExists(model, statusMessage);
+
+            return statusMessage;
         }
 
         /// <summary>
@@ -157,6 +160,32 @@ namespace Cursed.Models.LogicValidation
                     Entity = $"Technological process. Recipe Id: {tupleKey.Item2}.",
                     EntityKey = tupleKey.Item1.ToString(),
                     Message = "Technological process with this Id's is not found.",
+                    RedirectRoute = FacilityTechProcessesRouting.Index
+                });
+            }
+
+            return statusMessage;
+        }
+
+        /// <summary>
+        /// Checks if tech process not exists
+        /// </summary>
+        /// <param name="key">RecipeId and FacilityId of tech process to be found</param>
+        /// <returns>Status message with validaton information</returns>
+        private async Task<IErrorHandler> CheckNotExists(object key, IErrorHandler statusMessage)
+        {
+            // facility id and recipe id
+            var tupleKey = (ValueTuple<int, int>)key;
+
+            // check if tech process exists
+            if (await db.TechProcess.FirstOrDefaultAsync(i => i.FacilityId == tupleKey.Item1 &&
+            i.RecipeId == tupleKey.Item2) != null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = $"Technological process. Recipe Id: {tupleKey.Item2}.",
+                    EntityKey = tupleKey.Item1.ToString(),
+                    Message = "Technological process with this Id's is found. Remove it before adding new with same key.",
                     RedirectRoute = FacilityTechProcessesRouting.Index
                 });
             }
