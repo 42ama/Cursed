@@ -4,6 +4,8 @@ using Cursed.Models.LogicValidation;
 using Cursed.Models.Entities.Data;
 using Cursed.Models.StaticReferences;
 using Cursed.Models.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Cursed.Models.DataModel.ErrorHandling;
 
 namespace Cursed.Tests.Tests.LogicValidation
 {
@@ -12,11 +14,13 @@ namespace Cursed.Tests.Tests.LogicValidation
     {
         private readonly TestsFixture fixture;
         private readonly RecipeProductsLogicValidation logicValidation;
+        private readonly IErrorHandlerFactory errorHandlerFactory;
 
         public RecipeProductsTests(TestsFixture fixture)
         {
             this.fixture = fixture;
-            logicValidation = new RecipeProductsLogicValidation(fixture.db, new StatusMessageFactory());
+            errorHandlerFactory = new StatusMessageFactory();
+            logicValidation = new RecipeProductsLogicValidation(fixture.db, errorHandlerFactory);
         }
 
         public async void Dispose()
@@ -113,5 +117,38 @@ namespace Cursed.Tests.Tests.LogicValidation
             Assert.True(statusMessage.IsCompleted);
         }
 
+        [Fact]
+        public void CheckValidateModel_WithoutErrors_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Technological procces."
+            });
+
+            // act
+            var actual = logicValidation.ValidateModel(statusMessage, new ModelStateDictionary());
+
+            // assert
+            Assert.True(actual.IsCompleted);
+        }
+
+        [Fact]
+        public void CheckValidateModel_WithErrors_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Technological procces."
+            });
+            var modelState = new ModelStateDictionary();
+            modelState.AddModelError("key", "error");
+
+            // act
+            var actual = logicValidation.ValidateModel(statusMessage, modelState);
+
+            // assert
+            Assert.False(actual.IsCompleted);
+        }
     }
 }

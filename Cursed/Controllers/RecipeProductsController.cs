@@ -71,8 +71,16 @@ namespace Cursed.Controllers
         public async Task<IActionResult> AddSingleItem(RecipeProductChanges model)
         {
             var recipeProductChanges = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new recipe product relations (Recipe Id: {recipeProductChanges.RecipeId}; Product Id: {recipeProductChanges.ProductId}).");
-            return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            var statusMessage = logicValidation.ValidateModel(ModelState);
+            if (statusMessage.IsCompleted)
+            {
+                await logProvider.AddToLogAsync($"Added new recipe product relations (Recipe Id: {recipeProductChanges.RecipeId}; Product Id: {recipeProductChanges.ProductId}).");
+                return RedirectToRoute(RecipeProductsRouting.Index, new { key = model.RecipeId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -84,6 +92,7 @@ namespace Cursed.Controllers
         public async Task<IActionResult> EditSingleItem(RecipeProductChanges model)
         {
             var statusMessage = await logicValidation.CheckUpdateDataModelAsync((model.RecipeId, model.ProductId));
+            statusMessage = logicValidation.ValidateModel(statusMessage, ModelState);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);

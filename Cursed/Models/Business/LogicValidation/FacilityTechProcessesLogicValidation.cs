@@ -6,6 +6,8 @@ using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
 using Cursed.Models.Services;
 using Cursed.Models.Entities.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -22,6 +24,34 @@ namespace Cursed.Models.LogicValidation
         {
             this.db = db;
             this.errorHandlerFactory = errorHandlerFactory;
+        }
+
+        /// <summary>
+        /// Validates tech process model
+        /// </summary>
+        /// <param name="statusMessage">Error handler to which found problems will be added</param>
+        /// <param name="modelState">Model state with validation problems</param>
+        /// <returns></returns>
+        public IErrorHandler ValidateModel(IErrorHandler statusMessage, ModelStateDictionary modelState)
+        {
+            if (!modelState.IsValid)
+            {
+                var errors = modelState.Values.SelectMany(i => i.Errors);
+
+                foreach (var error in errors)
+                {
+                    statusMessage.AddProblem(new Problem
+                    {
+                        Entity = "Technological process.",
+                        EntityKey = "",
+                        Message = error.ErrorMessage,
+                        RedirectRoute = FacilitiesRouting.Index,
+                        UseKeyWithRoute = false
+                    });
+                }
+            }
+
+            return statusMessage;
         }
 
         /// <summary>
