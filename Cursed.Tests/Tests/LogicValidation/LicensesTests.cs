@@ -34,6 +34,17 @@ namespace Cursed.Tests.Tests.LogicValidation
             };
         }
 
+        private ProductCatalog GetProductCatalog()
+        {
+            return new ProductCatalog
+            {
+                Id = 44440,
+                Cas = 44440,
+                LicenseRequired = true,
+                Name = "Testine"
+            };
+        }
+
         [Fact]
         public async void CheckRemoveLicense_FromInitializedDbTable_ErrorHandlerIsCompletedFalse()
         {
@@ -125,7 +136,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             var license = GetLicense();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(license.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(license);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -136,15 +147,45 @@ namespace Cursed.Tests.Tests.LogicValidation
         {
             // arrange
             var license = GetLicense();
+            var product = GetProductCatalog();
+            fixture.db.Add(product);
             fixture.db.Add(license);
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(license.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(license);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
+        [Fact]
+        public async void CheckAddLicense_WithEmptyDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var license = GetLicense();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(license);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddLicense_WithInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var license = GetLicense();
+            var product = GetProductCatalog();
+            fixture.db.Add(product);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(license);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
     }
 }

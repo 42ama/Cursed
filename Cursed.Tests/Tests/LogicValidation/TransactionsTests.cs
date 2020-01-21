@@ -25,6 +25,15 @@ namespace Cursed.Tests.Tests.LogicValidation
             await TestsFixture.ClearDatabase(fixture.db);
         }
 
+        private Company GetCompany()
+        {
+            return new Company
+            {
+                Id = 44440,
+                Name = "Test company"
+            };
+        }
+
         private TransactionBatch GetTransaction()
         {
             return new TransactionBatch
@@ -115,7 +124,22 @@ namespace Cursed.Tests.Tests.LogicValidation
             var transaction = GetTransaction();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckUpdateTransaction_FromBadInitializedDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var transaction = GetTransaction();
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -125,12 +149,14 @@ namespace Cursed.Tests.Tests.LogicValidation
         public async void CheckUpdateTransaction_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
         {
             // arrange
+            var company = GetCompany();
             var transaction = GetTransaction();
+            fixture.db.Add(company);
             fixture.db.Add(transaction);
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
@@ -146,7 +172,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(transaction);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -250,6 +276,38 @@ namespace Cursed.Tests.Tests.LogicValidation
 
             // act
             var statusMessage = await logicValidation.CheckOpenTransactionAsync(transactionToCheckId);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddTransaction_FromBadInitializedDbTable_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var transaction = GetTransaction();
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(transaction);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddTransaction_FromInitializedDbTable_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var company = GetCompany();
+            var transaction = GetTransaction();
+            fixture.db.Add(company);
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(transaction);
 
             // assert
             Assert.True(statusMessage.IsCompleted);

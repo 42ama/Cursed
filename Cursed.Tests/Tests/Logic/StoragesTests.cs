@@ -95,12 +95,18 @@ namespace Cursed.Tests.Tests.Logic
                 new Product
                 {
                     Id = 44442,
-                    StorageId = 44441
+                    StorageId = 44441,
+                    Price = 17,
+                    Quantity = 2,
+                    QuantityUnit = "mg."
                 },
                 new Product
                 {
                     Id = 44443,
-                    StorageId = 44442
+                    StorageId = 44442,
+                    Price = 17,
+                    Quantity = 2,
+                    QuantityUnit = "mg."
                 }
             };
         }
@@ -209,9 +215,9 @@ namespace Cursed.Tests.Tests.Logic
             var products = GetProducts();
             var companies = GetCompanies();
 
+            fixture.db.Company.AddRange(companies);
             fixture.db.Storage.AddRange(storages);
             fixture.db.Product.AddRange(products);
-            fixture.db.Company.AddRange(companies);
             await fixture.db.SaveChangesAsync();
             var expected = new List<StoragesModel>
             {
@@ -270,11 +276,10 @@ namespace Cursed.Tests.Tests.Logic
             var products = GetProducts();
             var companies = GetCompanies();
 
-
+            fixture.db.Company.AddRange(companies);
             fixture.db.ProductCatalog.AddRange(productsCatalog);
             fixture.db.Storage.AddRange(storages);
             fixture.db.Product.AddRange(products);
-            fixture.db.Company.AddRange(companies);
             await fixture.db.SaveChangesAsync();
             var expected = new StorageModel
             {

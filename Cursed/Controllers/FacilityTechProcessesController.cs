@@ -11,6 +11,9 @@ using Cursed.Models.LogicValidation;
 using Cursed.Models.Services;
 using Cursed.Models.DataModel.Authorization;
 using Cursed.Models.Interfaces.ControllerCRUD;
+using System.Linq;
+using Cursed.Models.DataModel.ErrorHandling;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Cursed.Controllers
 {
@@ -61,9 +64,18 @@ namespace Cursed.Controllers
         [HttpPost("add", Name = FacilityTechProcessesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TechProcess model)
         {
-            var techProcess = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new technological process (Facility Id: {techProcess.FacilityId}; Recipe Id: {techProcess.RecipeId}).");
-            return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            statusMessage = logicValidation.ValidateModel(statusMessage, ModelState);
+            if (statusMessage.IsCompleted)
+            {
+                var techProcess = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new technological process (Facility Id: {techProcess.FacilityId}; Recipe Id: {techProcess.RecipeId}).");
+                return RedirectToRoute(FacilityTechProcessesRouting.Index, new { key = model.FacilityId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -74,7 +86,8 @@ namespace Cursed.Controllers
         [HttpPost("edit", Name = FacilityTechProcessesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TechProcess model)
         {
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync((model.FacilityId, model.RecipeId));
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
+            statusMessage = logicValidation.ValidateModel(statusMessage, ModelState);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);

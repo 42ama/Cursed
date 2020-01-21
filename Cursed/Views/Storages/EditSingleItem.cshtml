@@ -14,6 +14,7 @@ else
 }
 
 <form asp-antiforgery="true" method="post" role="form">
+    @Html.ValidationSummary()
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <input hidden asp-for="Id" type="number" name="Id" value="@Model?.Id">
@@ -27,7 +28,7 @@ else
     <p>Latitude:</p> @Html.EditorFor(model => model.Latitude)
     <p>Longitude:</p> @Html.EditorFor(model => model.Longitude)
     <div class="form-group">
-        <label for="CompanyId">CompanyId:</label>
+        <label for="CompanyId">CompanyId*:</label>
         <div>
             <input asp-for="CompanyId" type="number" name="CompanyId" value="@Model?.CompanyId">
         </div>

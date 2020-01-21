@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cursed.Models.Entities.Data
 {
@@ -13,7 +13,9 @@ namespace Cursed.Models.Entities.Data
             TechProcess = new HashSet<TechProcess>();
         }
 
+        [Required]
         public int Id { get; set; }
+        [Required]
         public string Content { get; set; }
         public bool? TechApproval { get; set; }
         public bool? GovermentApproval { get; set; }

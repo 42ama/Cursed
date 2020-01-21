@@ -6,6 +6,7 @@
 <h1>Recipes</h1>
 <h2>Add child of @parentId recipe.</h2>
 <form asp-antiforgery="true" method="post" role="form">
+    @Html.ValidationSummary()
     <div>
         <input hidden type="number" name="parentId" value="@parentId">
     </div>

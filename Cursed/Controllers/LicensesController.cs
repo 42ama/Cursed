@@ -132,9 +132,17 @@ namespace Cursed.Controllers
         [HttpPost("license/add", Name = LicensesRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(License model)
         {
-            var license = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new license (Id: {license.Id}).");
-            return RedirectToRoute(LicensesRouting.Index);
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                var license = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new license (Id: {license.Id}).");
+                return RedirectToRoute(LicensesRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -145,7 +153,7 @@ namespace Cursed.Controllers
         [HttpPost("license/edit", Name = LicensesRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(License model)
         {
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);

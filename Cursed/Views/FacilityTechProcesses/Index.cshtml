@@ -7,7 +7,7 @@
     ViewData["PagenationRouteLink"] = FacilityTechProcessesRouting.Index;
     int facilityId = (int)ViewData["FacilityId"];
     ViewData["PagenationKey"] = facilityId.ToString();
-    string facilitiyName = Model.PagenatedCollection.First().FacilityName;
+    string facilitiyName = Model.PagenatedCollection.FirstOrDefault()?.FacilityName ?? $"Id: {facilityId}";
 }
 <h1>Facilitiy: @facilitiyName</h1>
 <p>@Html.RouteLink("Back to facilitiy", FacilitiesRouting.SingleItem, new { key = facilityId.ToString() })</p>

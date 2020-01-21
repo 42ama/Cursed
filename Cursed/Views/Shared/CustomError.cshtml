@@ -13,7 +13,7 @@
     }
     else
     {
-        problemStatusText = $"Back to section: {problemStatus.Entity}";
+        problemStatusText = $"{problemStatus.Entity}";
         problemStatusLink = Html.RouteLink(problemStatusText, problemStatus.RedirectRoute);
     }
 }
@@ -23,6 +23,7 @@
 <table>
     @foreach (var problem in Model.Problems)
     {
+        string problemMessage;
         string problemText;
         IHtmlContent problemLink;
         if (problem.UseKeyWithRoute)
@@ -35,8 +36,17 @@
             problemText = $"Back to section: {problem.Entity}";
             problemLink = Html.RouteLink(problemText, problem.RedirectRoute);
         }
+        
+        if(String.IsNullOrEmpty(problem.EntityKey))
+        {
+            problemMessage = problem.Message;
+        }
+        else
+        {
+            problemMessage = problem.Message + $" Key: {problem.EntityKey}";
+        }
         <tr>
-            <td>@problem.Message</td>
+            <td>@problemMessage</td>
             <td>@problemLink</td>
         </tr>
     }
