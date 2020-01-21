@@ -13,7 +13,7 @@
     }
     else
     {
-        problemStatusText = $"Back to section: {problemStatus.Entity}";
+        problemStatusText = $"{problemStatus.Entity}";
         problemStatusLink = Html.RouteLink(problemStatusText, problemStatus.RedirectRoute);
     }
 }
