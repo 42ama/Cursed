@@ -38,6 +38,48 @@ namespace Cursed.Tests.Tests.LogicValidation
             };
         }
 
+        private ProductCatalog GetProductCatalog()
+        {
+            return new ProductCatalog
+            {
+                Id = 44440,
+                Cas = 4040404,
+                LicenseRequired = true,
+                Name = "Testotin"
+            };
+        }
+        private Company GetCompany()
+        {
+            return new Company
+            {
+                Id = 44440,
+                Name = "Test company"
+            };
+        }
+
+        private Storage[] GetStorages()
+        {
+            return new Storage[]
+            {
+                new Storage
+                {
+                    Id = 44440,
+                    Name = "Test storage",
+                    Latitude = (decimal)12.3456,
+                    Longitude = (decimal)78.9012,
+                    CompanyId = 44440
+                },
+                new Storage
+                {
+                    Id = 44441,
+                    Name = "Test storage #2",
+                    Latitude = (decimal)12.3456,
+                    Longitude = (decimal)78.9012,
+                    CompanyId = 44440
+                },
+            };
+        }
+
         private TransactionBatch GetOpenTransaction()
         {
             return new TransactionBatch
@@ -141,7 +183,7 @@ namespace Cursed.Tests.Tests.LogicValidation
         }
 
         [Fact]
-        public async void CheckGetOperationForUpdate_FromInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedTrue()
+        public async void CheckGetOperationForUpdate_FromBadInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedTrue()
         {
             // arrange
             var operation = GetOperation();
@@ -164,7 +206,7 @@ namespace Cursed.Tests.Tests.LogicValidation
             var operation = GetOperation();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
@@ -181,14 +223,14 @@ namespace Cursed.Tests.Tests.LogicValidation
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation);
 
             // assert
             Assert.False(statusMessage.IsCompleted);
         }
 
         [Fact]
-        public async void CheckUpdateOperation_FromInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedTrue()
+        public async void CheckUpdateOperation_FromBadInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedFalse()
         {
             // arrange
             var operation = GetOperation();
@@ -198,11 +240,73 @@ namespace Cursed.Tests.Tests.LogicValidation
             await fixture.db.SaveChangesAsync();
 
             // act
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckUpdateOperation_FromInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var company = GetCompany();
+            var productCatalog = GetProductCatalog();
+            var storages = GetStorages();
+            var operation = GetOperation();
+            var transaction = GetOpenTransaction();
+            fixture.db.Add(company);
+            fixture.db.Add(productCatalog);
+            fixture.db.Storage.AddRange(storages);
+            fixture.db.Add(operation);
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(operation);
 
             // assert
             Assert.True(statusMessage.IsCompleted);
         }
 
+        [Fact]
+        public async void CheckAddOperation_WithBadInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedFalse()
+        {
+            // arrange
+            var operation = GetOperation();
+            var transaction = GetOpenTransaction();
+            fixture.db.Add(operation);
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(operation);
+
+            // assert
+            Assert.False(statusMessage.IsCompleted);
+        }
+
+        [Fact]
+        public async void CheckAddOperation_WithInitializedDbTableOpenTransaction_ErrorHandlerIsCompletedTrue()
+        {
+            // arrange
+            var company = GetCompany();
+            var productCatalog = GetProductCatalog();
+            var storages = GetStorages();
+            var operation = GetOperation();
+            var transaction = GetOpenTransaction();
+            fixture.db.Add(company);
+            fixture.db.Add(productCatalog);
+            fixture.db.Storage.AddRange(storages);
+            fixture.db.Add(operation);
+            fixture.db.Add(transaction);
+            await fixture.db.SaveChangesAsync();
+
+            // act
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(operation);
+
+            // assert
+            Assert.True(statusMessage.IsCompleted);
+        }
     }
 }

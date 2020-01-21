@@ -4,6 +4,7 @@ using Cursed.Models.Context;
 using Cursed.Models.Services;
 using Cursed.Models.DataModel.ErrorHandling;
 using Cursed.Models.StaticReferences.Routing;
+using Cursed.Models.Entities.Data;
 
 namespace Cursed.Models.LogicValidation
 {
@@ -38,9 +39,28 @@ namespace Cursed.Models.LogicValidation
         /// </summary>
         /// <param name="key">Id of operation to be found</param>
         /// <returns>Status message with validaton information</returns>
-        public async Task<IErrorHandler> CheckUpdateDataModelAsync(object key)
+        public async Task<IErrorHandler> CheckUpdateDataModelAsync(Operation model)
         {
-            return await CheckExistsAndTransactionOpen(key);
+            var statusMessage = await CheckExistsAndTransactionOpen(model.Id);
+            return await CheckRelatedEntitiesExists(model, statusMessage);
+        }
+
+        /// <summary>
+        /// Checks if operation is valid, to be added
+        /// </summary>
+        /// <param name="model">Operation model to be validated</param>
+        /// <returns>Status message with validaton information</returns>
+        public async Task<IErrorHandler> CheckAddDataModelAsync(Operation model)
+        {
+            var statusMessage = errorHandlerFactory.NewErrorHandler(new Problem
+            {
+                Entity = "Operation in a transaction.",
+                EntityKey = "",
+                RedirectRoute = TransactionsRouting.Index,
+                UseKeyWithRoute = false
+            });
+
+            return await CheckRelatedEntitiesExists(model, statusMessage);
         }
 
         /// <summary>
@@ -51,6 +71,70 @@ namespace Cursed.Models.LogicValidation
         public async Task<IErrorHandler> CheckRemoveDataModelAsync(object key)
         {
             return await CheckExistsAndTransactionOpen(key);
+        }
+
+        /// <summary>
+        /// Checks if related entities exitst
+        /// </summary>
+        /// <param name="model">Operation model with key properties of related entities</param>
+        /// <param name="statusMessage">Error handler to which problem will be added</param>
+        /// <returns>Status message with validaton information</returns>
+        private async Task<IErrorHandler> CheckRelatedEntitiesExists(Operation model, IErrorHandler statusMessage)
+        {
+            // check if related product from catalog exists
+            if (await db.ProductCatalog.FirstOrDefaultAsync(i => i.Id == model.ProductId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Products from catalog.",
+                    EntityKey = (model.ProductId).ToString(),
+                    Message = "Product with this Id isn't found",
+                    RedirectRoute = ProductsCatalogRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            // check if related transaction exists
+            if (await db.TransactionBatch.FirstOrDefaultAsync(i => i.Id == model.TransactionId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Transaction.",
+                    EntityKey = (model.TransactionId).ToString(),
+                    Message = "Transaction with this Id isn't found",
+                    RedirectRoute = TransactionsRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            // check if related transaction exists
+            if (await db.Storage.FirstOrDefaultAsync(i => i.Id == model.StorageFromId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Storage.",
+                    EntityKey = (model.StorageFromId).ToString(),
+                    Message = "Storage with this Id isn't found",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+            // check if related transaction exists
+            if (await db.Storage.FirstOrDefaultAsync(i => i.Id == model.StorageToId) == null)
+            {
+                statusMessage.AddProblem(new Problem
+                {
+                    Entity = "Storage.",
+                    EntityKey = (model.StorageToId).ToString(),
+                    Message = "Storage with this Id isn't found",
+                    RedirectRoute = StoragesRouting.Index,
+                    UseKeyWithRoute = false
+                });
+            }
+
+
+            return statusMessage;
         }
 
         /// <summary>

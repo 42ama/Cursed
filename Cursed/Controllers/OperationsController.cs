@@ -61,9 +61,17 @@ namespace Cursed.Controllers
         [HttpPost("operation/add", Name = OperationsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(Operation model)
         {
-            var operation = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new operation (Id: {operation.Id}).");
-            return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                var operation = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new operation (Id: {operation.Id}).");
+                return RedirectToRoute(TransactionsRouting.SingleItem, new { key = model.TransactionId });
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace Cursed.Controllers
         [HttpPost("operation/edit", Name = OperationsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(Operation model)
         {
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
