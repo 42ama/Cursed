@@ -39,10 +39,13 @@
                         <tbody>
                             @foreach (var recipe in item.TechProcesses)
                             {
-                                <tr>
-                                    <td>@Html.RouteLink(recipe.RecipeId.ToString(), RecipesRouting.SingleItem, new { key = recipe.RecipeId })</td>
-                                    <td>@recipe.DayEfficiency</td>
-                                </tr>
+                                @if (recipe != null)
+                                {
+                                    <tr>
+                                        <td>@Html.RouteLink(recipe.RecipeId.ToString(), RecipesRouting.SingleItem, new { key = recipe.RecipeId })</td>
+                                        <td>@recipe.DayEfficiency</td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
