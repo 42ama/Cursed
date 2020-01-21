@@ -36,8 +36,8 @@
             problemText = $"Back to section: {problem.Entity}";
             problemLink = Html.RouteLink(problemText, problem.RedirectRoute);
         }
-
-        if(problem.EntityKey == null)
+        
+        if(String.IsNullOrEmpty(problem.EntityKey))
         {
             problemMessage = problem.Message;
         }
