@@ -159,9 +159,17 @@ namespace Cursed.Controllers
         [HttpPost("transaction/add", Name = TransactionsRouting.AddSingleItem)]
         public async Task<IActionResult> AddSingleItem(TransactionBatch model)
         {
-            var transaction = await logic.AddDataModelAsync(model);
-            await logProvider.AddToLogAsync($"Added new transaction (Id: {transaction.Id}).");
-            return RedirectToRoute(TransactionsRouting.Index);
+            var statusMessage = await logicValidation.CheckAddDataModelAsync(model);
+            if (statusMessage.IsCompleted)
+            {
+                var transaction = await logic.AddDataModelAsync(model);
+                await logProvider.AddToLogAsync($"Added new transaction (Id: {transaction.Id}).");
+                return RedirectToRoute(TransactionsRouting.Index);
+            }
+            else
+            {
+                return View("CustomError", statusMessage);
+            }
         }
 
         /// <summary>
@@ -172,7 +180,7 @@ namespace Cursed.Controllers
         [HttpPost("transaction/edit", Name = TransactionsRouting.EditSingleItem)]
         public async Task<IActionResult> EditSingleItem(TransactionBatch model)
         {
-            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model.Id);
+            var statusMessage = await logicValidation.CheckUpdateDataModelAsync(model);
             if (statusMessage.IsCompleted)
             {
                 await logic.UpdateDataModelAsync(model);
