@@ -8,6 +8,7 @@
 <p>@Html.RouteLink("Back to user", UserManagmentRouting.SingleItem, new { key = Model.Login })</p>
 
 <form asp-antiforgery="true" method="post" role="form" asp-route="@UserManagmentRouting.EditUserData">
+    @Html.ValidationSummary()
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <input hidden asp-for="Login" type="text" name="Login" value="@Model.Login">

@@ -6,6 +6,7 @@
 <h2>Edit operation @Model.Id</h2>
 
 <form asp-antiforgery="true" method="post" role="form">
+    @Html.ValidationSummary()
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <input hidden asp-for="Id" type="number" name="Id" value="@Model.Id">

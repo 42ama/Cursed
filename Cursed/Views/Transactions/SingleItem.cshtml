@@ -75,6 +75,7 @@
 
 @if (Model.IsOpen)
 {
+    <!--repalace form with link to Operations.Add-->
     <form asp-antiforgery="true" method="post" asp-route="@OperationsRouting.AddSingleItem">
         <input hidden name="TransactionId" type="number" value="@Model.Id" />
         <input required name="ProductId" type="number" placeholder="Product Id" />
