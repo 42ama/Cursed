@@ -102,7 +102,7 @@ namespace Cursed.Models.LogicValidation
                         Entity = "Product.",
                         EntityKey = product.Id.ToString(),
                         Message = "You must remove dependent Product in Storage first.",
-                        RedirectRoute = ProductsRouting.Index,
+                        RedirectRoute = HubRouting.Index,
                         UseKeyWithRoute = false
                     });
                 }
@@ -114,9 +114,9 @@ namespace Cursed.Models.LogicValidation
                     statusMessage.Problems.Add(new Problem
                     {
                         Entity = "Operation.",
-                        EntityKey = operation.Id.ToString(),
-                        Message = "You must remove dependent Operation first.",
-                        RedirectRoute = OperationsRouting.SingleItem
+                        EntityKey = operation.TransactionId.ToString(),
+                        Message = "You must remove dependent Operation first. (Link to Transaction)",
+                        RedirectRoute = TransactionsRouting.SingleItem
                     });
                 }
             }
